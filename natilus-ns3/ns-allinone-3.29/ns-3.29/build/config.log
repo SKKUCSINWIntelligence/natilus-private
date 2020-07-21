@@ -1,13 +1,13 @@
-# project ns (3.29) configured on Mon Jul  6 18:14:35 2020 by
+# project ns (3.29) configured on Tue Jul 21 17:25:07 2020 by
 # waf 2.0.9 (abi 20, python 30703f0 on linux)
-# using ./waf configure --build-profile=debug --enable-examples --enable-tests
+# using ./waf configure
 #
 ----------------------------------------
 Setting top to
-/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29
+/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29
 ----------------------------------------
 Setting out to
-/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build
+/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build
 ----------------------------------------
 Checking for 'gcc' (C compiler)
 find program=['gcc', 'cc'] paths=['/home/woo/anaconda3/bin', '/home/woo/anaconda3/condabin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin'] var='CC' -> ['/usr/bin/gcc']
@@ -724,18 +724,18 @@ Checking for compilation flag -Wl,--soname=foo support
 ==>
 int main() { return 0; }
 <==
-[1/1] Compiling [32mbuild/.conf_check_4ecc12f5759857d383f73c690a260c38/test.cpp[0m
+[1/1] Compiling [32mbuild/.conf_check_68cfeb20584a5ebe8d4074bf52930484/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-Wl,--soname=foo', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_4ecc12f5759857d383f73c690a260c38/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-Wl,--soname=foo', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_68cfeb20584a5ebe8d4074bf52930484/testbuild/test.cpp.1.o']
 ok
 ------------------------------------------------------
 Checking for compilation flag -std=c++11 support
 ==>
 int main() { return 0; }
 <==
-[1/1] Compiling [32mbuild/.conf_check_4ecc12f5759857d383f73c690a260c38/test.cpp[0m
+[1/1] Compiling [32mbuild/.conf_check_68cfeb20584a5ebe8d4074bf52930484/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_4ecc12f5759857d383f73c690a260c38/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_68cfeb20584a5ebe8d4074bf52930484/testbuild/test.cpp.1.o']
 ok
 ------------------------------------------------------
 Checking for program 'python'
@@ -844,12 +844,12 @@ int main(int argc, char **argv)
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_b810a5785d9a3d7c7fc3421590d6a9fc/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_e6b6c643ce85a0eb3986b90cb935242f/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-march=nocona', '-mtune=haswell', '-ftree-vectorize', '-fPIC', '-fstack-protector-strong', '-fno-plt', '-O3', '-ffunction-sections', '-fdebug-prefix-map=/tmp/build/80754af9/python_1553721932202/work=/usr/local/src/conda/python-3.7.3', '-fdebug-prefix-map=/home/woo/anaconda3=/usr/local/src/conda-prefix', '-fuse-linker-plugin', '-ffat-lto-objects', '-flto-partition=none', '-flto', '-fwrapv', '-O3', '-I/home/woo/anaconda3/include/python3.7m', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DPYTHONDIR="/usr/local/lib/python3.7/site-packages"', '-DPYTHONARCHDIR="/usr/local/lib/python3.7/site-packages"', '-DNDEBUG', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_b810a5785d9a3d7c7fc3421590d6a9fc/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_b810a5785d9a3d7c7fc3421590d6a9fc/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-march=nocona', '-mtune=haswell', '-ftree-vectorize', '-fPIC', '-fstack-protector-strong', '-fno-plt', '-O3', '-ffunction-sections', '-fdebug-prefix-map=/tmp/build/80754af9/python_1553721932202/work=/usr/local/src/conda/python-3.7.3', '-fdebug-prefix-map=/home/woo/anaconda3=/usr/local/src/conda-prefix', '-fuse-linker-plugin', '-ffat-lto-objects', '-flto-partition=none', '-flto', '-fwrapv', '-O3', '-I/home/woo/anaconda3/include/python3.7m', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DPYTHONDIR="/usr/local/lib/python3.7/site-packages"', '-DPYTHONARCHDIR="/usr/local/lib/python3.7/site-packages"', '-DNDEBUG', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e6b6c643ce85a0eb3986b90cb935242f/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_e6b6c643ce85a0eb3986b90cb935242f/testbuild/testprog[0m
 
-['/usr/bin/g++', '-fPIC', '-Xlinker', '-export-dynamic', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_b810a5785d9a3d7c7fc3421590d6a9fc/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/home/woo/anaconda3/lib/python3.7/config-3.7m-x86_64-linux-gnu', '-L/home/woo/anaconda3/lib', '-lpython3.7m', '-lcrypt', '-lpthread', '-ldl', '-lutil', '-lrt', '-lm', '-lpython3.7m', '-lcrypt', '-lpthread', '-ldl', '-lutil', '-lrt', '-lm']
+['/usr/bin/g++', '-fPIC', '-Xlinker', '-export-dynamic', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e6b6c643ce85a0eb3986b90cb935242f/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/home/woo/anaconda3/lib/python3.7/config-3.7m-x86_64-linux-gnu', '-L/home/woo/anaconda3/lib', '-lpython3.7m', '-lcrypt', '-lpthread', '-ldl', '-lutil', '-lrt', '-lm', '-lpython3.7m', '-lcrypt', '-lpthread', '-ldl', '-lutil', '-lrt', '-lm']
 err: lto1: fatal error: bytecode stream in file ‘/home/woo/anaconda3/lib/python3.7/config-3.7m-x86_64-linux-gnu/libpython3.7m.a’ generated with LTO version 6.0 instead of the expected 6.2
 compilation terminated.
 lto-wrapper: fatal error: /usr/bin/g++ returned 1 exit status
@@ -857,24 +857,24 @@ compilation terminated.
 /usr/bin/ld: error: lto-wrapper failed
 collect2: error: ld returned 1 exit status
 
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/bindings/python: Test does not build: Traceback (most recent call last):
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/bindings/python: Test does not build: Traceback (most recent call last):
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
     bld.compile()
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
     raise Errors.BuildError(self.producer.error)
 waflib.Errors.BuildError: Build failed
  -> task in 'testprog' failed with exit status 1 (run with -v to display more information)
 
 Could not build a python embedded interpreter
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/bindings/python: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/bindings/python: The configuration failed
 ------------------------------------------------------------------
 Checking boost includes
 headers not found, please provide a --boost-includes argument (see help)
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src: The configuration failed
 ------------------------------------------------------------------
 Checking boost includes
 headers not found, please provide a --boost-includes argument (see help)
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src: The configuration failed
 ------------------------------------------------------------------
 Checking for click location
 not found
@@ -891,7 +891,7 @@ to the PKG_CONFIG_PATH environment variable
 No package 'gtk+-3.0' found
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/config-store: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/config-store: The configuration failed
 ------------------------------------------------------------------
 Checking for 'libxml-2.0'
 ['/usr/bin/pkg-config', '--cflags', '--libs', 'libxml-2.0']
@@ -901,7 +901,7 @@ to the PKG_CONFIG_PATH environment variable
 No package 'libxml-2.0' found
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/config-store: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/config-store: The configuration failed
 ------------------------------------------------------------------
 checking for uint128_t
 ==>
@@ -916,9 +916,9 @@ checking for uint128_t
         }
         
 <==
-[1/2] Compiling [32mbuild/.conf_check_0463164d71b8e787e747035e823bc0f6/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_c955e7096cd2c262e53dd40bcbc293c7/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_0463164d71b8e787e747035e823bc0f6/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c955e7096cd2c262e53dd40bcbc293c7/testbuild/test.cpp.1.o']
 err: ../test.cpp: In function ‘int main(int, char**)’:
 ../test.cpp:6:7: error: ‘uint128_t’ was not declared in this scope
   if ((uint128_t *) 0) return 0;
@@ -941,16 +941,16 @@ err: ../test.cpp: In function ‘int main(int, char**)’:
               ^~~~~~~~~
               uint32_t
 
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: Test does not build: Traceback (most recent call last):
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: Test does not build: Traceback (most recent call last):
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
     bld.compile()
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
     raise Errors.BuildError(self.producer.error)
 waflib.Errors.BuildError: Build failed
  -> task in 'testprog' failed with exit status 1 (run with -v to display more information)
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: The configuration failed
 ------------------------------------------------------------------
 checking for __uint128_t
 ==>
@@ -965,12 +965,12 @@ checking for __uint128_t
         }
         
 <==
-[1/2] Compiling [32mbuild/.conf_check_19a43da770194803abda4a336bdcd9d2/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_201ce31eae2af85038e696e3c447c8fc/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_19a43da770194803abda4a336bdcd9d2/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_19a43da770194803abda4a336bdcd9d2/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_201ce31eae2af85038e696e3c447c8fc/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_201ce31eae2af85038e696e3c447c8fc/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_19a43da770194803abda4a336bdcd9d2/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_201ce31eae2af85038e696e3c447c8fc/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking high precision implementation
@@ -986,12 +986,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_07eb77c5cd097833fd54eda4168946d3/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_07eb77c5cd097833fd54eda4168946d3/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_07eb77c5cd097833fd54eda4168946d3/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_07eb77c5cd097833fd54eda4168946d3/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header inttypes.h
@@ -1004,12 +1004,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_13178c35c2050c059c4089f526ba2b80/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_a301ae8f55bcfb851194fe7f1a992535/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_13178c35c2050c059c4089f526ba2b80/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_13178c35c2050c059c4089f526ba2b80/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_a301ae8f55bcfb851194fe7f1a992535/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_a301ae8f55bcfb851194fe7f1a992535/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_13178c35c2050c059c4089f526ba2b80/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_a301ae8f55bcfb851194fe7f1a992535/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header sys/inttypes.h
@@ -1022,24 +1022,24 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_3597e1b808b5f470bdb394fcb5538ae0/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_403badebf90048507051fdd49e7d97a4/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_3597e1b808b5f470bdb394fcb5538ae0/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_403badebf90048507051fdd49e7d97a4/testbuild/test.cpp.1.o']
 err: ../test.cpp:1:10: fatal error: sys/inttypes.h: No such file or directory
  #include <sys/inttypes.h>
           ^~~~~~~~~~~~~~~~
 compilation terminated.
 
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: Test does not build: Traceback (most recent call last):
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: Test does not build: Traceback (most recent call last):
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
     bld.compile()
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
     raise Errors.BuildError(self.producer.error)
 waflib.Errors.BuildError: Build failed
  -> task in 'testprog' failed with exit status 1 (run with -v to display more information)
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: The configuration failed
 ------------------------------------------------------------------
 Checking for header sys/types.h
 ==>
@@ -1051,12 +1051,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_0daf5281fb6d2fd6b4d3c0d048b29bde/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_1a5889ca77673ee156de1383a505b589/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_0daf5281fb6d2fd6b4d3c0d048b29bde/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_0daf5281fb6d2fd6b4d3c0d048b29bde/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_1a5889ca77673ee156de1383a505b589/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_1a5889ca77673ee156de1383a505b589/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_0daf5281fb6d2fd6b4d3c0d048b29bde/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_1a5889ca77673ee156de1383a505b589/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header sys/stat.h
@@ -1069,12 +1069,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_b419ac53aaa54aa00c87490d03429fb7/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_b725330f5dc70bb163cbfc6fdeb9051d/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_b419ac53aaa54aa00c87490d03429fb7/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_b419ac53aaa54aa00c87490d03429fb7/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_b725330f5dc70bb163cbfc6fdeb9051d/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_b725330f5dc70bb163cbfc6fdeb9051d/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_b419ac53aaa54aa00c87490d03429fb7/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_b725330f5dc70bb163cbfc6fdeb9051d/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header dirent.h
@@ -1087,12 +1087,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_579d8ad5d9374c39177214ac9135f42c/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_e49b922ecf3ed5cede8521907ec0b5b8/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_579d8ad5d9374c39177214ac9135f42c/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_579d8ad5d9374c39177214ac9135f42c/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e49b922ecf3ed5cede8521907ec0b5b8/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_e49b922ecf3ed5cede8521907ec0b5b8/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_579d8ad5d9374c39177214ac9135f42c/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e49b922ecf3ed5cede8521907ec0b5b8/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header stdlib.h
@@ -1105,12 +1105,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_c121e8a72042aeafe3d5474f82fa78b7/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_456812cbde48db6684a1f1162ce53fe1/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c121e8a72042aeafe3d5474f82fa78b7/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_c121e8a72042aeafe3d5474f82fa78b7/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_456812cbde48db6684a1f1162ce53fe1/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_456812cbde48db6684a1f1162ce53fe1/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c121e8a72042aeafe3d5474f82fa78b7/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_456812cbde48db6684a1f1162ce53fe1/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header signal.h
@@ -1123,12 +1123,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_e9f7c2cee1275cb687f595fa6d413468/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_3408cf8f999bf355fcfc460891f2312c/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e9f7c2cee1275cb687f595fa6d413468/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_e9f7c2cee1275cb687f595fa6d413468/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_3408cf8f999bf355fcfc460891f2312c/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_3408cf8f999bf355fcfc460891f2312c/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e9f7c2cee1275cb687f595fa6d413468/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_3408cf8f999bf355fcfc460891f2312c/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header pthread.h
@@ -1143,12 +1143,12 @@ int main ()
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_e0bd3fae76218a5a0ab70ca58fcdcae4/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_8e3b352018754bf51f49956487ebb1a5/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-pthread', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e0bd3fae76218a5a0ab70ca58fcdcae4/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_e0bd3fae76218a5a0ab70ca58fcdcae4/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-pthread', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_8e3b352018754bf51f49956487ebb1a5/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_8e3b352018754bf51f49956487ebb1a5/testbuild/testprog[0m
 
-['/usr/bin/g++', '-pthread', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e0bd3fae76218a5a0ab70ca58fcdcae4/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', '-pthread', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_8e3b352018754bf51f49956487ebb1a5/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header stdint.h
@@ -1161,12 +1161,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_07eb77c5cd097833fd54eda4168946d3/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_INTTYPES_H=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_07eb77c5cd097833fd54eda4168946d3/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_07eb77c5cd097833fd54eda4168946d3/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_02479f90521ac5e2f9a3700dc0c3b6e1/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_07eb77c5cd097833fd54eda4168946d3/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header inttypes.h
@@ -1179,12 +1179,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_13178c35c2050c059c4089f526ba2b80/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_a301ae8f55bcfb851194fe7f1a992535/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '-DHAVE_STDINT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_13178c35c2050c059c4089f526ba2b80/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_13178c35c2050c059c4089f526ba2b80/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '-DHAVE_STDINT_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_a301ae8f55bcfb851194fe7f1a992535/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_a301ae8f55bcfb851194fe7f1a992535/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_13178c35c2050c059c4089f526ba2b80/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_a301ae8f55bcfb851194fe7f1a992535/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header sys/inttypes.h
@@ -1197,24 +1197,24 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_3597e1b808b5f470bdb394fcb5538ae0/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_403badebf90048507051fdd49e7d97a4/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_3597e1b808b5f470bdb394fcb5538ae0/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_403badebf90048507051fdd49e7d97a4/testbuild/test.cpp.1.o']
 err: ../test.cpp:1:10: fatal error: sys/inttypes.h: No such file or directory
  #include <sys/inttypes.h>
           ^~~~~~~~~~~~~~~~
 compilation terminated.
 
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: Test does not build: Traceback (most recent call last):
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: Test does not build: Traceback (most recent call last):
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Configure.py", line 324, in run_build
     bld.compile()
-  File "/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
+  File "/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/.waf3-2.0.9-897e824215d3dab2b64982d8af27db90/waflib/Build.py", line 176, in compile
     raise Errors.BuildError(self.producer.error)
 waflib.Errors.BuildError: Build failed
  -> task in 'testprog' failed with exit status 1 (run with -v to display more information)
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/core: The configuration failed
 ------------------------------------------------------------------
 Checking for library rt
 ==>
@@ -1225,12 +1225,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_c378c77456fb1b7788780b1d92d518e9/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_8717befd3274f1655651e89a17be694a/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-pthread', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c378c77456fb1b7788780b1d92d518e9/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_c378c77456fb1b7788780b1d92d518e9/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-pthread', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE___UINT128_T=1', '-DINT64X64_USE_128=1', '-DHAVE_SYS_TYPES_H=1', '-DHAVE_SYS_STAT_H=1', '-DHAVE_DIRENT_H=1', '-DHAVE_STDLIB_H=1', '-DHAVE_GETENV=1', '-DHAVE_SIGNAL_H=1', '-DHAVE_PTHREAD_H=1', '-DHAVE_STDINT_H=1', '-DHAVE_INTTYPES_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_8717befd3274f1655651e89a17be694a/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_8717befd3274f1655651e89a17be694a/testbuild/testprog[0m
 
-['/usr/bin/g++', '-pthread', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c378c77456fb1b7788780b1d92d518e9/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lrt']
+['/usr/bin/g++', '-pthread', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_8717befd3274f1655651e89a17be694a/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lrt']
 yes
 ------------------------------------------------------------------
 Checking for header sys/ioctl.h
@@ -1243,12 +1243,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_5c33b716042d470098a63053acb97f0f/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_c7a40eaa50d0e8566e21e0ff700dcbc3/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_5c33b716042d470098a63053acb97f0f/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_5c33b716042d470098a63053acb97f0f/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c7a40eaa50d0e8566e21e0ff700dcbc3/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_c7a40eaa50d0e8566e21e0ff700dcbc3/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_5c33b716042d470098a63053acb97f0f/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_c7a40eaa50d0e8566e21e0ff700dcbc3/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header net/if.h
@@ -1261,12 +1261,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_d8db773da146a3a0936085b5c21eb2f5/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_4104de189ee933f3ac8bc99a8236fe7d/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_d8db773da146a3a0936085b5c21eb2f5/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_d8db773da146a3a0936085b5c21eb2f5/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_4104de189ee933f3ac8bc99a8236fe7d/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_4104de189ee933f3ac8bc99a8236fe7d/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_d8db773da146a3a0936085b5c21eb2f5/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_4104de189ee933f3ac8bc99a8236fe7d/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header net/ethernet.h
@@ -1279,12 +1279,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_1a88a8e81322b7399160a33e4281b00c/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_824bfae0239f3bd692e7f5c45d5ef969/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_1a88a8e81322b7399160a33e4281b00c/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_1a88a8e81322b7399160a33e4281b00c/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_824bfae0239f3bd692e7f5c45d5ef969/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_824bfae0239f3bd692e7f5c45d5ef969/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_1a88a8e81322b7399160a33e4281b00c/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_824bfae0239f3bd692e7f5c45d5ef969/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header linux/if_tun.h
@@ -1297,12 +1297,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_da168c6272f06097830a34ae9cfc98ed/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_da168c6272f06097830a34ae9cfc98ed/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_da168c6272f06097830a34ae9cfc98ed/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_da168c6272f06097830a34ae9cfc98ed/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for header netpacket/packet.h
@@ -1315,12 +1315,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_76c8b00e9b675e4269f1a6c1c14995a3/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_854455a3044509b1a49b516508cd237a/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_IF_TUN_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_76c8b00e9b675e4269f1a6c1c14995a3/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_76c8b00e9b675e4269f1a6c1c14995a3/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_IF_TUN_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_854455a3044509b1a49b516508cd237a/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_854455a3044509b1a49b516508cd237a/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_76c8b00e9b675e4269f1a6c1c14995a3/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_854455a3044509b1a49b516508cd237a/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic']
 yes
 ------------------------------------------------------------------
 Checking for NSC location
@@ -1335,12 +1335,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_fa2c206b42f8c01c7007b963fa4b6a0f/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_8415ce18fdf4d53584de9b8d65e92b21/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_IF_TUN_H=1', '-DHAVE_PACKET_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_fa2c206b42f8c01c7007b963fa4b6a0f/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_fa2c206b42f8c01c7007b963fa4b6a0f/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_IF_TUN_H=1', '-DHAVE_PACKET_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_8415ce18fdf4d53584de9b8d65e92b21/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_8415ce18fdf4d53584de9b8d65e92b21/testbuild/testprog[0m
 
-['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_fa2c206b42f8c01c7007b963fa4b6a0f/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lzmq']
+['/usr/bin/g++', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_8415ce18fdf4d53584de9b8d65e92b21/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lzmq']
 yes
 ------------------------------------------------------------------
 Checking for 'sqlite3'
@@ -1351,7 +1351,7 @@ to the PKG_CONFIG_PATH environment variable
 No package 'sqlite3' found
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/src/stats: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/src/stats: The configuration failed
 ------------------------------------------------------------------
 Checking for header linux/if_tun.h
 ==>
@@ -1363,12 +1363,12 @@ int main(int argc, char **argv) {
 }
 
 <==
-[1/2] Compiling [32mbuild/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/test.cpp[0m
+[1/2] Compiling [32mbuild/.conf_check_da168c6272f06097830a34ae9cfc98ed/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/testbuild/test.cpp.1.o']
-[2/2] Linking [33mbuild/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/testbuild/testprog[0m
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_da168c6272f06097830a34ae9cfc98ed/testbuild/test.cpp.1.o']
+[2/2] Linking [33mbuild/.conf_check_da168c6272f06097830a34ae9cfc98ed/testbuild/testprog[0m
 
-['/usr/bin/g++', '-lzmq', 'test.cpp.1.o', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_bfedc05d3c2ae37569c3188a65fb1c71/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lzmq']
+['/usr/bin/g++', '-lzmq', 'test.cpp.1.o', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_da168c6272f06097830a34ae9cfc98ed/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-lzmq']
 yes
 ------------------------------------------------------------------
 Checking for program 'sudo'
@@ -1378,7 +1378,7 @@ find program=['sudo'] paths=['/home/woo/anaconda3/bin', '/home/woo/anaconda3/con
 Checking for program 'valgrind'
 not found
 find program=['valgrind'] paths=['/home/woo/anaconda3/bin', '/home/woo/anaconda3/condabin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin'] var='VALGRIND' -> None
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29: Could not find the program ['valgrind']
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29: Could not find the program ['valgrind']
 ------------------------------------------------------------------
 Checking for 'gsl'
 ['/usr/bin/pkg-config', '--cflags', '--libs', 'gsl']
@@ -1388,50 +1388,50 @@ to the PKG_CONFIG_PATH environment variable
 No package 'gsl' found
 
 not found
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29: The configuration failed
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29: The configuration failed
 ------------------------------------------------------------------
 python-config
 not found
 find program=['libgcrypt-config'] paths=['/home/woo/anaconda3/bin', '/home/woo/anaconda3/condabin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin'] var='LIBGCRYPT_CONFIG' -> None
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29: Could not find the program ['libgcrypt-config']
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29: Could not find the program ['libgcrypt-config']
 ------------------------------------------------------------------
 Checking for compilation flag -fstrict-aliasing support
 ==>
 int main() { return 0; }
 <==
-[1/1] Compiling [32mbuild/.conf_check_4ecc12f5759857d383f73c690a260c38/test.cpp[0m
+[1/1] Compiling [32mbuild/.conf_check_68cfeb20584a5ebe8d4074bf52930484/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-fstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_4ecc12f5759857d383f73c690a260c38/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-fstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_68cfeb20584a5ebe8d4074bf52930484/testbuild/test.cpp.1.o']
 ok
 ------------------------------------------------------------------
 Checking for compilation flag -fstrict-aliasing support
 ==>
 int main() { return 0; }
 <==
-[1/1] Compiling [32mbuild/.conf_check_9b536cfc4710172d0ac71d9231b63f90/test.c[0m
+[1/1] Compiling [32mbuild/.conf_check_e279a45edaed7abafe0a55b119fb2c74/test.c[0m
 
-['/usr/bin/gcc', '-fstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.c', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_9b536cfc4710172d0ac71d9231b63f90/testbuild/test.c.1.o']
+['/usr/bin/gcc', '-fstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.c', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e279a45edaed7abafe0a55b119fb2c74/testbuild/test.c.1.o']
 ok
 ------------------------------------------------------------------
 Checking for compilation flag -Wstrict-aliasing support
 ==>
 int main() { return 0; }
 <==
-[1/1] Compiling [32mbuild/.conf_check_4ecc12f5759857d383f73c690a260c38/test.cpp[0m
+[1/1] Compiling [32mbuild/.conf_check_68cfeb20584a5ebe8d4074bf52930484/test.cpp[0m
 
-['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-fstrict-aliasing', '-Wstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.cpp', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_4ecc12f5759857d383f73c690a260c38/testbuild/test.cpp.1.o']
+['/usr/bin/g++', '-O0', '-ggdb', '-g3', '-Wall', '-Werror', '-std=c++11', '-fstrict-aliasing', '-Wstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.cpp', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_68cfeb20584a5ebe8d4074bf52930484/testbuild/test.cpp.1.o']
 ok
 ------------------------------------------------------------------
 Checking for compilation flag -Wstrict-aliasing support
 ==>
 int main() { return 0; }
 <==
-[1/1] Compiling [32mbuild/.conf_check_9b536cfc4710172d0ac71d9231b63f90/test.c[0m
+[1/1] Compiling [32mbuild/.conf_check_e279a45edaed7abafe0a55b119fb2c74/test.c[0m
 
-['/usr/bin/gcc', '-Wstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.c', '-c', '-o/home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_9b536cfc4710172d0ac71d9231b63f90/testbuild/test.c.1.o']
+['/usr/bin/gcc', '-Wstrict-aliasing', '-DNS3_BUILD_PROFILE_DEBUG', '-DNS3_ASSERT_ENABLE', '-DNS3_LOG_ENABLE', '-DHAVE_SYS_IOCTL_H=1', '-DHAVE_IF_NETS_H=1', '-DHAVE_NET_ETHERNET_H=1', '-DHAVE_PACKET_H=1', '-DHave_ZMQ=1', '-DHAVE_IF_TUN_H=1', '../test.c', '-c', '-o/home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29/build/.conf_check_e279a45edaed7abafe0a55b119fb2c74/testbuild/test.c.1.o']
 ok
 ------------------------------------------------------------------
 Checking for program 'doxygen'
 not found
 find program=['doxygen'] paths=['/home/woo/anaconda3/bin', '/home/woo/anaconda3/condabin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin'] var='DOXYGEN' -> None
-from /home/woo/natilus/natilus-ns3/ns-allinone-3.29/ns-3.29: Could not find the program ['doxygen']
+from /home/woo/natilus-private/natilus-ns3/ns-allinone-3.29/ns-3.29: Could not find the program ['doxygen']
