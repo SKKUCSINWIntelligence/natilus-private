@@ -1,0 +1,259 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+Angle	t-object.cc	/^double ObjectContain::Angle (OBJECT *obj)$/;"	f	class:ns3::ObjectContain
+Arr1Create	function.h	/^T* Arr1Create (uint32_t n, T value)$/;"	f	namespace:ns3
+Arr1Ini	function.h	/^void Arr1Ini (T *arr, uint32_t n, T value)$/;"	f	namespace:ns3
+Arr2Create	function.h	/^T** Arr2Create (uint32_t n1, uint32_t n2, T value)$/;"	f	namespace:ns3
+Arr2Delete	function.h	/^void Arr2Delete (T **arr, uint32_t n)$/;"	f	namespace:ns3
+Arr2Ini	function.h	/^void Arr2Ini (T **arr, uint32_t n1, uint32_t n2, T value)$/;"	f	namespace:ns3
+Bit2Mbps	function.cc	/^double Bit2Mbps (uint32_t bit)$/;"	f	namespace:ns3
+Byte2Bit	function.cc	/^uint32_t Byte2Bit (uint32_t byte)$/;"	f	namespace:ns3
+CAR	car.h	/^}CAR;$/;"	t	namespace:ns3	typeref:struct:ns3::Car
+CAR_H	car.h	2;"	d
+CalReward	car.cc	/^void CarContain::CalReward (uint32_t oldPos, uint32_t newPos)$/;"	f	class:ns3::CarContain
+CallbackCheck	link.cc	/^Callback<void> Link::CallbackCheck (void)$/;"	f	class:ns3::Link
+CallbackInsertTxQ	sensor.cc	/^Callback<bool, DATA*> Sensor::CallbackInsertTxQ (void)$/;"	f	class:ns3::Sensor
+CallbackRecvSche	sink.cc	/^Callback<void, std::queue<DATA*>*, uint64_t> Sink::CallbackRecvSche (void)$/;"	f	class:ns3::Sink
+Car	car.h	/^typedef struct Car$/;"	s	namespace:ns3
+CarContain	car.cc	/^CarContain::CarContain ()$/;"	f	class:ns3::CarContain
+CarContain	car.h	/^class CarContain$/;"	c	namespace:ns3
+CarInit	car.cc	/^void CarContain::CarInit (uint32_t cN)$/;"	f	class:ns3::CarContain
+Check	link.cc	/^void Link::Check (void)$/;"	f	class:ns3::Link
+CreateObject	t-object.cc	/^void ObjectContain::CreateObject (OBJECT *obj)$/;"	f	class:ns3::ObjectContain
+DAFU	sink.cc	/^void Sink::DAFU(void)$/;"	f	class:ns3::Sink
+DAFU_setAction	sink.cc	/^void Sink::DAFU_setAction(double* target, int32_t* location, uint32_t index)$/;"	f	class:ns3::Sink
+DATA	function.h	/^}DATA;$/;"	t	namespace:ns3	typeref:struct:ns3::Data
+Data	function.h	/^typedef struct Data$/;"	s	namespace:ns3
+Eval	sink.cc	/^void Sink::Eval ()$/;"	f	class:ns3::Sink
+Evaluation	sink.cc	/^void Sink::Evaluation (void)$/;"	f	class:ns3::Sink
+FUNCTION_H	function.h	2;"	d
+FillTxQ	sensor.cc	/^bool Sensor::FillTxQ ()$/;"	f	class:ns3::Sensor
+GetAccuracy	car.cc	/^double CarContain::GetAccuracy (void) $/;"	f	class:ns3::CarContain
+GetActDelay	service.cc	/^double Service::GetActDelay (void)$/;"	f	class:ns3::Service
+GetRandGauss	t-object.cc	/^double ObjectContain::GetRandGauss (void)$/;"	f	class:ns3::ObjectContain
+GetReward	car.cc	/^double CarContain::GetReward (void)$/;"	f	class:ns3::CarContain
+GetSample	service.cc	/^void Service::GetSample (void)$/;"	f	class:ns3::Service
+GreedyNav	car.cc	/^uint32_t CarContain::GreedyNav (STATE* state, CAR t_c)$/;"	f	class:ns3::CarContain
+InsertTxQ	sensor.cc	/^bool Sensor::InsertTxQ (DATA *m_data)$/;"	f	class:ns3::Sensor
+InsertTxQ	service.h	/^	Callback<bool, DATA*> InsertTxQ;$/;"	m	class:ns3::Service
+KByte2Bit	function.cc	/^uint32_t KByte2Bit (uint32_t kbyte)$/;"	f	namespace:ns3
+Link	link.h	/^class Link$/;"	c	namespace:ns3
+LinkCheck	sensor.h	/^	Callback<void> LinkCheck;$/;"	m	class:ns3::Sensor
+LinkCheck	sink.h	/^	Callback<void> LinkCheck;$/;"	m	class:ns3::Sink
+MByte2Bit	function.cc	/^uint32_t MByte2Bit (uint32_t mbyte)$/;"	f	namespace:ns3
+MapUpdate	t-object.cc	/^void ObjectContain::MapUpdate (void)$/;"	f	class:ns3::ObjectContain
+MovFunc	car.cc	/^void CarContain::MovFunc (STATE *state)$/;"	f	class:ns3::CarContain
+MovFunc	t-object.cc	/^void ObjectContain::MovFunc (void)$/;"	f	class:ns3::ObjectContain
+MovFuncCar	t-object.cc	/^void ObjectContain::MovFuncCar (void)$/;"	f	class:ns3::ObjectContain
+Moving	car.cc	/^void CarContain::Moving (STATE *state)$/;"	f	class:ns3::CarContain
+Moving	t-object.cc	/^void ObjectContain::Moving (void)$/;"	f	class:ns3::ObjectContain
+Navigate	car.cc	/^uint32_t CarContain::Navigate (STATE* state, CAR t_c)$/;"	f	class:ns3::CarContain
+NewObject	t-object.cc	/^void ObjectContain::NewObject (void)$/;"	f	class:ns3::ObjectContain
+OBJECT	t-object.h	/^}OBJECT;$/;"	t	namespace:ns3	typeref:struct:ns3::Tobject
+ObjectContain	t-object.cc	/^ObjectContain::ObjectContain ()$/;"	f	class:ns3::ObjectContain
+ObjectContain	t-object.h	/^class ObjectContain$/;"	c	namespace:ns3
+PI	function.h	17;"	d
+PrintChannel	sink.cc	/^void Sink::PrintChannel ()$/;"	f	class:ns3::Sink
+PrintEval	sink.cc	/^void Sink::PrintEval(void)$/;"	f	class:ns3::Sink
+PrintFunc	car.cc	/^void CarContain::PrintFunc (STATE* state, CAR t_c)$/;"	f	class:ns3::CarContain
+PrintInfo	sink.cc	/^void Sink::PrintInfo ()$/;"	f	class:ns3::Sink
+PrintState	function.h	/^void PrintState (T *arr, uint32_t n)$/;"	f	namespace:ns3
+PrintState	function.h	/^void PrintState (uint32_t serId, std::string str, T *arr, uint32_t n)$/;"	f	namespace:ns3
+RandomNav	car.cc	/^uint32_t CarContain::RandomNav (CAR t_c)$/;"	f	class:ns3::CarContain
+ReSchedule	service.cc	/^void Service::ReSchedule (void)$/;"	f	class:ns3::Service
+Recv	sink.cc	/^void Sink::Recv (std::queue<DATA*> *dataContain)$/;"	f	class:ns3::Sink
+RecvSche	sink.cc	/^void Sink::RecvSche (std::queue<DATA*> *dataContain, uint64_t micro_delay)$/;"	f	class:ns3::Sink
+Reward	sink.cc	/^void Sink::Reward (void)$/;"	f	class:ns3::Sink
+SENSOR_H	sensor.h	2;"	d
+SEN_NUM	struct.h	4;"	d
+SERVICE_H	service.h	2;"	d
+SINK_H	sink.h	2;"	d
+STATE	struct.h	/^}STATE;$/;"	t	namespace:ns3	typeref:struct:ns3::State
+STRUCT_H	struct.h	2;"	d
+Send	sink.cc	/^void Sink::Send (void)$/;"	f	class:ns3::Sink
+SendData	service.cc	/^void Service::SendData (void)$/;"	f	class:ns3::Service
+Sensor	sensor.cc	/^Sensor::Sensor ()$/;"	f	class:ns3::Sensor
+Sensor	sensor.h	/^class Sensor$/;"	c	namespace:ns3
+SensorRecv	link.cc	/^void Link::SensorRecv (std::queue<DATA*> *dataContain)$/;"	f	class:ns3::Link
+Service	service.cc	/^Service::Service ()$/;"	f	class:ns3::Service
+Service	service.h	/^class Service$/;"	c	namespace:ns3
+ServiceListGen	sensor.cc	/^void Sensor::ServiceListGen ()$/;"	f	class:ns3::Sensor
+Sink	sink.cc	/^Sink::Sink ()$/;"	f	class:ns3::Sink
+Sink	sink.h	/^class Sink$/;"	c	namespace:ns3
+SinkRecvSche	link.h	/^	Callback<void, std::queue<DATA*>*, uint64_t> SinkRecvSche;$/;"	m	class:ns3::Link
+Start	car.cc	/^void CarContain::Start (void)$/;"	f	class:ns3::CarContain
+Start	sensor.cc	/^void Start (void)$/;"	f	namespace:ns3
+Start	service.cc	/^void Service::Start (void)$/;"	f	class:ns3::Service
+Start	sink.cc	/^void Sink::Start (void)$/;"	f	class:ns3::Sink
+Start	t-object.cc	/^void ObjectContain::Start ()$/;"	f	class:ns3::ObjectContain
+State	struct.h	/^typedef struct State{$/;"	s	namespace:ns3
+TOBJECT_H	t-object.h	2;"	d
+TempAcc	sink.cc	/^void Sink::TempAcc (void)$/;"	f	class:ns3::Sink
+TempDiff	sink.cc	/^void Sink::TempDiff (void)$/;"	f	class:ns3::Sink
+Tobject	t-object.h	/^typedef struct Tobject$/;"	s	namespace:ns3
+TrackAcc	sink.cc	/^void Sink::TrackAcc (double** observed)$/;"	f	class:ns3::Sink
+ZMQCommunication	sink.cc	/^void Sink::ZMQCommunication ()$/;"	f	class:ns3::Sink
+ZMQRecvAction	sink.cc	/^double* ZMQRecvAction (zmq::socket_t* zmqsocket, uint32_t ssN)$/;"	f	namespace:ns3
+ZMQSendEnd	sink.cc	/^void ZMQSendEnd (zmq::socket_t* zmqsocket, uint8_t end)$/;"	f	namespace:ns3
+ZMQSendJson	sink.cc	/^void ZMQSendJson (zmq::socket_t* zmqsocket, std::string message)$/;"	f	namespace:ns3
+ZMQSendObs	sink.cc	/^void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, uint32_t ssN)$/;"	f	namespace:ns3
+action	function.h	/^	uint32_t action;$/;"	m	struct:ns3::Data
+action	struct.h	/^	uint32_t action[SEN_NUM] = {0}; \/\/ #\/s $/;"	m	struct:ns3::State
+actionPacketSize	sink.h	/^	uint32_t actionPacketSize;$/;"	m	class:ns3::Sink
+angle	t-object.h	/^	double angle = 0;$/;"	m	struct:ns3::Tobject
+avgAngle	t-object.h	/^	double avgAngle = 0;$/;"	m	struct:ns3::Tobject
+avgRate	sink.h	/^  uint64_t avgRate;$/;"	m	class:ns3::Sink
+bound	t-object.h	/^	double bound;$/;"	m	class:ns3::ObjectContain
+bw	link.h	/^	uint64_t bw; \/\/ bps$/;"	m	class:ns3::Link
+c02	t-object.h	/^	double c02 = 0.24; \/\/ Cal \/ g C$/;"	m	class:ns3::ObjectContain
+cFE	t-object.h	/^	double cFE = 0.0924; \/\/ Cal \/ g C$/;"	m	class:ns3::ObjectContain
+car	car.h	/^	vector<CAR> car;$/;"	m	class:ns3::CarContain
+carInfo	car.h	/^	bool carInfo;$/;"	m	class:ns3::CarContain
+carN	car.h	/^	uint32_t carN;$/;"	m	class:ns3::CarContain
+carReward	sink.h	/^	double *carReward;$/;"	m	class:ns3::Sink
+cc	sink.h	/^	CarContain *cc;$/;"	m	class:ns3::Sink
+cellId	function.h	/^	uint32_t cellId;$/;"	m	struct:ns3::Data
+cellId	service.h	/^	uint32_t cellId;$/;"	m	class:ns3::Service
+cellUnit	t-object.h	/^	double cellUnit;$/;"	m	class:ns3::ObjectContain
+channelInfo	sink.h	/^	bool channelInfo;$/;"	m	class:ns3::Sink
+curCell	car.h	/^	uint32_t curCell;$/;"	m	struct:ns3::Car
+dataSize	function.h	/^	uint32_t dataSize;$/;"	m	struct:ns3::Data
+eP	sink.h	/^	uint32_t eP = 60 - sP;$/;"	m	class:ns3::Sink
+enable	service.h	/^	bool enable = false;$/;"	m	class:ns3::Service
+endCell	car.h	/^	uint32_t endCell;$/;"	m	struct:ns3::Car
+episodeEnd	sink.h	/^	bool episodeEnd;$/;"	m	class:ns3::Sink
+episodeStart	sink.h	/^	bool episodeStart;$/;"	m	class:ns3::Sink
+evalCnt	sink.h	/^	uint64_t evalCnt = 0;$/;"	m	class:ns3::Sink
+evalInfo	sink.h	/^	bool evalInfo;$/;"	m	class:ns3::Sink
+eventTime	service.h	/^	Time eventTime;$/;"	m	class:ns3::Service
+firstEval	sink.h	/^	bool firstEval = true;$/;"	m	class:ns3::Sink
+genTime	function.h	/^	Time genTime;$/;"	m	struct:ns3::Data
+haveSendAction	sink.h	/^	bool haveSendAction = false;$/;"	m	class:ns3::Sink
+history	sink.h	/^	std::queue<STATE> *history;$/;"	m	class:ns3::Sink
+historyN	sink.h	/^	uint32_t historyN = 4;$/;"	m	class:ns3::Sink
+horizontal	car.h	/^	uint32_t horizontal;$/;"	m	class:ns3::CarContain
+isLinkScheWork	link.h	/^	bool *isLinkScheWork;$/;"	m	class:ns3::Link
+isLinkScheWork	sensor.h	/^	bool *isLinkScheWork;$/;"	m	class:ns3::Sensor
+isLinkScheWork	sink.h	/^	bool *isLinkScheWork;$/;"	m	class:ns3::Sink
+lastTime	car.h	/^	Time lastTime;$/;"	m	class:ns3::CarContain
+lastTime	t-object.h	/^	Time lastTime;$/;"	m	class:ns3::ObjectContain
+lastUpdateTime	struct.h	/^	Time lastUpdateTime[SEN_NUM]; \/\/ MilliSecond$/;"	m	struct:ns3::State
+lasttime	link.h	/^	uint64_t lasttime = 0;$/;"	m	class:ns3::Link
+log	link.h	/^	std::string log;$/;"	m	class:ns3::Link
+log	sensor.h	/^	std::string log;$/;"	m	class:ns3::Sensor
+log	service.h	/^	std::string log;$/;"	m	class:ns3::Service
+log	sink.h	/^	std::string log;$/;"	m	class:ns3::Sink
+log	t-object.h	/^	std::string log;$/;"	m	class:ns3::ObjectContain
+main	simple-rlidagan.cc	/^main (int argc, char *argv[])$/;"	f
+navFunc	car.h	/^	std::string navFunc;$/;"	m	class:ns3::CarContain
+netMod	link.h	/^	bool netMod;$/;"	m	class:ns3::Link
+ns3	car.cc	/^namespace ns3 {$/;"	n	file:
+ns3	car.h	/^namespace ns3 {$/;"	n
+ns3	function.cc	/^namespace ns3{$/;"	n	file:
+ns3	function.h	/^namespace ns3{$/;"	n
+ns3	link.cc	/^namespace ns3{$/;"	n	file:
+ns3	link.h	/^namespace ns3{$/;"	n
+ns3	sensor.cc	/^namespace ns3{$/;"	n	file:
+ns3	sensor.h	/^namespace ns3{$/;"	n
+ns3	service.cc	/^namespace ns3$/;"	n	file:
+ns3	service.h	/^namespace ns3{$/;"	n
+ns3	sink.cc	/^namespace ns3{$/;"	n	file:
+ns3	sink.h	/^namespace ns3{$/;"	n
+ns3	struct.h	/^namespace ns3 {$/;"	n
+ns3	t-object.cc	/^namespace ns3{$/;"	n	file:
+ns3	t-object.h	/^namespace ns3{$/;"	n
+object	t-object.h	/^	OBJECT *object; \/\/ Create Array at Start() Func.$/;"	m	class:ns3::ObjectContain
+objectMax	t-object.h	/^	uint32_t objectMax;$/;"	m	class:ns3::ObjectContain
+objectN	sink.h	/^	uint32_t objectN;$/;"	m	class:ns3::Sink
+objectN	t-object.h	/^	uint32_t objectN;$/;"	m	class:ns3::ObjectContain
+obsMod	service.h	/^	std::string obsMod;$/;"	m	class:ns3::Service
+obsMod	sink.h	/^	std::string obsMod;$/;"	m	class:ns3::Sink
+obsMod	t-object.h	/^	std::string obsMod;$/;"	m	class:ns3::ObjectContain
+oc	car.h	/^	ObjectContain *oc;$/;"	m	class:ns3::CarContain
+oc	service.h	/^	ObjectContain *oc;$/;"	m	class:ns3::Service
+oc	sink.h	/^	ObjectContain *oc;$/;"	m	class:ns3::Sink
+occupy	t-object.h	/^	bool occupy = false;$/;"	m	struct:ns3::Tobject
+p_tempMap	sink.h	/^  double** p_tempMap;$/;"	m	class:ns3::Sink
+pause	t-object.h	/^	bool pause = false;$/;"	m	struct:ns3::Tobject
+qMaxSize	sensor.h	/^	uint32_t qMaxSize;$/;"	m	class:ns3::Sensor
+reward	car.h	/^	double reward;$/;"	m	class:ns3::CarContain
+reward	sink.h	/^	double *reward;$/;"	m	class:ns3::Sink
+reward_avg	sink.h	/^	double *reward_avg;$/;"	m	class:ns3::Sink
+room	t-object.h	/^	double *room; \/\/ array 25 (c)$/;"	m	class:ns3::ObjectContain
+rr_idx	sensor.h	/^	uint32_t rr_idx = 0; \/\/ Service Access Round Robin Index$/;"	m	class:ns3::Sensor
+sP	sink.h	/^	uint32_t sP = 30; \/\/ 30 ~ 60 ms$/;"	m	class:ns3::Sink
+sampleRate	function.h	/^	uint32_t sampleRate;$/;"	m	struct:ns3::Data
+sampleRate	service.h	/^	uint32_t sampleRate; \/\/ Update Period, Unit: #\/s$/;"	m	class:ns3::Service
+sampleRate	struct.h	/^	uint32_t sampleRate[SEN_NUM] = {0}; \/\/ #\/s$/;"	m	struct:ns3::State
+sampleSize	service.h	/^	uint32_t sampleSize; \/\/ Unit: Byte$/;"	m	class:ns3::Service
+sampleValue	function.h	/^	double sampleValue;$/;"	m	struct:ns3::Data
+sampleValue	service.h	/^	double sampleValue;$/;"	m	class:ns3::Service
+sampleValue	struct.h	/^	double sampleValue[SEN_NUM] = {0};$/;"	m	struct:ns3::State
+saveData	service.h	/^	DATA *saveData;$/;"	m	class:ns3::Service
+saveSample	service.h	/^	bool saveSample = false;$/;"	m	class:ns3::Service
+sen	link.h	/^	Sensor *sen;$/;"	m	class:ns3::Link
+senId	service.h	/^	uint32_t senId;$/;"	m	class:ns3::Service
+senN	t-object.h	/^	uint32_t senN;$/;"	m	class:ns3::ObjectContain
+sendEvent	service.h	/^	EventId sendEvent;$/;"	m	class:ns3::Service
+sensorId	sensor.h	/^	uint32_t sensorId;$/;"	m	class:ns3::Sensor
+ser	sensor.h	/^	Service* ser;	$/;"	m	class:ns3::Sensor
+serId	function.h	/^	uint32_t serId;$/;"	m	struct:ns3::Data
+serId	service.h	/^	uint32_t serId;$/;"	m	class:ns3::Service
+serId	t-object.h	/^	uint32_t serId;$/;"	m	class:ns3::ObjectContain
+serviceN	sensor.h	/^	uint32_t serviceN;$/;"	m	class:ns3::Sensor
+serviceN	sink.h	/^	uint32_t serviceN;$/;"	m	class:ns3::Sink
+service_ssN	sink.h	/^	uint32_t *service_ssN;$/;"	m	class:ns3::Sink
+simMod	sink.h	/^	std::string simMod;$/;"	m	class:ns3::Sink
+sink	link.h	/^	Sink *sink;$/;"	m	class:ns3::Link
+sinkHaveSendAction	link.h	/^	bool *sinkHaveSendAction;$/;"	m	class:ns3::Link
+ssN	link.h	/^	uint32_t ssN;$/;"	m	class:ns3::Link
+startCell	car.h	/^	uint32_t startCell; \/\/ cell id$/;"	m	struct:ns3::Car
+state	sink.h	/^	STATE *state;$/;"	m	class:ns3::Sink
+stateInfo	sink.h	/^	bool stateInfo;$/;"	m	class:ns3::Sink
+stateMod	sink.h	/^	std::string stateMod;$/;"	m	class:ns3::Sink
+stop	sink.h	/^	uint64_t *stop;$/;"	m	class:ns3::Sink
+temp	t-object.h	/^	double temp = 1000;$/;"	m	struct:ns3::Tobject
+tempAcc	sink.h	/^	double *tempAcc;$/;"	m	class:ns3::Sink
+tempAcc_avg	sink.h	/^	double *tempAcc_avg;$/;"	m	class:ns3::Sink
+tempDiff	sink.h	/^	double *tempDiff;$/;"	m	class:ns3::Sink
+tempDiff_avg	sink.h	/^	double *tempDiff_avg;$/;"	m	class:ns3::Sink
+tempMap	t-object.h	/^	double *tempMap;$/;"	m	class:ns3::ObjectContain
+threshTmp	car.h	/^	double threshTmp;$/;"	m	class:ns3::CarContain
+threshold	sink.h	/^	double *threshold;$/;"	m	class:ns3::Sink
+timeD	t-object.h	/^	double timeD;$/;"	m	struct:ns3::Tobject
+totActDelay	service.h	/^	uint64_t totActDelay = 0;$/;"	m	class:ns3::Service
+totActRecvN	service.h	/^	uint64_t totActRecvN = 0;$/;"	m	class:ns3::Service
+totDelay	sink.h	/^	uint64_t totDelay = 0; \/\/ MilliSecond$/;"	m	class:ns3::Sink
+totRecvByte	sink.h	/^	uint64_t totRecvByte = 0;$/;"	m	class:ns3::Sink
+totRecvCnt	sink.h	/^	uint64_t totRecvCnt = 0;$/;"	m	class:ns3::Sink
+totalDecision	car.h	/^	double totalDecision;$/;"	m	class:ns3::CarContain
+trace	t-object.h	/^	bool trace;$/;"	m	class:ns3::ObjectContain
+trackAcc	sink.h	/^	double *trackAcc;$/;"	m	class:ns3::Sink
+trackMap	sink.h	/^  double** trackMap;$/;"	m	class:ns3::Sink
+trackMap	t-object.h	/^	double *trackMap;$/;"	m	class:ns3::ObjectContain
+truth	sink.h	/^	double **truth;$/;"	m	class:ns3::Sink
+txQ	sensor.h	/^	std::queue<DATA*> txQ;$/;"	m	class:ns3::Sensor
+txQ	sink.h	/^	std::queue<DATA*> txQ;$/;"	m	class:ns3::Sink
+txTable	link.h	/^	uint32_t **txTable;$/;"	m	class:ns3::Link
+unitN	t-object.h	/^	uint32_t unitN;$/;"	m	class:ns3::ObjectContain
+upInter	struct.h	/^	uint64_t upInter[SEN_NUM] = {0}; \/\/ MilliSecond$/;"	m	struct:ns3::State
+upMod	service.h	/^	std::string upMod;$/;"	m	class:ns3::Service
+upMod	sink.h	/^	std::string upMod;$/;"	m	class:ns3::Sink
+vel	t-object.h	/^	double vel = 0;$/;"	m	struct:ns3::Tobject
+vel	t-object.h	/^	double vel;$/;"	m	class:ns3::ObjectContain
+vertical	car.h	/^	uint32_t vertical; $/;"	m	class:ns3::CarContain
+weight	t-object.h	/^	double weight = 200; \/\/ g$/;"	m	class:ns3::ObjectContain
+wrongDecision	car.h	/^	double wrongDecision;$/;"	m	class:ns3::CarContain
+x	t-object.h	/^	double x;$/;"	m	struct:ns3::Tobject
+y	t-object.h	/^	double y;$/;"	m	struct:ns3::Tobject
+zero	t-object.h	/^	double *zero; \/\/ array 0$/;"	m	class:ns3::ObjectContain
+zmqsocket	sink.h	/^	zmq::socket_t *zmqsocket;$/;"	m	class:ns3::Sink
+~CarContain	car.cc	/^CarContain::~CarContain ()$/;"	f	class:ns3::CarContain
+~ObjectContain	t-object.cc	/^ObjectContain::~ObjectContain ()$/;"	f	class:ns3::ObjectContain
+~Sensor	sensor.cc	/^Sensor::~Sensor ()$/;"	f	class:ns3::Sensor
+~Service	service.cc	/^Service::~Service ()$/;"	f	class:ns3::Service
+~Sink	sink.cc	/^Sink::~Sink ()$/;"	f	class:ns3::Sink
