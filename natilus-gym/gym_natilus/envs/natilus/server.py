@@ -56,10 +56,10 @@ class Server():
         return reward
         
     def _action(self, action):
-	"""
+        """
         Send Actions.
         """
-        for i in range(self.m_action_size) :
+        for i in range(self.m_action_size):
             recv = self._recv()
             snd = str(action[i]).encode()
             self.m_socket.send(snd)       
@@ -78,7 +78,7 @@ class Server():
      
     def byteToint (self, byte):
         """
-        (Util) Chang byte to int.
+        (Util) Change byte to int.
         """
-       result = int.from_bytes (byte, byteorder = 'big', signed=True)
-       return result
+        result = int.from_bytes (byte, byteorder = 'big', signed=True)
+        return result
