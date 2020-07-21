@@ -7,7 +7,9 @@ from gym import spaces
 from gym_natilus.envs.natilus import Server
 
 class NatilusEnv(gym.Env):
-    
+    """
+    Gym Environment for Natilus.
+    """
     def __init__(self):
         port = input("Port: ");
         self.server = Server(port)
@@ -20,11 +22,31 @@ class NatilusEnv(gym.Env):
         self.rlMod = int(input("RL Mode (1. General, 2. Transformer): "))
         self.infoNum = int(input("Info Num: "))
         self.history_num = int(input("History Num: "))
-        self.reward_text = input("Reward Txt: ")
-       
-        self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)         
-        self.observation_space = spaces.Box (low=-20, high=20, shape=(144 * self.history_num, self.infoNum), dtype=np.float32)
+        self.reward_text = input("Reward Txt (.txt): ")
+        
+        # We have 9 Point here. Useed in Point Embedding.
+        self.point_num = 9
+        if self.sensor_xnum == 6:
+            self.cell_num = 4
+            self.point = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+        elif self.sensor_xnum == 8:
+            self.cell_num = 4
+            self.point = [0, 2, 4, 0, 2, 4, 0, 2, 4]
+        elif self.sensor_xnum == 10:
+            self.cell_num = 4
+            self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
 
+        # Observiation & Action Space
+        if rlMod == 1:
+            self.observe_num = self.sensor_num*self.history_num
+        else:
+            self.observe_num = self.point_num*self.cell_num*self.cell_num*self.history_num
+        if obsMod == 1:
+            self.observation_space = spaces.Box (low=0, high=4, shape=(observe_num, self.infoNum), dtype=np.float32)
+        elif obsMod == 2:
+            self.observation_space = spaces.Box (low=-10, high=10, shape=(observe_num, self.infoNum), dtype=np.float32)
+        self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
+        
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
         self.sum_reward = 0
@@ -48,18 +70,16 @@ class NatilusEnv(gym.Env):
             self.file.write(data)
             print('Sum Reward: {}'.format(self.sum_reward))
             self.file.close()
-        
          
         return obs, reward, done, {"None":1}
     
     def reset(self):
-        print("reset")
         self.history.clear()
         for i in range(self.history_num):
-            self.history.append(np.zeros((144, self.infoNum), dtype="f"))
+            self.history.append(np.zeros((self.observe_num, self.infoNum), dtype="f"))
         self.sum_reward = 0;
         
-        obs = np.array(self.server._observation(), dtype=np.float32) #change to 0
+        obs = np.array(self.server._observation(), dtype=np.float32)
         if self.obsMod == 2:
             obs = self.obs_figure_temp(obs)
         elif self.obsMod == 1:
@@ -73,11 +93,11 @@ class NatilusEnv(gym.Env):
     def obs_figure_temp(self, obs):
         temp = copy.deepcopy(obs)
         obs = obs - self.past
-
+        
+        # Observation Pre-processing
         obs = np.round (obs)
         for i in range(self.sensor_xnum):
             for j in range(self.sensor_xnum):
-
                 # change temp diff map
                 if obs[0][i][j] >= 10:
                     obs[0][i][j] = 10
@@ -97,59 +117,33 @@ class NatilusEnv(gym.Env):
                     obs[1][i][j] = 4
 
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
-        obs = np.transpose(obs, (1,0))
+        obs = np.transpose(obs, (1,0)) 
         
-        
-        point_num = 3        
-        """
-        if self.rlMod == 2:
-            tmp_obs = []
-            p = 0
-            q = 0
-            for i in range(point_num*point_num):
-                if i % point_num == 0 and i != 0:
-                    p = p + self.sensor_xnum * cell_num
-                    q = 0
-                for j in range(cell_num):
-                    for k in range(cell_num):
-                        #print(p+q*cell_num+self.sensor_xnum*j+k)
-                        tmp_obs.append(copy.deepcopy(obs[p+q*cell_num+self.sensor_xnum*j+k]))
-                q += 1
-            obs = np.array(tmp_obs)
-        """
-        if self.sensor_xnum == 6:
-            cell_num = 4
-            point = [0, 1, 2, 0, 1, 2, 0, 1, 2]
-        elif self.sensor_xnum == 8:
-            cell_num = 4
-            point = [0, 2, 4, 0, 2, 4, 0, 2, 4]
-        elif self.sensor_xnum == 10:
-            cell_num = 4
-            point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
-        
+        # For Transformer Mode
         if self.rlMod == 2:
             tmp_obs = []
             q = -1
-            for i in range(point_num*point_num):
+            for i in range(self.point_num):
                 if i % 3 == 0:
                     q += 1 
-                for j in range(cell_num):
-                    for k in range(cell_num):
-                        tmp_obs.append(copy.deepcopy(obs[point[i] + point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
+                for j in range(self.cell_num):
+                    for k in range(self.cell_num):
+                        tmp_obs.append(copy.deepcopy(obs[self.point[i] + self.point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
             obs = np.array(tmp_obs)
 
         self.past = copy.deepcopy(temp)
         
+        # For History Embedding
         if self.history_num != 1:
             del self.history[0]
             self.history.append(obs) 
             _obs = []
         
-            for i in range(144):
+            for i in range(self.observe_num):
                 for j in range(self.history_num):
                     _obs.append(self.history[j][i])
             obs = np.array(_obs, dtype=np.float32)
-        #print(obs)
+
         return obs
     
     def obs_figure_track(self, obs):
@@ -176,53 +170,20 @@ class NatilusEnv(gym.Env):
                         obs[2][i][j] = 1
         
      
-        obs[0] = self.smoothing(obs[0])
-        if self.infoNum >= 4:
-            obs[3] = self.smoothing(obs[3])
-       
+        obs[0] = self.smoothing(obs[0])       
         
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
         obs = np.transpose(obs, (1,0))
-       
-        point_num = 3
-        """
-        cell_num = int(self.sensor_xnum / point_num)
-        
-        if self.rlMod == 2: # If Transformer We Need Poing Embedding
-            tmp_obs = []
-            p = 0
-            q = 0
-            for i in range(point_num*point_num):
-                if i % point_num == 0 and i != 0:
-                    p = p + self.sensor_xnum * cell_num
-                    q = 0
-                for j in range(cell_num):
-                    for k in range(cell_num):
-                        tmp_obs.append(copy.deepcopy(obs[p+q*cell_num+self.sensor_xnum*j+k]))
-                q += 1
-        
-            obs = np.array(tmp_obs)
-        """
-        if self.sensor_xnum == 6:
-            cell_num = 4
-            point = [0, 1, 2, 0, 1, 2, 0, 1, 2]
-        elif self.sensor_xnum == 8:
-            cell_num = 4
-            point = [0, 2, 4, 0, 2, 4, 0, 2, 4]
-        elif self.sensor_xnum == 10:
-            cell_num = 4
-            point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
         
         if self.rlMod == 2:
             tmp_obs = []
             q = -1
-            for i in range(point_num*point_num):
+            for i in range(self.point_num):
                 if i % 3 == 0:
                     q += 1
-                print("q:",q)
-                for j in range(cell_num):
-                    for k in range(cell_num):
-                        tmp_obs.append(copy.deepcopy(obs[point[i] + point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
+                for j in range(self.cell_num):
+                    for k in range(self.cell_num):
+                        tmp_obs.append(copy.deepcopy(obs[self.point[i] + self.point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
             obs = np.array(tmp_obs)
 
         self.past = copy.deepcopy(temp)
@@ -233,7 +194,7 @@ class NatilusEnv(gym.Env):
         
             _obs = []
         
-            for i in range(self.sensor_num):
+            for i in range(self.observe_num):
                 for j in range(self.history_num):
                     _obs.append(self.history[j][i])
             obs = np.array(_obs, dtype=np.float32)
@@ -263,3 +224,21 @@ class NatilusEnv(gym.Env):
         y = exp_a / sum_exp_a
 
         return y
+
+
+        """
+        if self.rlMod == 2:
+            tmp_obs = []
+            p = 0
+            q = 0
+            for i in range(point_num*point_num):
+                if i % point_num == 0 and i != 0:
+                    p = p + self.sensor_xnum * cell_num
+                    q = 0
+                for j in range(cell_num):
+                    for k in range(cell_num):
+                        #print(p+q*cell_num+self.sensor_xnum*j+k)
+                        tmp_obs.append(copy.deepcopy(obs[p+q*cell_num+self.sensor_xnum*j+k]))
+                q += 1
+            obs = np.array(tmp_obs)
+        """
