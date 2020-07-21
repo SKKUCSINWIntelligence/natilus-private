@@ -1,0 +1,265 @@
+import gym
+import numpy as np
+import queue
+import copy
+
+from gym import spaces
+from gym_natilus.envs.natilus import Server
+
+class NatilusEnv(gym.Env):
+    
+    def __init__(self):
+        port = input("Port: ");
+        self.server = Server(port)
+        self.sensor_num = self.server._initialize()
+        self.sensor_xnum = int(self.sensor_num ** 0.5)
+        print("Sensor Num:", self.sensor_num)
+        print("Sensor XNum:", self.sensor_xnum)
+
+        self.obsMod = int(input("Obs Mode (1. track, 2. temp): "))
+        self.rlMod = int(input("RL Mode (1. General, 2. Transformer): "))
+        self.infoNum = int(input("Info Num: "))
+        self.history_num = int(input("History Num: "))
+        self.reward_text = input("Reward Txt: ")
+       
+        self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)         
+        self.observation_space = spaces.Box (low=-20, high=20, shape=(144 * self.history_num, self.infoNum), dtype=np.float32)
+
+        self.history = []
+        self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
+        self.sum_reward = 0
+
+    def step(self, action):
+        action = self.softmax(action)
+        self.server._action (action)
+        done = self.server._end()
+        reward = self.server._reward()
+        obs = np.array(self.server._observation(), dtype=np.float32)
+
+        self.sum_reward = self.sum_reward + reward;
+        if self.obsMod == 2:
+            obs = self.obs_figure_temp(obs)
+        elif self.obsMod == 1:
+            obs = self.obs_figure_track(obs)
+
+        if done:
+            self.file = open(self.reward_text, 'a')
+            data = "%f\n" % self.sum_reward
+            self.file.write(data)
+            print('Sum Reward: {}'.format(self.sum_reward))
+            self.file.close()
+        
+         
+        return obs, reward, done, {"None":1}
+    
+    def reset(self):
+        print("reset")
+        self.history.clear()
+        for i in range(self.history_num):
+            self.history.append(np.zeros((144, self.infoNum), dtype="f"))
+        self.sum_reward = 0;
+        
+        obs = np.array(self.server._observation(), dtype=np.float32) #change to 0
+        if self.obsMod == 2:
+            obs = self.obs_figure_temp(obs)
+        elif self.obsMod == 1:
+            obs = self.obs_figure_track(obs)
+        
+        return obs
+        
+    def render(self):
+        pass
+    
+    def obs_figure_temp(self, obs):
+        temp = copy.deepcopy(obs)
+        obs = obs - self.past
+
+        obs = np.round (obs)
+        for i in range(self.sensor_xnum):
+            for j in range(self.sensor_xnum):
+
+                # change temp diff map
+                if obs[0][i][j] >= 10:
+                    obs[0][i][j] = 10
+                if obs[0][i][j] <= -10:
+                    obs[0][i][j] = -10
+
+                # change last update map
+                if obs[1][i][j] == 0:
+                    obs[1][i][j] = 0
+                elif obs[1][i][j] <= 33:
+                    obs[1][i][j] = 1
+                elif obs[1][i][j] <= 66:
+                    obs[1][i][j] = 2
+                elif obs[1][i][j] <= 99:
+                    obs[1][i][j] = 3 
+                else:
+                    obs[1][i][j] = 4
+
+        obs = np.reshape(obs, (self.infoNum, self.sensor_num))
+        obs = np.transpose(obs, (1,0))
+        
+        
+        point_num = 3        
+        """
+        if self.rlMod == 2:
+            tmp_obs = []
+            p = 0
+            q = 0
+            for i in range(point_num*point_num):
+                if i % point_num == 0 and i != 0:
+                    p = p + self.sensor_xnum * cell_num
+                    q = 0
+                for j in range(cell_num):
+                    for k in range(cell_num):
+                        #print(p+q*cell_num+self.sensor_xnum*j+k)
+                        tmp_obs.append(copy.deepcopy(obs[p+q*cell_num+self.sensor_xnum*j+k]))
+                q += 1
+            obs = np.array(tmp_obs)
+        """
+        if self.sensor_xnum == 6:
+            cell_num = 4
+            point = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+        elif self.sensor_xnum == 8:
+            cell_num = 4
+            point = [0, 2, 4, 0, 2, 4, 0, 2, 4]
+        elif self.sensor_xnum == 10:
+            cell_num = 4
+            point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
+        
+        if self.rlMod == 2:
+            tmp_obs = []
+            q = -1
+            for i in range(point_num*point_num):
+                if i % 3 == 0:
+                    q += 1 
+                for j in range(cell_num):
+                    for k in range(cell_num):
+                        tmp_obs.append(copy.deepcopy(obs[point[i] + point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
+            obs = np.array(tmp_obs)
+
+        self.past = copy.deepcopy(temp)
+        
+        if self.history_num != 1:
+            del self.history[0]
+            self.history.append(obs) 
+            _obs = []
+        
+            for i in range(144):
+                for j in range(self.history_num):
+                    _obs.append(self.history[j][i])
+            obs = np.array(_obs, dtype=np.float32)
+        #print(obs)
+        return obs
+    
+    def obs_figure_track(self, obs):
+        temp = copy.deepcopy(obs)
+        obs[1] = obs[1] - self.past[1]
+
+        for i in range(self.sensor_xnum):
+            for j in range(self.sensor_xnum):
+                # change last udpate map
+                if obs[1][i][j] == 0:
+                    obs[1][i][j] = 0
+                elif obs[1][i][j] <= 33:
+                    obs[1][i][j] = 1
+                elif obs[1][i][j] <= 66:
+                    obs[1][i][j] = 2
+                elif obs[1][i][j] <= 99:
+                    obs[1][i][j] = 3 
+                else:
+                    obs[1][i][j] = 4
+                
+                if self.infoNum >= 3:
+                    obs[2][i][j] = round(obs[2][i][j] / (60 * 4), 2)
+                    if obs[2][i][j] >= 1:
+                        obs[2][i][j] = 1
+        
+     
+        obs[0] = self.smoothing(obs[0])
+        if self.infoNum >= 4:
+            obs[3] = self.smoothing(obs[3])
+       
+        
+        obs = np.reshape(obs, (self.infoNum, self.sensor_num))
+        obs = np.transpose(obs, (1,0))
+       
+        point_num = 3
+        """
+        cell_num = int(self.sensor_xnum / point_num)
+        
+        if self.rlMod == 2: # If Transformer We Need Poing Embedding
+            tmp_obs = []
+            p = 0
+            q = 0
+            for i in range(point_num*point_num):
+                if i % point_num == 0 and i != 0:
+                    p = p + self.sensor_xnum * cell_num
+                    q = 0
+                for j in range(cell_num):
+                    for k in range(cell_num):
+                        tmp_obs.append(copy.deepcopy(obs[p+q*cell_num+self.sensor_xnum*j+k]))
+                q += 1
+        
+            obs = np.array(tmp_obs)
+        """
+        if self.sensor_xnum == 6:
+            cell_num = 4
+            point = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+        elif self.sensor_xnum == 8:
+            cell_num = 4
+            point = [0, 2, 4, 0, 2, 4, 0, 2, 4]
+        elif self.sensor_xnum == 10:
+            cell_num = 4
+            point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
+        
+        if self.rlMod == 2:
+            tmp_obs = []
+            q = -1
+            for i in range(point_num*point_num):
+                if i % 3 == 0:
+                    q += 1
+                print("q:",q)
+                for j in range(cell_num):
+                    for k in range(cell_num):
+                        tmp_obs.append(copy.deepcopy(obs[point[i] + point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
+            obs = np.array(tmp_obs)
+
+        self.past = copy.deepcopy(temp)
+
+        if self.history_num != 1:
+            del self.history[0]
+            self.history.append(obs)
+        
+            _obs = []
+        
+            for i in range(self.sensor_num):
+                for j in range(self.history_num):
+                    _obs.append(self.history[j][i])
+            obs = np.array(_obs, dtype=np.float32)
+
+        return obs
+    
+    def smoothing(self, obs):
+        x = -1
+        y = -1
+        for i in range(self.sensor_xnum):
+            for j in range(self.sensor_xnum):
+                if obs[i][j] == 1:
+                    x = i
+                    y = j
+        
+        if x != -1:
+            for i in range(self.sensor_xnum):
+                for j in range(self.sensor_xnum):
+                    if i != x or  j != y:
+                        d = (((x-i)*(x-i) + (y-j)*(y-j)) ** 0.5) * 2
+                        obs[i][j] = round(1/d, 2)
+        return obs
+
+    def softmax(self, arr):
+        exp_a = np.exp(arr)
+        sum_exp_a = np.sum(exp_a)
+        y = exp_a / sum_exp_a
+
+        return y
