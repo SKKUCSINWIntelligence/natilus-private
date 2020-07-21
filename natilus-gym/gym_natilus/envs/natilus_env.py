@@ -37,13 +37,13 @@ class NatilusEnv(gym.Env):
             self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
 
         # Observiation & Action Space
-        if rlMod == 1:
+        if self.rlMod == 1:
             self.observe_num = self.sensor_num*self.history_num
         else:
             self.observe_num = self.point_num*self.cell_num*self.cell_num*self.history_num
-        if obsMod == 1:
+        if self.obsMod == 1:
             self.observation_space = spaces.Box (low=0, high=4, shape=(observe_num, self.infoNum), dtype=np.float32)
-        elif obsMod == 2:
+        elif self.obsMod == 2:
             self.observation_space = spaces.Box (low=-10, high=10, shape=(observe_num, self.infoNum), dtype=np.float32)
         self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
         
