@@ -55,7 +55,7 @@ main (int argc, char *argv[])
 	// Mode Setting
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
-	std::string obsMod = "temp"; // 1. temp, 2. track 3. car
+	std::string obsMod = "track"; // 1. temp, 2. track 3. car
 	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "last"; //	1. last 2. action
