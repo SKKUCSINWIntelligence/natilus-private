@@ -234,8 +234,9 @@ class NatilusEnv(gym.Env):
                     obs[1][i][j] = 4/4.0
         # change multi object
         sum = np.sum(obs[0])
-        obs[0] = obs[0] / sum
-        obs[0] = np.round(obs[0], 2) 
+        if sum != 0:
+            obs[0] = obs[0] / sum
+            obs[0] = np.round(obs[0], 2) 
         #print(sum)
         #print(obs) 
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
