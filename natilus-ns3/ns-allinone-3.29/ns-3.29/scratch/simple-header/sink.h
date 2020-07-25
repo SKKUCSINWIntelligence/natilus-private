@@ -124,7 +124,7 @@ public:
 };
 
 void ZMQSendJson	(zmq::socket_t*, std::string);
-void ZMQSendObs		(zmq::socket_t*, std::string, STATE*, ObjectContain*, uint32_t); 
+void ZMQSendObs		(zmq::socket_t*, std::string, STATE*, ObjectContain*, uint32_t, std::string); 
 void ZMQSendEnd		(zmq::socket_t*, uint8_t);
 double* ZMQRecvAction (zmq::socket_t*, uint32_t);
 

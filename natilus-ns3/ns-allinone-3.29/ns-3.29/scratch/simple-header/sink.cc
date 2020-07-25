@@ -175,7 +175,7 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 			state[serId].sampleValue[cellId] = data->sampleValue;
 		state[serId].upInter[cellId] = delay;
 		state[serId].lastUpdateTime[cellId] = Simulator::Now (); 
-
+		
 		delete data;
 	}	
 	delete dataContain;
@@ -494,6 +494,10 @@ void Sink::Reward (void)
 			}
 		}
 	}
+	else if (obsMod == "car") 
+	{
+		reward[0] += 1;
+	}
 }
 
 void Sink::PrintEval(void)
@@ -543,9 +547,6 @@ void Sink::DAFU(void)
 				min_loc =j;
 				flag2 = true;
 			}
-
-
-
 		}
 
 		if(flag){
@@ -661,7 +662,7 @@ void Sink::ZMQCommunication ()
     for(uint32_t i = 0; i<serviceN; i++)
     {
 	    uint32_t ssN = sqrt(service_ssN[i]);
-	    ZMQSendObs (zmqsocket, stateMod, &state[i], &oc[i], ssN);
+	    ZMQSendObs (zmqsocket, stateMod, &state[i], &oc[i], ssN, obsMod);
     }
 		// Get Action
 		//double *actionTmp = new double[ssN * ssN];
@@ -669,16 +670,34 @@ void Sink::ZMQCommunication ()
 
     uint32_t ssN = sqrt(service_ssN[0]);
     double *actionTmp ;
-    actionTmp = ZMQRecvAction (zmqsocket, serviceN*ssN * ssN);
+    actionTmp = ZMQRecvAction (zmqsocket, serviceN*ssN*ssN);
+
     for(uint32_t j = 0; j<serviceN; j++)
     {
-      for (uint32_t i=0; i<ssN * ssN; i++)
-      { 
-				state[j].action[i] = actionTmp[j*ssN*ssN+i] * (avgRate * ssN * ssN*serviceN-ssN*ssN*serviceN);
-        if(state[j].action[i]==0)
-            state[j].action[i] = 1;
-      }
-
+			if (obsMod == "car")
+			{
+				for (uint32_t i=0; i<ssN*ssN; i++) 
+				{
+					uint32_t x = i % ssN;
+					uint32_t y = i / ssN;
+					
+					if (x==0 || y==0 || x==ssN-1 || y==ssN-1)
+						state[j].action[i] = 30;
+					else
+						state[j].action[i] = actionTmp[i] * (avgRate * (ssN-1) * (ssN-1));
+					if (state[j].action[i] == 0)
+						state[j].action[i] = 1;
+				}
+			}
+			else
+			{
+				for (uint32_t i=0; i<ssN * ssN; i++)
+				{ 
+					state[j].action[i] = actionTmp[j*ssN*ssN+i] * (avgRate * ssN * ssN*serviceN-ssN*ssN*serviceN);
+					if(state[j].action[i]==0)
+							state[j].action[i] = 1;
+				}
+			}
 		}
 		delete[] actionTmp;
     
@@ -721,7 +740,7 @@ void Sink::ZMQCommunication ()
     {
 			// Send State
 	    uint32_t ssN = sqrt(service_ssN[i]);
-			ZMQSendObs (zmqsocket, stateMod, &state[i], &oc[i], ssN);
+			ZMQSendObs (zmqsocket, stateMod, &state[i], &oc[i], ssN, obsMod);
     }
 	
 		// Stop the Simlator
@@ -751,7 +770,7 @@ void ZMQSendJson (zmq::socket_t* zmqsocket, std::string message)
 	zmqsocket->recv (&reply);
 }
 
-void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, ObjectContain* oc, uint32_t ssN)
+void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, ObjectContain* oc, uint32_t ssN, std::string obsMod)
 { 
 	double **obs = new double*[ssN];
 	for (uint32_t i=0; i<ssN; i++)
@@ -789,9 +808,25 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 	{
 		uint32_t x = i % ssN;
 		uint32_t y = i / ssN;
-			
-		obs[ssN - y - 1][x] = state->sampleValue[i];
-		last[ssN - y - 1][x] = state->lastUpdateTime[i].GetMilliSeconds ();
+		
+		if (obsMod == "car")
+		{
+			if(x==0 || y==0 || x==(oc->unitN-1) || y==(oc->unitN-1))
+			{	
+				obs[ssN-y-1][x] = oc->trackMap[i];
+				last[ssN-y-1][x] = 0; //Simulator::Now().GetMilliSeconds();
+			}
+			else
+			{
+				obs[ssN-y-1][x] = state->sampleValue[i];
+				last[ssN-y-1][x] = Simulator::Now().GetMilliSeconds() - state->lastUpdateTime[i].GetMilliSeconds();
+			}
+		}
+		else
+		{
+			obs[ssN - y - 1][x] = state->sampleValue[i];
+			last[ssN - y - 1][x] = state->lastUpdateTime[i].GetMilliSeconds ();
+		}
 		rate[ssN - y - 1][x] = state->sampleRate[i];
 		ground[ssN - y - 1][x] = oc->trackMap[i];
 	}

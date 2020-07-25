@@ -50,12 +50,12 @@ main (int argc, char *argv[])
 	* Variable Setting
 	*********************/
 	srand (time(NULL));
-	uint64_t maxStep = 1000;
+	uint64_t maxStep = 5;
 
 	// Mode Setting
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
-	std::string obsMod = "track"; // 1. temp, 2. track 3. car
+	std::string obsMod = "car"; // 1. temp, 2. track 3. car
 	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "last"; //	1. last 2. action
@@ -92,7 +92,7 @@ main (int argc, char *argv[])
 		trace = false;
 		carInfo = false;
 		channelInfo = false;
-		stateInfo = false;
+		stateInfo = true;
 		evalInfo = false;
 		rlMod = true;
 	}
@@ -104,7 +104,7 @@ main (int argc, char *argv[])
 	
 	// Variable Setting
 	uint32_t serviceN = 1; // Service #
-	uint32_t bwLimit = 100; // unit: %
+	uint32_t bwLimit = 10; // unit: %
 
 	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
 	uint32_t sampleSize = 1500; // Bytes per Sample
@@ -112,7 +112,7 @@ main (int argc, char *argv[])
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
 
 	// Object & Map Setting
-	uint32_t objectN = 1; // per Service
+	uint32_t objectN = 0; // per Service
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
 	uint32_t objectMax = 100; // used in car obsMod

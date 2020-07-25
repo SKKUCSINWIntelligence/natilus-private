@@ -64,6 +64,8 @@ class NatilusEnv(gym.Env):
             obs = self.obs_figure_temp(obs)
         elif self.obsMod == 1:
             obs = self.obs_figure_track(obs)
+        elif self.obsMod == 3:
+            obs = self.obs_figure_multi(obs)
 
         if done:
             self.file = open(self.reward_text, 'a')
@@ -85,6 +87,8 @@ class NatilusEnv(gym.Env):
             obs = self.obs_figure_temp(obs)
         elif self.obsMod == 1:
             obs = self.obs_figure_track(obs)
+        elif self.obsMod == 3:
+            obs = self.obs_figure_multi(obs)
         
         return obs
         
@@ -201,7 +205,54 @@ class NatilusEnv(gym.Env):
             obs = np.array(_obs, dtype=np.float32)
 
         return obs
-    
+
+    def obs_figure_multi(self, obs):
+        temp = copy.deepcopy(obs)
+        #obs[1] = obs[1] - self.past[1]
+        
+        for i in range(self.sensor_xnum):
+            for j in range(self.sensor_xnum):
+                # change last udpate map
+                if obs[1][i][j] == 0:
+                    obs[1][i][j] = 0
+                elif obs[1][i][j] <= 33:
+                    obs[1][i][j] = 1
+                elif obs[1][i][j] <= 66:
+                    obs[1][i][j] = 2
+                elif obs[1][i][j] <= 99:
+                    obs[1][i][j] = 3 
+                else:
+                    obs[1][i][j] = 4
+        print(obs) 
+        obs = np.reshape(obs, (self.infoNum, self.sensor_num))
+        obs = np.transpose(obs, (1,0))
+
+        if self.rlMod == 2:
+            tmp_obs = []
+            q = -1
+            for i in range(self.point_num):
+                if i % 3 == 0:
+                    q += 1
+                for j in range(self.cell_num):
+                    for k in range(self.cell_num):
+                        tmp_obs.append(copy.deepcopy(obs[self.point[i] + self.point[q]* self.sensor_xnum + self.sensor_xnum*j + k]))
+            obs = np.array(tmp_obs)
+        
+        self.past = copy.deepcopy(temp)
+
+        if self.history_num != 1:
+            del self.history[0]
+            self.history.append(obs)
+        
+            _obs = []
+        
+            for i in range(self.observe_num):
+                for j in range(self.history_num):
+                    _obs.append(self.history[j][i])
+            obs = np.array(_obs, dtype=np.float32)
+
+        return obs
+
     def smoothing(self, obs):
         x = -1
         y = -1

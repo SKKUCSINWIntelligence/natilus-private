@@ -58,7 +58,7 @@ void ObjectContain::Start ()
 		objectMax = objectN;
 
 		// Object Initial
-		for (uint32_t i=0; i<objectN; i++)
+		/*for (uint32_t i=0; i<objectN; i++)
 		{
 			OBJECT *obj = &object[i];
 			// Object Location Create Random
@@ -69,7 +69,8 @@ void ObjectContain::Start ()
 			obj->angle = obj->avgAngle;
 			// 0701
 			obj->occupy = true;
-		}
+		}*/
+		NewObject();
 	}
 	else
 	{
