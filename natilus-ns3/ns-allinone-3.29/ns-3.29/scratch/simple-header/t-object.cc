@@ -58,7 +58,7 @@ void ObjectContain::Start ()
 		objectMax = objectN;
 
 		// Object Initial
-		/*for (uint32_t i=0; i<objectN; i++)
+		for (uint32_t i=0; i<objectN; i++)
 		{
 			OBJECT *obj = &object[i];
 			// Object Location Create Random
@@ -69,8 +69,7 @@ void ObjectContain::Start ()
 			obj->angle = obj->avgAngle;
 			// 0701
 			obj->occupy = true;
-		}*/
-		NewObject();
+		}
 	}
 	else
 	{
@@ -81,11 +80,12 @@ void ObjectContain::Start ()
 			OBJECT *obj = &object[i];
 			obj->occupy = false;
 		}
-		for (uint32_t i=0; i<objectN; i++)
+		/*for (uint32_t i=0; i<objectN; i++)
 		{
 			OBJECT *obj = &object[i];
 			CreateObject (obj);
-		}
+		}*/
+		//NewObject (false);
 	}
 
 	// Create Map
@@ -107,16 +107,17 @@ void ObjectContain::Start ()
 	
 	if (obsMod == "car")
 	{
-		Simulator::Schedule (MilliSeconds(30), &ObjectContain::NewObject, this);
+		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, true);
 	}
 }
 
-void ObjectContain::NewObject (void)
+void ObjectContain::NewObject (bool reGen)
 {
-	std::cout << "CREATE NEW OBJECT !!!" << std::endl;
 	int r = rand() % objectMax;
 	int d = r - (int)objectN;
 	
+	//std::cout << "CREATE NEW OBJECT " << d << " at " << Simulator::Now().GetSeconds() << std::endl;
+
 	int s = rand() % 4;
 	double x = 0, y = 0;
 	if (s == 0)
@@ -124,24 +125,126 @@ void ObjectContain::NewObject (void)
 		x = (rand()%((uint32_t)bound*1000 + 1)) / 1000.0;
 		y = bound;	
 	}
-	else if (r == 1)
+	else if (s == 1)
 	{
 		x = bound;
 		y = (rand()%((uint32_t)bound*1000 + 1)) / 1000.0; 
 	}
-	else if (r == 2)
+	else if (s == 2)
 	{
 		x = (rand()%((uint32_t)bound*1000 + 1)) / 1000.0;
 		y = 0;
 	}
-	else if (r == 3)
+	else if (s == 3)
 	{
 		x = 0;
 		y = (rand()%((uint32_t)bound*1000 + 1)) / 1000.0;
 	}
+	
+	double min = 0;
+	double max = 2.0*PI;
+	double min2 = 0;
+	double max2 = 2.0*PI;
+
+	uint32_t count = 0;
+	int sign = rand()%2;
+	if (sign == 0)
+		sign = -1;
+
+	double aNew = 0;
+	double aAvg = (rand () % 8 + 1) * (PI/4.0);
+
+	while (1)
+	{
+		bool flag = false;
+		if (x == 0 && y == 0)
+		{
+			aAvg = PI/4.0;
+			min = 0;
+			max = PI/2.0;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+
+		}
+		else if (x==0 && y == bound)
+		{
+			aAvg = 2.0*PI - PI/4.0;
+			min = PI + PI/2.0;
+			max = 2.0*PI;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+		}
+		else if (x==bound && y==bound)
+		{
+			aAvg = PI + PI/4.0;
+			min = PI;
+			max = PI + PI/2.0;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+		}
+		else if (x==bound && y==0)
+		{
+			aAvg = PI - PI/4.0;
+			min = PI/2.0;
+			max = PI;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+		}
+		else if (x==0)
+		{
+			flag = true;
+			aAvg = 2.0*PI;
+			min = 0;
+			max = PI/2.0;
+			min2 = PI + PI/2.0;
+			max2 = 2.0*PI;
+			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;
+		}
+		else if (x==bound)
+		{
+			aAvg = PI;
+			min = PI/2.0;
+			max = PI + PI/2.0;
+			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;		
+		}
+		else if (y==0)
+		{
+			aAvg = PI/2.0;
+			min = 0;
+			max = PI;
+			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;
+		}
+		else if (y==bound)
+		{
+			aAvg = PI + PI/2.0;
+			min = PI;
+			max = 2.0*PI;
+			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;
+		}
+		else
+		{
+			std::cout << "tobject.cc::Angle Error!" << std::endl;
+			exit(1);
+		}
+
+		if (aNew > 2.0*PI)
+			aNew -= 2.0*PI;
+
+		
+		if (!flag && (min<aNew && aNew<max))
+			break;
+		else if (flag && ((min<=aNew && aNew<max) || (min2<aNew && aNew<=max2)))
+			break;
+		
+		if (count++ > 1000)
+		{
+			printf("Object MovFunc Loop Error !\n");
+			std::cout << "Count: " << count << std::endl;
+			//exit (1);
+		}
+	}
+	
 
 	if (d > 0)
 	{
+		if (d >= 10)
+			d = rand() % 5 + 5;
 		for (int i=0; i < d; i++)
 		{
 			if (i >= 10) 
@@ -156,19 +259,21 @@ void ObjectContain::NewObject (void)
 					obj->x = x;
 					obj->y = y;
 					obj->vel = vel;
-					obj->avgAngle = (rand () % 8 + 1) * (PI/4.0);
-					obj->angle = obj->avgAngle;
-					Angle (obj);
-					// 0701
+					obj->avgAngle = aAvg; 
+					obj->angle = aNew;
+					//Angle(obj);
+
 					obj->occupy = true;
 					objectN += 1;
-					//CreateObject (obj);
 					break;
 				}
 			}
 		}
 	}
-	Simulator::Schedule (MilliSeconds(30), &ObjectContain::NewObject, this);
+
+	MapUpdate ();
+	if (reGen)
+		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, reGen);
 }
 
 void ObjectContain::MapUpdate (void)
@@ -469,7 +574,7 @@ double ObjectContain::Angle (OBJECT *obj)
 		}
 		else if (x == 0)
 		{
-			flag = true;
+			flag = true;					//CreateObject (obj);
 			*avgAngle = 2.0*PI;
 			min = 0;
 			max = PI/2.0;

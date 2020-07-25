@@ -22,7 +22,20 @@ void Service::Start (void)
 	{
 		/* Log */
 		//std::cout << "Start: " << serId << " / " << cellId << std::endl;
-		SendData ();
+		uint32_t x = cellId % (oc->unitN);
+		uint32_t y = cellId / (oc->unitN);
+
+		if (obsMod == "car")
+		{	
+			if (!(x==0 || y==0 || x==(oc->unitN-1) || y==(oc->unitN-1)))
+			{
+				SendData ();
+			}
+		}
+		else
+		{
+			SendData ();
+		}
 	}
 }
 

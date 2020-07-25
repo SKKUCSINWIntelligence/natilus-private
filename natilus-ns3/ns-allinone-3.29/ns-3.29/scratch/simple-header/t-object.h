@@ -59,7 +59,7 @@ public:
 	~ObjectContain ();
 	void CreateObject (OBJECT *obj);
 	void Start (void);
-	void NewObject (void);
+	void NewObject (bool);
 	void MapUpdate (void);
 	
 	void Moving (void);

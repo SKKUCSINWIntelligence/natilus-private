@@ -98,20 +98,44 @@ void Sink::Send (void)
 		txQ.pop ();
 		delete removeAct;
 	}
-
+	
 	for (uint32_t i=0; i<serviceN; i++)
 	{
 		uint32_t ssN = service_ssN[i];
+
+		uint32_t k = 0;
 		for (uint32_t j=0; j<ssN; j++)
 		{
-			DATA *data = new DATA;
-			data->dataSize = actionPacketSize;
-			data->genTime = Simulator::Now();
-			data->serId = i;
-			data->cellId = j;
-			data->action = state[i].action[j];
+			if (obsMod == "car")
+			{
+				uint32_t x = j % oc[0].unitN;
+				uint32_t y = j / oc[0].unitN;
+			
+				if (!(x==0 || y==0 || x==(oc[0].unitN-1) || y==(oc[0].unitN-1)))
+				{
+					DATA *data = new DATA;
+					data->dataSize = actionPacketSize;
+					data->genTime = Simulator::Now();
+					data->serId = i;
+					data->cellId = j;
+					data->action = state[i].action[k];
+	
+					txQ.push (data);
 
-			txQ.push (data);
+					k += 1;
+				}
+			}
+			else
+			{
+				DATA *data = new DATA;
+				data->dataSize = actionPacketSize;
+				data->genTime = Simulator::Now();
+				data->serId = i;
+				data->cellId = j;
+				data->action = state[i].action[j];
+
+				txQ.push (data);
+			}
 		}
 	}
 
@@ -276,7 +300,8 @@ void Sink::PrintInfo ()
 {
 	for (uint32_t i=0; i<serviceN; i++)
 	{
-		printf("------- Serivec %d --------\n", i);
+		printf("------- Serivec %d -------- ", i);
+		std::cout << "at " << Simulator::Now().GetSeconds() << std::endl;
 		printf("[sampleRate]::Observed\n");
 		PrintState<uint32_t> (state[i].sampleRate, service_ssN[i]);
 		printf("[sampleValue]::Observed\n");
@@ -426,6 +451,7 @@ void Sink::TempDiff (void)
 void Sink::Reward (void)
 {
 	// Reward Function for Temperature
+	//PrintInfo ();
 	if (obsMod == "temp")
 	{
 		double tmpReward = 0;
@@ -435,7 +461,6 @@ void Sink::Reward (void)
 
 			//PrintState<double>(i, "Temp Truth", oc[i].tempMap, service_ssN[i]);
 			//PrintState<double>(i, "Temp Observed", state[i].sampleValue, service_ssN[i]);
-		
 			double global = 0;
 			// Local Reward
 			for(uint32_t j = 0; j<service_ssN[i]; j++)
@@ -496,7 +521,87 @@ void Sink::Reward (void)
 	}
 	else if (obsMod == "car") 
 	{
-		reward[0] += 1;
+        /*
+		uint32_t ssN = sqrt(service_ssN[0]); 
+		double dist = 0;
+
+		for (uint32_t i=0; i<service_ssN[0]; i++)
+		{
+			uint32_t x = i % ssN;
+			uint32_t y = i / ssN;	
+			
+			if (!(x==0 || y==0 || x==(ssN-1) || y ==(ssN-1)))
+			{
+				double tmpDist = (oc[0].trackMap[i] - state[0].sampleValue[i]) * (oc[0].trackMap[i] - state[0].sampleValue[i]);
+				dist += tmpDist;
+			}
+		}
+		
+	
+		if (dist == 0)
+		{
+			reward[0] += 1;
+			reward_avg[0] += 1;
+			//std::cout << "d " << dist << "  r " << 1 <<  std::endl;
+		}
+		else
+		{
+			reward[0] += 1/sqrt(dist);
+			reward_avg[0] += 1/sqrt(dist);
+			//std::cout << "d " << dist << "  r " << 1/ sqrt(dist)<<  std::endl;
+		}
+        */
+		double Mx=0; //truth average
+		double My=0; //observed average
+    double Vx=0; //truth variance
+    double Vy=0; //observed variance
+    double Cxy=0; //correlation of truth, observed
+    double C =  1e-50;
+
+    double l = 0;
+    double c = 0;
+    double s = 0;
+
+    uint32_t ssN = sqrt(service_ssN[0]); 
+		uint32_t sssN = ssN * ssN;
+
+    //modification needed
+    for(uint32_t j = 0; j<service_ssN[0]; j++)
+    {
+			uint32_t x = j % ssN;
+			uint32_t y = j / ssN;	
+			
+			if (!(x==0 || y==0 || x==(ssN-1) || y ==(ssN-1)))
+			{
+				Mx += oc[0].trackMap[j];
+				My += state[0].sampleValue[j];
+			}
+    }
+    Mx /= sssN;
+    My /= sssN;
+                       
+    for(uint32_t j = 0; j<service_ssN[0]; j++)
+		{
+			uint32_t x = j % ssN;
+			uint32_t y = j / ssN;	
+			
+			if (!(x==0 || y==0 || x==(ssN-1) || y ==(ssN-1)))
+			{
+	      Vx += (oc[0].trackMap[j]-Mx)*(oc[0].trackMap[j]-Mx);
+				Vy += (state[0].sampleValue[j]-My)*(state[0].sampleValue[j]-My);
+				Cxy += (oc[0].trackMap[j]-Mx)*(state[0].sampleValue[j]-My);
+			}
+    }
+    Vx /= sssN;
+    Vy /= sssN;
+    Cxy /= (sssN-1);
+
+    l = (2*Mx*My+C) / (Mx*Mx+My*My+C);
+    c = (2*sqrt(Vx)*sqrt(Vy)+C) / (Vx+Vy+C);
+    s = (Cxy+C) / (sqrt(Vx*Vy)+C);
+                                
+    reward[0] = l*c*s;
+		reward_avg[0] = l*c*s;
 	}
 }
 
@@ -670,23 +775,28 @@ void Sink::ZMQCommunication ()
 
     uint32_t ssN = sqrt(service_ssN[0]);
     double *actionTmp ;
-    actionTmp = ZMQRecvAction (zmqsocket, serviceN*ssN*ssN);
-
+    if (obsMod == "car")
+			actionTmp = ZMQRecvAction (zmqsocket, serviceN*(ssN-2)*(ssN-2));
+		else
+			actionTmp = ZMQRecvAction (zmqsocket, serviceN*ssN*ssN);
+		
     for(uint32_t j = 0; j<serviceN; j++)
     {
 			if (obsMod == "car")
 			{
-				for (uint32_t i=0; i<ssN*ssN; i++) 
+				for (uint32_t i=0; i<(ssN-2)*(ssN-2); i++) 
 				{
-					uint32_t x = i % ssN;
-					uint32_t y = i / ssN;
+					//uint32_t x = i % ssN;
+					//uint32_t y = i / ssN;
 					
-					if (x==0 || y==0 || x==ssN-1 || y==ssN-1)
-						state[j].action[i] = 30;
-					else
-						state[j].action[i] = actionTmp[i] * (avgRate * (ssN-1) * (ssN-1));
+					//if (x==0 || y==0 || x==ssN-1 || y==ssN-1)
+					//	state[j].action[i] = 30;
+					//else
+					state[j].action[i] = actionTmp[i] * (avgRate * (ssN-2) * (ssN-2));
+					
 					if (state[j].action[i] == 0)
 						state[j].action[i] = 1;
+					
 				}
 			}
 			else

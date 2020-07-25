@@ -42,21 +42,22 @@ T add (T a, T b)
 int
 main (int argc, char *argv[])
 {
-	// Log Define
+	// Log Define(rand () % 8 + 1) * (PI/4.0);
+
 	std::string log = "woo"; // Connected All Class.
-	std::string port = "10001"; // ZMQ Default Port
+	std::string port = "5050"; // ZMQ Default Port
 		
 	/********************
 	* Variable Setting
 	*********************/
 	srand (time(NULL));
-	uint64_t maxStep = 5;
+	uint64_t maxStep = 1000;
 
 	// Mode Setting
-	bool rlMod = false;
+	bool rlMod = true;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "car"; // 1. temp, 2. track 3. car
-	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
+	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "last"; //	1. last 2. action
 	std::string testMod = "xtest"; // 1. test
@@ -72,7 +73,7 @@ main (int argc, char *argv[])
 	bool evalInfo = false;
 	
 	// Sensor #
-	uint32_t ssN = 6;
+	uint32_t ssN = 8;
 
 	/********************
 	* Command Setting
@@ -92,7 +93,7 @@ main (int argc, char *argv[])
 		trace = false;
 		carInfo = false;
 		channelInfo = false;
-		stateInfo = true;
+		stateInfo = false;
 		evalInfo = false;
 		rlMod = true;
 	}
@@ -104,7 +105,7 @@ main (int argc, char *argv[])
 	
 	// Variable Setting
 	uint32_t serviceN = 1; // Service #
-	uint32_t bwLimit = 10; // unit: %
+	uint32_t bwLimit = 100; // unit: %
 
 	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
 	uint32_t sampleSize = 1500; // Bytes per Sample

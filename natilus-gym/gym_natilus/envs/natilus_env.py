@@ -2,6 +2,7 @@ import gym
 import numpy as np
 import queue
 import copy
+import math
 
 from gym import spaces
 from gym_natilus.envs.natilus import Server
@@ -18,7 +19,7 @@ class NatilusEnv(gym.Env):
         print("Sensor Num:", self.sensor_num)
         print("Sensor XNum:", self.sensor_xnum)
 
-        self.obsMod = int(input("Obs Mode (1. track, 2. temp): "))
+        self.obsMod = int(input("Obs Mode (1. track, 2. temp 3. multi): "))
         self.rlMod = int(input("RL Mode (1. General, 2. Transformer): "))
         self.infoNum = int(input("Info Num: "))
         self.history_num = int(input("History Num: "))
@@ -46,7 +47,14 @@ class NatilusEnv(gym.Env):
             self.observation_space = spaces.Box (low=0, high=4, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
         elif self.obsMod == 2:
             self.observation_space = spaces.Box (low=-10, high=10, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
-        self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
+        elif self.obsMod == 3:
+            self.observation_space = spaces.Box (low=0, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
+
+        if self.obsMod == 3:
+            self.action_space = spaces.Box (low=-1, high=1, shape=((self.sensor_xnum-2)*(self.sensor_xnum-2),), dtype=np.float32)
+            self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
+        else:
+            self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
         
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
@@ -68,6 +76,7 @@ class NatilusEnv(gym.Env):
             obs = self.obs_figure_multi(obs)
 
         if done:
+            self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
             self.file = open(self.reward_text, 'a')
             data = "%f\n" % self.sum_reward
             self.file.write(data)
@@ -216,14 +225,19 @@ class NatilusEnv(gym.Env):
                 if obs[1][i][j] == 0:
                     obs[1][i][j] = 0
                 elif obs[1][i][j] <= 33:
-                    obs[1][i][j] = 1
+                    obs[1][i][j] = 1/4.0
                 elif obs[1][i][j] <= 66:
-                    obs[1][i][j] = 2
+                    obs[1][i][j] = 2/4.0
                 elif obs[1][i][j] <= 99:
-                    obs[1][i][j] = 3 
+                    obs[1][i][j] = 3/4.0
                 else:
-                    obs[1][i][j] = 4
-        print(obs) 
+                    obs[1][i][j] = 4/4.0
+        # change multi object
+        sum = np.sum(obs[0])
+        obs[0] = obs[0] / sum
+        obs[0] = np.round(obs[0], 2) 
+        #print(sum)
+        #print(obs) 
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
         obs = np.transpose(obs, (1,0))
 
