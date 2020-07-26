@@ -179,7 +179,7 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 			}
 		}
 	
-		if (obsMod == "car")
+		if (obsMod == "carx")
 		{
 			for (uint32_t i=0; i<oc[serId].objectMax; i++)
 				if (data->carCell[i] == true)

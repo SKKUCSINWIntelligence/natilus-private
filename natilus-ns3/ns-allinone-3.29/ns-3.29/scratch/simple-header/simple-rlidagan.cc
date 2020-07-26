@@ -54,7 +54,7 @@ main (int argc, char *argv[])
 	uint64_t maxStep = 1000;
 
 	// Mode Setting
-	bool rlMod = true;
+	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "car"; // 1. temp, 2. track 3. car
 	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan
