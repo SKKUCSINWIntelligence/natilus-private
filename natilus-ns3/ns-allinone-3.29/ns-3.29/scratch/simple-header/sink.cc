@@ -592,6 +592,7 @@ void Sink::Reward (void)
 				Cxy += (oc[0].trackMap[j]-Mx)*(state[0].sampleValue[j]-My);
 			}
     }
+
     Vx /= sssN;
     Vy /= sssN;
     Cxy /= (sssN-1);
@@ -600,8 +601,8 @@ void Sink::Reward (void)
     c = (2*sqrt(Vx)*sqrt(Vy)+C) / (Vx+Vy+C);
     s = (Cxy+C) / (sqrt(Vx*Vy)+C);
                                 
-    reward[0] = l*c*s;
-		reward_avg[0] = l*c*s;
+    reward[0] += l*c*s;
+		reward_avg[0] += l*c*s;
 	}
 }
 
