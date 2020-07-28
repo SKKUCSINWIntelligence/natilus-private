@@ -106,7 +106,7 @@ class NatilusEnv(gym.Env):
     
     def obs_figure_temp(self, obs):
         temp = copy.deepcopy(obs)
-        obs = obs - self.past
+        obs[0] = obs[0] - self.past[0]
         
         # Observation Pre-processing
         obs = np.round (obs)
@@ -162,7 +162,7 @@ class NatilusEnv(gym.Env):
     
     def obs_figure_track(self, obs):
         temp = copy.deepcopy(obs)
-        obs[1] = obs[1] - self.past[1]
+        #obs[1] = obs[1] - self.past[1]
 
         for i in range(self.sensor_xnum):
             for j in range(self.sensor_xnum):
