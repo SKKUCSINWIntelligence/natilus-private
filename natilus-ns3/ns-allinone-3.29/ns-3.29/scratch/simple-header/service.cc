@@ -93,8 +93,17 @@ void Service::SendData (void)
 	}
 	
 	// Next Sampling
-	eventTime = Simulator::Now (); 
-	sendEvent = Simulator::Schedule (Seconds (1.0/sampleRate), &Service::SendData, this);	
+	eventTime = Simulator::Now ();
+	if (firstEvent)
+	{
+		firstEvent = false;
+		double offset = (double) (rand()%1000)/100000;
+		sendEvent = Simulator::Schedule (Seconds (1.0/sampleRate+offset), &Service::SendData, this);
+	}
+	else
+	{
+		sendEvent = Simulator::Schedule (Seconds (1.0/sampleRate), &Service::SendData, this);	
+	}
 }
 
 void Service::ReSchedule (void)

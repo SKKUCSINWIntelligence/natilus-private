@@ -36,6 +36,7 @@ public:
 	uint64_t totActDelay = 0;
 
 	// Event
+	bool firstEvent = true;
 	Time eventTime;
 	EventId sendEvent;
 
