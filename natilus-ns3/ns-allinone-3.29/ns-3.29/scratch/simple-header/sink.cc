@@ -936,7 +936,7 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 		else
 		{
 			obs[ssN - y - 1][x] = state->sampleValue[i];
-			last[ssN - y - 1][x] = state->lastUpdateTime[i].GetMilliSeconds ();
+			last[ssN - y - 1][x] = Simulator::Now().GetMilliSeconds() - state->lastUpdateTime[i].GetMilliSeconds ();
 		}
 		rate[ssN - y - 1][x] = state->sampleRate[i];
 		ground[ssN - y - 1][x] = oc->trackMap[i];
