@@ -279,7 +279,7 @@ void ObjectContain::NewObject (bool reGen)
 void ObjectContain::MapUpdate (void)
 {	
 	memcpy (trackMap, zero, sizeof(double)*senN);
-	memcpy (tempMap, room, sizeof(double)*senN);
+	memcpy (tempMap, zero, sizeof(double)*senN); // (0729)
 
 	for (uint32_t i=0; i<objectMax; i++)
 	{
@@ -288,7 +288,7 @@ void ObjectContain::MapUpdate (void)
 		{
 			double objX = obj->x;
 			double objY = obj->y;
-			double objTemp = obj->temp;
+			//double objTemp = obj->temp;
 			/************
 			* Tracking Part
 			************/
@@ -299,12 +299,13 @@ void ObjectContain::MapUpdate (void)
 			if (yId == unitN)
 				yId -= 1;
 			uint32_t cellId = yId * unitN + xId;
-			trackMap[cellId] += 1; 
-	
-			double objE = cFE * weight * (objTemp - room[cellId]);
+			trackMap[cellId] += 1; 	
+			
 			/************
 			* Temperature Part
 			************/
+			/*
+			double objE = cFE * weight * (objTemp - room[cellId]);
 			for (uint32_t xid=0; xid<unitN; xid++)
 			{
 				for (uint32_t yid=0; yid<unitN; yid++)
@@ -323,6 +324,30 @@ void ObjectContain::MapUpdate (void)
 						if (cellT > (objTemp - room[cell]))
 							cellT = objTemp - room[cell];
 						tempMap[cell] += cellT;
+					}
+				}
+			}
+			*/
+
+			// (0729) Temporarily Use Temp Mode for Car...
+			for (uint32_t xid=0; xid<unitN; xid++)
+			{
+				for (uint32_t yid=0; yid<unitN; yid++)
+				{
+					uint32_t cell = yid*unitN + xid;
+					if (cell == cellId) 
+						tempMap[cell] = 10;
+					else
+					{
+						double x = cellUnit*xid + cellUnit/2;
+						double y = cellUnit*yid + cellUnit/2;
+						double distance = std::sqrt(std::pow(objX-x,2) + std::pow(objY-y,2));
+						
+						uint32_t cellDist = (xid-xId)*(xid-xId) + (yid-yId)*(yid-yId);
+						if (cellDist == 1 || cellDist == 2)
+							tempMap[cell] = std::floor(10.0 / distance);
+						else
+							tempMap[cell] = 0;
 					}
 				}
 			}

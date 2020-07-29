@@ -451,16 +451,14 @@ void Sink::TempDiff (void)
 void Sink::Reward (void)
 {
 	// Reward Function for Temperature
-	//PrintInfo ();
-	if (obsMod == "temp")
+	// PrintInfo ();
+	if (obsMod == "temp") //(0729)
 	{
+		/*
 		double tmpReward = 0;
 
 		for(uint32_t i = 0; i<serviceN ; i++)
 		{
-
-			//PrintState<double>(i, "Temp Truth", oc[i].tempMap, service_ssN[i]);
-			//PrintState<double>(i, "Temp Observed", state[i].sampleValue, service_ssN[i]);
 			double global = 0;
 			// Local Reward
 			for(uint32_t j = 0; j<service_ssN[i]; j++)
@@ -495,6 +493,49 @@ void Sink::Reward (void)
 			reward_avg[i] += tmpReward;
 			tmpReward = 0; 
 		}
+		*/
+		double Mx=0; //truth average
+		double My=0; //observed average
+    double Vx=0; //truth variance
+    double Vy=0; //observed variance
+    double Cxy=0; //correlation of truth, observed
+    double C=1e-50;
+
+    double l = 0;
+    double c = 0;
+    double s = 0;
+
+    uint32_t ssN = sqrt(service_ssN[0]); 
+		uint32_t sssN = ssN * ssN;
+
+    //modification needed
+    for(uint32_t j = 0; j<service_ssN[0]; j++)
+    {
+			Mx += oc[0].tempMap[j];
+			My += state[0].sampleValue[j];
+    }
+    Mx /= sssN;
+    My /= sssN;
+                       
+    for(uint32_t j = 0; j<service_ssN[0]; j++)
+		{			
+			Vx += (oc[0].tempMap[j]-Mx)*(oc[0].tempMap[j]-Mx);
+			Vy += (state[0].sampleValue[j]-My)*(state[0].sampleValue[j]-My);
+			Cxy += (oc[0].tempMap[j]-Mx)*(state[0].sampleValue[j]-My);
+		}
+
+    Vx /= sssN;
+    Vy /= sssN;
+    Cxy /= (sssN-1);
+
+    l = (2*Mx*My+C) / (Mx*Mx+My*My+C);
+    c = (2*sqrt(Vx)*sqrt(Vy)+C) / (Vx+Vy+C);
+    s = (Cxy+C) / (sqrt(Vx*Vy)+C);
+                                
+    reward[0] += l*c*s;
+		reward_avg[0] += l*c*s;
+		
+		//std::cout << "Reward: " << l*c*s << std::endl; 
 	}
 	// Reward Function for Single Track
 	else if (obsMod == "track")
@@ -521,7 +562,9 @@ void Sink::Reward (void)
 	}
 	else if (obsMod == "car") 
 	{
-        /*
+
+		// 1. MSE Distance Measure
+    /*
 		uint32_t ssN = sqrt(service_ssN[0]); 
 		double dist = 0;
 
@@ -550,7 +593,9 @@ void Sink::Reward (void)
 			reward_avg[0] += 1/sqrt(dist);
 			//std::cout << "d " << dist << "  r " << 1/ sqrt(dist)<<  std::endl;
 		}
-        */
+    */
+
+		// 2. SSIM Loss Measure
 		double Mx=0; //truth average
 		double My=0; //observed average
     double Vx=0; //truth variance
