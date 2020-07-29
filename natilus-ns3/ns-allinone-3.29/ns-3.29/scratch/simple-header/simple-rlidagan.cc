@@ -86,6 +86,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
 	cmd.AddValue ("testMod", "Test Mode: test/else", testMod);
 	cmd.AddValue ("ssN", "Sensor #", ssN);
+	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.Parse (argc, argv);
 
 	if (upMod =="rlidagan")
@@ -105,7 +106,7 @@ main (int argc, char *argv[])
 	
 	// Variable Setting
 	uint32_t serviceN = 1; // Service #
-	uint32_t bwLimit = 100; // unit: %
+	uint32_t bwLimit = 50; // unit: %
 
 	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
 	uint32_t sampleSize = 1500; // Bytes per Sample
@@ -113,7 +114,9 @@ main (int argc, char *argv[])
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
 
 	// Object & Map Setting
-	uint32_t objectN = 0; // per Service
+	uint32_t objectN = 1; // per Service
+	if (obsMod=="car")
+		objectN = 0;
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
 	uint32_t objectMax = 100; // used in car obsMod
