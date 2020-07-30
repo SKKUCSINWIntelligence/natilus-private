@@ -49,7 +49,8 @@ class NatilusEnv(gym.Env):
             self.observation_space = spaces.Box (low=-10, high=10, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
         elif self.obsMod == 3:
             self.observation_space = spaces.Box (low=0, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
-
+        
+        
         if self.obsMod == 3:
             self.action_space = spaces.Box (low=-1, high=1, shape=((self.sensor_xnum-2)*(self.sensor_xnum-2),), dtype=np.float32)
             self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
