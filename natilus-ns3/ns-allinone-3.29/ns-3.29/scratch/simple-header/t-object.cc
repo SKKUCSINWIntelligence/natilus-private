@@ -162,7 +162,7 @@ void ObjectContain::NewObject (bool reGen)
 			aAvg = PI/4.0;
 			min = 0;
 			max = PI/2.0;
-			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%112/10.0)/360.0*2*PI; // (0730) 225 -> 112
 
 		}
 		else if (x==0 && y == bound)
@@ -170,21 +170,21 @@ void ObjectContain::NewObject (bool reGen)
 			aAvg = 2.0*PI - PI/4.0;
 			min = PI + PI/2.0;
 			max = 2.0*PI;
-			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%112/10.0)/360.0*2*PI;
 		}
 		else if (x==bound && y==bound)
 		{
 			aAvg = PI + PI/4.0;
 			min = PI;
 			max = PI + PI/2.0;
-			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%112/10.0)/360.0*2*PI;
 		}
 		else if (x==bound && y==0)
 		{
 			aAvg = PI - PI/4.0;
 			min = PI/2.0;
 			max = PI;
-			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%112/10.0)/360.0*2*PI;
 		}
 		else if (x==0)
 		{
@@ -194,28 +194,28 @@ void ObjectContain::NewObject (bool reGen)
 			max = PI/2.0;
 			min2 = PI + PI/2.0;
 			max2 = 2.0*PI;
-			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI; // (0730) 450 -> 225
 		}
 		else if (x==bound)
 		{
 			aAvg = PI;
 			min = PI/2.0;
 			max = PI + PI/2.0;
-			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;		
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;		
 		}
 		else if (y==0)
 		{
 			aAvg = PI/2.0;
 			min = 0;
 			max = PI;
-			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
 		}
 		else if (y==bound)
 		{
 			aAvg = PI + PI/2.0;
 			min = PI;
 			max = 2.0*PI;
-			aNew = aAvg + (sign*rand()%450/10.0)/360.0*2*PI;
+			aNew = aAvg + (sign*rand()%225/10.0)/360.0*2*PI;
 		}
 		else
 		{
@@ -232,11 +232,11 @@ void ObjectContain::NewObject (bool reGen)
 		else if (flag && ((min<=aNew && aNew<max) || (min2<aNew && aNew<=max2)))
 			break;
 		
-		if (count++ > 1000)
+		if (count++ > 100)
 		{
 			printf("Object MovFunc Loop Error !\n");
 			std::cout << "Count: " << count << std::endl;
-			//exit (1);
+			exit (1);
 		}
 	}
 	
@@ -300,7 +300,11 @@ void ObjectContain::MapUpdate (void)
 				yId -= 1;
 			uint32_t cellId = yId * unitN + xId;
 			trackMap[cellId] += 1; 	
-			
+			if (obsMod == "car")
+			{
+				tempMap[cellId] = 100;
+			}
+
 			/************
 			* Temperature Part
 			************/
@@ -330,29 +334,89 @@ void ObjectContain::MapUpdate (void)
 			*/
 
 			// (0729) Temporarily Use Temp Mode for Car...
-			for (uint32_t xid=0; xid<unitN; xid++)
+			if (obsMod == "temp")
 			{
-				for (uint32_t yid=0; yid<unitN; yid++)
+				for (uint32_t xid=0; xid<unitN; xid++)
 				{
-					uint32_t cell = yid*unitN + xid;
-					if (cell == cellId) 
-						tempMap[cell] = 10;
-					else
+					for (uint32_t yid=0; yid<unitN; yid++)
 					{
-						double x = cellUnit*xid + cellUnit/2;
-						double y = cellUnit*yid + cellUnit/2;
-						double distance = std::sqrt(std::pow(objX-x,2) + std::pow(objY-y,2));
-						
-						uint32_t cellDist = (xid-xId)*(xid-xId) + (yid-yId)*(yid-yId);
-						if (cellDist == 1 || cellDist == 2)
-							tempMap[cell] = std::floor(10.0 / distance);
+						uint32_t cell = yid*unitN + xid;
+						if (cell == cellId) 
+							tempMap[cell] += 10;
 						else
-							tempMap[cell] = 0;
+						{
+							double x = cellUnit*xid + cellUnit/2;
+							double y = cellUnit*yid + cellUnit/2;
+							double distance = std::sqrt(std::pow(objX-x,2) + std::pow(objY-y,2));
+						
+							uint32_t cellDist = (xid-xId)*(xid-xId) + (yid-yId)*(yid-yId);
+							if (cellDist == 1 || cellDist == 2)
+								tempMap[cell] += std::floor(10.0 / distance);
+							else
+								tempMap[cell] += 0;
+						}
 					}
 				}
 			}
 		}
 	}
+	
+	if (obsMod == "car") //(0727) For Multi Tracking
+	{
+		for (uint32_t xid=0; xid<unitN; xid++)
+		{
+			for (uint32_t yid=0; yid<unitN; yid++)
+			{
+				uint32_t cell = yid*unitN + xid;
+				uint32_t adder = trackMap[cell] * 2;
+				uint32_t counter = 1;
+
+				if (!(xid==0 || yid==0 || xid==(unitN-1) || yid==(unitN-1)))
+				{
+					if (tempMap[cell] == 100)
+					{
+												
+						for (uint32_t x=0; x<unitN; x++)
+							for (uint32_t y=0; y<unitN; y++)
+							{
+								uint32_t neighbor = y*unitN + x;
+								uint32_t cellDist = (xid-x)*(xid-x) + (yid-y)*(yid-y);
+								uint32_t rander = 0;
+								if (adder > 1)
+								{
+									while (true)
+									{
+										rander = (rand() % adder) + 1;
+										if (rander <= trackMap[cell])
+											break;
+										//std::cout << rander << trackMap[cell] << std::endl;
+									}
+								}
+								if (cellDist == 1 || cellDist == 2)
+								{
+									if (counter == 8)
+									{
+										trackMap[neighbor] += adder;
+									}
+									else
+									{
+										trackMap[neighbor] = trackMap[neighbor] + rander; //std::floor(trackMap[cell]/(cellDist*2))
+									}
+
+									adder -= rander;
+									counter += 1;
+								}
+							}
+					}
+				}
+				else
+				{
+					trackMap[cell] += adder;
+				}
+			}
+		}
+	}
+
 
 	// LOG Checking
 	//std::cout << (object[0].x) << " " << (object[0].y) << std::endl;

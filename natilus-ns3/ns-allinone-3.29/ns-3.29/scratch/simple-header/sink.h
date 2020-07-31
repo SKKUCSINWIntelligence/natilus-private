@@ -102,7 +102,7 @@ public:
 	double *reward_avg;
 	double *reward_cnt;
 	double *singleAcc_avg;
-	
+	uint32_t multi_cnt = 0; 	
 
 	// Function
 	void TrackAcc (double**);

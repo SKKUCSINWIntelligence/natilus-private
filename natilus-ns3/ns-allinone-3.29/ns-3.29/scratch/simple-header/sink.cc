@@ -249,6 +249,24 @@ void Sink::Communication ()
 	if (stateInfo)
 		PrintInfo ();
 
+	if (obsMod=="car")
+	{
+		uint32_t count = 0;
+		uint32_t ssN = sqrt(service_ssN[0]); 
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			for (uint32_t j=0; j<ssN; j++)
+			{
+				uint32_t cell = j*ssN + i;
+				if (oc[0].tempMap[cell] == 100)
+				{
+					count += 1;
+					multi_cnt += 1;
+				}
+			}
+		}
+	}
+
 	for (uint32_t i=0; i<serviceN; i++)
 	{
 		reward[i] = reward[i] / cnt[i];

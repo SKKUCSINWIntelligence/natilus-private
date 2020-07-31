@@ -119,7 +119,7 @@ main (int argc, char *argv[])
 		objectN = 0;
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
-	uint32_t objectMax = 100; // used in car obsMod
+	uint32_t objectMax = 10; // used in car obsMod
 
 	// Car Setting 
 	std::string navFunc = "Greedy"; // Random, Greedy	
@@ -440,6 +440,10 @@ main (int argc, char *argv[])
 			else if (obsMod == "track")
 			{
 				std::cout << "Simulation Avg SingleAcc: " << (sink->singleAcc_avg[i]/sink->reward_cnt[i])*100 << "%"  << std::endl;
+			}
+			else if (obsMod == "car")
+			{
+				std::cout << "Simulation Multi ObjectCnt: " << (sink->multi_cnt/1000.0) << std::endl;
 			}
 			std::cout << "Simulation Avg Reward: " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
 		}
