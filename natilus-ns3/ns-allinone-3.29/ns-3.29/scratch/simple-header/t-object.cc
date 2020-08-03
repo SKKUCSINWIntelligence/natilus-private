@@ -91,13 +91,57 @@ void ObjectContain::Start ()
 	if (obsMod == "multi")
 	{
 		loc = new uint32_t[unitN/2];
-
-		if (unitN == 8)
+		
+		if (unitN == 6)
+		{
+			loc[0] = 7;
+			loc[1] = 16;
+			loc[2] = 26;
+		}
+		else if (unitN == 8)
 		{
 			loc[0] = 19;
 			loc[1] = 30; 
 			loc[2] = 34;
 			loc[3] = 53;
+		}
+		else if (unitN == 10)
+		{
+			loc[0] = 22;
+			loc[1] = 47; 
+			loc[2] = 52;
+			loc[3] = 74;
+			loc[4] = 88;
+		}
+		else if (unitN == 12)
+		{
+			loc[0] = 39;
+			loc[1] = 56; 
+			loc[2] = 76;
+			loc[3] = 93;
+			loc[4] = 98;
+			loc[5] = 115;
+		}
+		else if (unitN == 14)
+		{
+			loc[0] = 25;
+			loc[1] = 31; 
+			loc[2] = 65;
+			loc[3] = 89;
+			loc[4] = 119;
+			loc[5] = 136;
+			loc[6] = 143;
+		}
+		else if (unitN == 16)
+		{
+			loc[0] = 26;
+			loc[1] = 68; 
+			loc[2] = 98;
+			loc[3] = 107;
+			loc[4] = 119;
+			loc[5] = 163;
+			loc[6] = 204;
+			loc[7] = 217;
 		}
 	}
 	// Create Map

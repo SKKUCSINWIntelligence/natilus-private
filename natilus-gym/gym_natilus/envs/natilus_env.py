@@ -36,6 +36,15 @@ class NatilusEnv(gym.Env):
         elif self.sensor_xnum == 10:
             self.cell_num = 4
             self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
+        elif self.sensor_xnum == 12:
+            self.cell_num = 6
+            self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
+        elif self.sensor_xnum == 14:
+            self.cell_num = 6
+            self.point = [0, 4, 8, 0, 4, 8, 0, 4, 8]
+        elif self.sensor_xnum == 16:
+            self.cell_num = 6
+            self.point = [0, 5, 10, 0, 5, 10, 0, 5, 10]
 
         # Observiation & Action Space
         if self.rlMod == 1:
