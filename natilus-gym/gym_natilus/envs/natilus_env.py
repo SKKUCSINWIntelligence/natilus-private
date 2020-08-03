@@ -51,11 +51,11 @@ class NatilusEnv(gym.Env):
             self.observation_space = spaces.Box (low=0, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
         
         
-        if self.obsMod == 3:
+        """if self.obsMod == 3:
             self.action_space = spaces.Box (low=-1, high=1, shape=((self.sensor_xnum-2)*(self.sensor_xnum-2),), dtype=np.float32)
             self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
-        else:
-            self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
+        else:"""
+        self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
         
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
@@ -238,8 +238,7 @@ class NatilusEnv(gym.Env):
         if sum != 0:
             obs[0] = obs[0] / sum
             obs[0] = np.round(obs[0], 2) 
-        #print(sum)
-        #print(obs) 
+
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
         obs = np.transpose(obs, (1,0))
 
