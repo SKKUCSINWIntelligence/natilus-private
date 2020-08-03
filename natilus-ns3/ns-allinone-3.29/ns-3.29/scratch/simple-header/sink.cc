@@ -179,15 +179,41 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 			}
 		}
 	
-		if (obsMod == "carx")
+		if (obsMod == "multi")
 		{
+			// Save car <-> cell
+			for (uint32_t i=0; i<oc[serId].objectMax; i++)
+			{	
+				if (state[serId].sampleCar[i] == (int)cellId)
+					state[serId].sampleCar[i] = -1;
+				if (data->carCell[i] == true)
+					state[serId].sampleCar[i] = (int)cellId;
+			}				
+
+			// Clear the map
+			for (uint32_t i=0; i<service_ssN[0]; i++)
+				state[serId].sampleValue[i] = 0;
+		
+			// Fill in the map
+			for (uint32_t i=0; i<oc[serId].objectMax; i++)
+			{
+				int cell = state[serId].sampleCar[i];
+				if (cell >= 0)
+					state[serId].sampleValue[cell] += 1;
+			}
+		}
+		else if (obsMod == "carx")
+		{
+			// Save car <-> cell
 			for (uint32_t i=0; i<oc[serId].objectMax; i++)
 				if (data->carCell[i] == true)
 					state[serId].sampleCar[i] = (int)cellId;
-
+			
+			// Clear the map
 			for (uint32_t i=0; i<service_ssN[0]; i++)
 				state[serId].sampleValue[i] = 0;
-
+		
+			// Fill in the map
 			for (uint32_t i=0; i<oc[serId].objectMax; i++)
 			{
 				int cell = state[serId].sampleCar[i];
@@ -197,6 +223,7 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 		}
 		else
 			state[serId].sampleValue[cellId] = data->sampleValue;
+
 		state[serId].upInter[cellId] = delay;
 		state[serId].lastUpdateTime[cellId] = Simulator::Now (); 
 		
@@ -250,7 +277,8 @@ void Sink::Communication ()
 		PrintInfo ();
 
 	if (obsMod=="car")
-	{
+	{ 
+		// Count the Car Clusters
 		uint32_t count = 0;
 		uint32_t ssN = sqrt(service_ssN[0]); 
 		for (uint32_t i=0; i<ssN; i++)
@@ -327,7 +355,7 @@ void Sink::PrintInfo ()
 		printf("[sampleValue]::Truth\n");
 		if (obsMod == "temp")
 			PrintState<double> (oc[i].tempMap, service_ssN[i]);
-		else if (obsMod == "track" || obsMod == "car")
+		else if (obsMod == "track" || obsMod == "car" || obsMod == "multi")
 			PrintState<double> (oc[i].trackMap, service_ssN[i]);
 		printf("--------------------------\n");
 	}
@@ -654,6 +682,49 @@ void Sink::Reward (void)
 				Vy += (state[0].sampleValue[j]-My)*(state[0].sampleValue[j]-My);
 				Cxy += (oc[0].trackMap[j]-Mx)*(state[0].sampleValue[j]-My);
 			}
+    }
+
+    Vx /= sssN;
+    Vy /= sssN;
+    Cxy /= (sssN-1);
+
+    l = (2*Mx*My+C) / (Mx*Mx+My*My+C);
+    c = (2*sqrt(Vx)*sqrt(Vy)+C) / (Vx+Vy+C);
+    s = (Cxy+C) / (sqrt(Vx*Vy)+C);
+                                
+    reward[0] += l*c*s;
+		reward_avg[0] += l*c*s;
+	}
+	else if (obsMod == "multi")
+	{
+		double Mx=0; //truth average
+		double My=0; //observed average
+    double Vx=0; //truth variance
+    double Vy=0; //observed variance
+    double Cxy=0; //correlation of truth, observed
+    double C =  1e-50;
+
+    double l = 0;
+    double c = 0;
+    double s = 0;
+
+    uint32_t ssN = sqrt(service_ssN[0]); 
+		uint32_t sssN = ssN * ssN;
+
+    //modification needed
+    for(uint32_t j = 0; j<service_ssN[0]; j++)
+    {
+			Mx += oc[0].trackMap[j];
+			My += state[0].sampleValue[j];
+    }
+    Mx /= sssN;
+    My /= sssN;
+                       
+    for(uint32_t j = 0; j<service_ssN[0]; j++)
+		{
+	    Vx += (oc[0].trackMap[j]-Mx)*(oc[0].trackMap[j]-Mx);
+			Vy += (state[0].sampleValue[j]-My)*(state[0].sampleValue[j]-My);
+			Cxy += (oc[0].trackMap[j]-Mx)*(state[0].sampleValue[j]-My);
     }
 
     Vx /= sssN;

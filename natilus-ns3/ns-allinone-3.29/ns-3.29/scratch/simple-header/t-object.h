@@ -51,8 +51,11 @@ public:
 	// Map (Observation)
 	double *trackMap;
 	double *tempMap;
+	uint32_t *newMap; // New Generation for Multi
 	double *zero; // array 0
 	double *room; // array 25 (c)
+	uint32_t *loc; // Location for Multi
+	
 
 	// Funtion
 	ObjectContain ();
@@ -60,6 +63,7 @@ public:
 	void CreateObject (OBJECT *obj);
 	void Start (void);
 	void NewObject (bool);
+	void NewMulti (bool);
 	void MapUpdate (void);
 	
 	void Moving (void);

@@ -12,8 +12,13 @@ ObjectContain::~ObjectContain ()
 	delete[] object;
 	delete[] trackMap;
 	delete[] tempMap;
+	delete[] newMap;
 	delete[] zero;
 	delete[] room;
+	if (obsMod == "multi")
+	{
+		delete[] loc;	
+	}
 }
 
 void ObjectContain::CreateObject (OBJECT *obj)
@@ -52,7 +57,17 @@ void ObjectContain::CreateObject (OBJECT *obj)
 void ObjectContain::Start ()
 {
 	// Object Create
-	if (obsMod != "car")
+	if (obsMod == "car" || obsMod == "multi")
+	{
+		object = new OBJECT[objectMax];
+
+		for (uint32_t i=0; i<objectMax; i++)
+		{
+			OBJECT *obj = &object[i];
+			obj->occupy = false;
+		}
+	}
+	else
 	{
 		object = new OBJECT[objectN];
 		objectMax = objectN;
@@ -71,26 +86,24 @@ void ObjectContain::Start ()
 			obj->occupy = true;
 		}
 	}
-	else
+	
+	// If Multi Init loc
+	if (obsMod == "multi")
 	{
-		object = new OBJECT[objectMax];
+		loc = new uint32_t[unitN/2];
 
-		for (uint32_t i=0; i<objectMax; i++)
+		if (unitN == 8)
 		{
-			OBJECT *obj = &object[i];
-			obj->occupy = false;
+			loc[0] = 19;
+			loc[1] = 30; 
+			loc[2] = 34;
+			loc[3] = 53;
 		}
-		/*for (uint32_t i=0; i<objectN; i++)
-		{
-			OBJECT *obj = &object[i];
-			CreateObject (obj);
-		}*/
-		//NewObject (false);
 	}
-
 	// Create Map
 	trackMap = new double[senN];
 	tempMap = new double[senN];
+	newMap = new uint32_t[senN];
 
 	zero = new double[senN];
 	room = new double[senN];
@@ -100,6 +113,7 @@ void ObjectContain::Start ()
 		room[i] = 25;
 		trackMap[i] = 0;
 		tempMap[i] = 25;
+		newMap = 0;
 	}
 
 	MapUpdate ();
@@ -108,6 +122,10 @@ void ObjectContain::Start ()
 	if (obsMod == "car")
 	{
 		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, true);
+	}
+	if (obsMod == "multi")
+	{
+		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, true);
 	}
 }
 
@@ -276,6 +294,119 @@ void ObjectContain::NewObject (bool reGen)
 		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, reGen);
 }
 
+void ObjectContain::NewMulti (bool reGen)
+{	
+	// (0731)
+	// Generation Loc is fixed. Should Angle also fixed?
+	uint32_t r = rand() % (int) (unitN/2);
+	uint32_t c = loc[r]; 
+	uint32_t xid = c % unitN;
+	uint32_t yid = c / unitN;
+	double x = cellUnit*xid + cellUnit/2;
+	double y = cellUnit*yid + cellUnit/2;
+	double a = (rand() % 360)/360.0*2*PI;
+
+	int o = rand() % objectMax / 4;
+	int d = o - (int) (objectN / 4);
+	//std::cout << d << std::endl;
+	if (d > 3)
+	{
+		for (int i=0; i<d; i++)
+		{
+			if (i >= 10)
+			{
+				d = 10;
+				break;
+			}
+
+			for (uint32_t j=0; j<objectMax; j++)
+			{
+				OBJECT *obj = &object[j];
+				if (!obj->occupy)
+				{
+					//std::cout << "Create New Object" << std::endl;
+					obj->x = x;
+					obj->y = y;
+					obj->vel = vel;
+					obj->avgAngle = a; 
+					obj->angle = a;
+
+					obj->occupy = true;
+					objectN += 1;
+					break;
+				}
+			}
+		}
+		
+		// Save New Generation 
+		//newMap[c] += d;
+
+		// Make a	cluster
+		uint32_t p = rand()%4;
+		uint32_t cell[3] = {0};
+
+		switch(p) 
+		{
+			case 0:
+				cell[0] = (yid+1)*unitN + xid;
+				cell[1] = (yid+1)*unitN + (xid+1);
+				cell[2] = yid*unitN + (xid+1);
+				break;
+			case 1:
+				cell[0] = yid*unitN + (xid+1);
+				cell[1] = (yid-1)*unitN + (xid+1);
+				cell[2] = (yid-1)*unitN + xid;
+				break;
+			case 2: 
+				cell[0] = (yid-1)*unitN + xid;
+				cell[1] = (yid-1)*unitN + (xid-1);
+				cell[2] = yid*unitN + (xid-1);
+				break;
+			case 3:
+				cell[0] = yid*unitN + (xid-1);
+				cell[1] = (yid+1)*unitN + (xid-1);
+				cell[2] = (yid+1)*unitN + xid;
+				break;
+		}
+
+		for (int i=0; i<3; i++)
+		{
+			uint32_t _xid = cell[i] % unitN;
+			uint32_t _yid = cell[i] / unitN;
+			double _x = cellUnit*_xid + cellUnit/2;
+			double _y = cellUnit*_yid + cellUnit/2;
+			uint32_t _d = (rand() % d) + 1;
+			// Save New Generation
+			//newMap[cell[i]] += _d; 
+			//std::cout << _d << std::endl;	
+			for (uint32_t j=0; j<_d; j++)
+			{
+				for (uint32_t k=0; k<objectMax; k++)
+				{
+					OBJECT *obj = &object[k];
+					if (!obj->occupy)
+					{
+						//std::cout << "Create New Object" << std::endl;
+						obj->x = _x;
+						obj->y = _y;
+						obj->vel = vel;
+						obj->avgAngle = a; 
+						obj->angle = a;
+	
+						obj->occupy = true;
+						objectN += 1;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	MapUpdate ();	
+	if (reGen)
+		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, reGen);
+}
+
 void ObjectContain::MapUpdate (void)
 {	
 	memcpy (trackMap, zero, sizeof(double)*senN);
@@ -300,6 +431,7 @@ void ObjectContain::MapUpdate (void)
 				yId -= 1;
 			uint32_t cellId = yId * unitN + xId;
 			trackMap[cellId] += 1; 	
+
 			if (obsMod == "car")
 			{
 				tempMap[cellId] = 100;
@@ -433,7 +565,7 @@ void ObjectContain::Moving (void)
 		for (uint32_t i=0; i<objectMax; i++)
 			if (object[i].occupy)
 				object[i].timeD = timeD;
-		if (obsMod == "car")
+		if (obsMod == "car" || obsMod == "multi")
 			MovFuncCar ();
 		else
 			MovFunc ();

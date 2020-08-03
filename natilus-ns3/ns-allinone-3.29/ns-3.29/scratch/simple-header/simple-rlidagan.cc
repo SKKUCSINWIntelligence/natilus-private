@@ -51,7 +51,7 @@ main (int argc, char *argv[])
 	* Variable Setting
 	*********************/
 	srand (time(NULL));
-	uint64_t maxStep = 1000;
+	uint64_t maxStep = 5;
 
 	// Mode Setting
 	bool rlMod = false;
@@ -80,7 +80,7 @@ main (int argc, char *argv[])
 	*********************/
 	CommandLine cmd;
 	cmd.AddValue ("port", "RL Socket Port", port);
-	cmd.AddValue ("obsMod", "Obs Mod: track/car/temp", obsMod);
+	cmd.AddValue ("obsMod", "Obs Mod: track/car/temp/multi", obsMod);
 	cmd.AddValue ("netMod", "Network Mode: True/False", netMod);
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
@@ -115,11 +115,11 @@ main (int argc, char *argv[])
 
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
-	if (obsMod=="car")
+	if (obsMod=="car" || obsMod=="multi")
 		objectN = 0;
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
-	uint32_t objectMax = 10; // used in car obsMod
+	uint32_t objectMax = 40; // used in car obsMod
 
 	// Car Setting 
 	std::string navFunc = "Greedy"; // Random, Greedy	
@@ -201,7 +201,7 @@ main (int argc, char *argv[])
 		// Create Object
 		ObjectContain *oc = new ObjectContain[serviceN];
 		oc->obsMod = obsMod;
-		if (obsMod == "car")
+		if (obsMod=="car" || obsMod=="multi")
 			oc->objectMax = objectMax;
 		else
 			oc->objectMax = objectN;

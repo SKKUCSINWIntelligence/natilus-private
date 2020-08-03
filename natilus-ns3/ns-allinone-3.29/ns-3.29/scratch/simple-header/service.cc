@@ -66,7 +66,7 @@ void Service::SendData (void)
 	data->cellId = cellId;
 	data->sampleRate = sampleRate; 
 	data->sampleValue = sampleValue;
-	if (obsMod == "car")
+	if (obsMod == "car" || obsMod == "multi")
 	{
 		data->carCell = new bool[oc->objectMax];
 		
@@ -135,11 +135,11 @@ void Service::GetSample (void)
 {
 	oc->Moving ();
 
-	if (obsMod == "car" || obsMod == "track")
+	if (obsMod == "car" || obsMod == "track" || obsMod == "multi")
 	{
 		sampleValue = oc->trackMap[cellId];
 
-		if (obsMod == "car")
+		if (obsMod == "car" || obsMod == "multi")
 		{
 			for (uint32_t i=0; i<(oc->objectMax); i++)
 			{
