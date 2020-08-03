@@ -14,12 +14,17 @@ class Transformer(nn.Module):
         self.n_head = n_head
         self.n_history = n_history
         
+        if self.side==6 || self.side==8 || self.side==10:
+            self.n_obsv = 144
+        elif self.side==12 || self.side==14 || self.side==16:
+            self.n_obsv = 324
+
         # Hidden Node Size 
         #d_feedforward = math.ceil(n_sensors * n_history * d_info * 1.5)
         #print("Hidden Node Size:", d_feedforward)
 
         # Embedding
-        self.embed = Embedding(n_sensors, d_info, n_history)
+        self.embed = Embedding(n_sensors, d_info, n_history, self.n_obsv)
           
         # Self Attention
         self.sattn = TransformerEncoderLayer(d_info, n_head)
@@ -47,12 +52,13 @@ class Transformer(nn.Module):
         return tmp
 
 class Embedding(nn.Module):
-    def __init__(self, n_sensors=25, d_info=3, n_history=3, dropout=0.1, activation="relu"):
+    def __init__(self, n_sensors=25, d_info=3, n_history=3, n_obsv=144, dropout=0.1, activation="relu"):
         super(Embedding, self).__init__()
         
         self.n_sensors = n_sensors
         self.d_info = d_info
         self.n_history = n_history
+        self.n_obsv = n_obsv
 
         self.linear1 = nn.Linear(d_info, d_info*2)
         self.linear2 = nn.Linear(d_info*2, d_info)
@@ -65,9 +71,9 @@ class Embedding(nn.Module):
         
         if n_history > 1:
             device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-            self.factor = torch.zeros([1, 144*n_history, d_info]).to(device)
+            self.factor = torch.zeros([1, n_obsv*n_history, d_info]).to(device)
             f = 1 
-            for i in range(144*n_history):
+            for i in range(n_obsv*n_history):
                 self.factor[0][i] = f
                 f += 1
                 if f > self.n_history:
@@ -85,7 +91,7 @@ class Embedding(nn.Module):
    
         if self.n_history > 1:
             out = out * self.factor
-        out = out.view(-1, 144, self.d_info*self.n_history)
+        out = out.view(-1, self.n_obsv, self.d_info*self.n_history)
 
         out = self.linear3(out)
         out = self.activation(out)
