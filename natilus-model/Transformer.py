@@ -67,7 +67,7 @@ class Embedding(nn.Module):
             device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
             self.factor = torch.zeros([1, 144*n_history, d_info]).to(device)
             f = 1 
-            for i in range(n_sensors*n_history):
+            for i in range(144*n_history):
                 self.factor[0][i] = f
                 f += 1
                 if f > self.n_history:
