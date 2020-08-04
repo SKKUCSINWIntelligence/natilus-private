@@ -94,7 +94,7 @@ main (int argc, char *argv[])
 		trace = false;
 		carInfo = false;
 		channelInfo = false;
-		stateInfo = false;
+		//stateInfo = true;
 		evalInfo = false;
 		rlMod = true;
 	}
@@ -106,7 +106,7 @@ main (int argc, char *argv[])
 	
 	// Variable Setting
 	uint32_t serviceN = 1; // Service #
-	uint32_t bwLimit = 50; // unit: %
+	uint32_t bwLimit = 100; // unit: %
 
 	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
 	uint32_t sampleSize = 1500; // Bytes per Sample
@@ -119,7 +119,7 @@ main (int argc, char *argv[])
 		objectN = 0;
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
-	uint32_t objectMax = 40; // used in car obsMod
+	uint32_t objectMax = 52; // used in car obsMod
 
 	// Car Setting 
 	std::string navFunc = "Greedy"; // Random, Greedy	

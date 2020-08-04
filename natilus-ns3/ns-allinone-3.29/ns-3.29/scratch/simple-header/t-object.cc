@@ -353,7 +353,7 @@ void ObjectContain::NewMulti (bool reGen)
 	int o = rand() % objectMax / 4;
 	int d = o - (int) (objectN / 4);
 	//std::cout << d << std::endl;
-	if (d > 3)
+	if (d > 5)
 	{
 		for (int i=0; i<d; i++)
 		{
@@ -419,10 +419,11 @@ void ObjectContain::NewMulti (bool reGen)
 			uint32_t _yid = cell[i] / unitN;
 			double _x = cellUnit*_xid + cellUnit/2;
 			double _y = cellUnit*_yid + cellUnit/2;
-			uint32_t _d = (rand() % d) + 1;
+			uint32_t _d = (rand() % (int)(d/2)) + 1;
 			// Save New Generation
 			//newMap[cell[i]] += _d; 
 			//std::cout << _d << std::endl;	
+
 			for (uint32_t j=0; j<_d; j++)
 			{
 				for (uint32_t k=0; k<objectMax; k++)
@@ -430,7 +431,6 @@ void ObjectContain::NewMulti (bool reGen)
 					OBJECT *obj = &object[k];
 					if (!obj->occupy)
 					{
-						//std::cout << "Create New Object" << std::endl;
 						obj->x = _x;
 						obj->y = _y;
 						obj->vel = vel;
