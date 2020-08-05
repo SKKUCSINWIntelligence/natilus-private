@@ -56,7 +56,7 @@ main (int argc, char *argv[])
 	// Mode Setting
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
-	std::string obsMod = "car"; // 1. temp, 2. track 3. car
+	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
 	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "last"; //	1. last 2. action
@@ -119,7 +119,7 @@ main (int argc, char *argv[])
 		objectN = 0;
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
-	uint32_t objectMax = 52; // used in car obsMod
+	uint32_t objectMax = 40; // used in car obsMod
 
 	// Car Setting 
 	std::string navFunc = "Greedy"; // Random, Greedy	
