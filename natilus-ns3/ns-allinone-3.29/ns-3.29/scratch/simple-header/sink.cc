@@ -164,6 +164,7 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 		totRecvByte += data->dataSize;
 		totRecvCnt += 1;
 		totDelay += delay;
+		double pastValue = state[serId].sampleValue[cellId];
 
 		// Insert Info
 		state[serId].sampleRate[cellId] = data->sampleRate;
@@ -223,7 +224,10 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 		}
 		else
 			state[serId].sampleValue[cellId] = data->sampleValue;
-
+		
+		double curValue = state[serId].sampleValue[cellId];
+		if (pastValue != curValue)
+			state[serId].stateChangeTime[cellId] = Simulator::Now();
 		state[serId].upInter[cellId] = delay;
 		state[serId].lastUpdateTime[cellId] = Simulator::Now (); 
 		
@@ -1033,6 +1037,14 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 			last[i][j] = 0;
 	}
 	
+	double **change = new double*[ssN];
+	for (uint32_t i=0; i<ssN; i++)
+	{
+		change[i] = new double[ssN];
+		for (uint32_t j=0; j<ssN; j++)
+			change[i][j] = 0;
+	}
+
 	uint32_t **rate = new uint32_t*[ssN];
 	for (uint32_t i=0; i<ssN; i++)
 	{
@@ -1065,12 +1077,14 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 			{
 				obs[ssN-y-1][x] = state->sampleValue[i];
 				last[ssN-y-1][x] = Simulator::Now().GetMilliSeconds() - state->lastUpdateTime[i].GetMilliSeconds();
+				change[ssN-y-1][x] = Simulator::Now().GetMilliSeconds() - state->stateChangeTime[i].GetMilliSeconds();
 			}
 		}
 		else
 		{
 			obs[ssN - y - 1][x] = state->sampleValue[i];
 			last[ssN - y - 1][x] = Simulator::Now().GetMilliSeconds() - state->lastUpdateTime[i].GetMilliSeconds ();
+			change[ssN-y-1][x] = Simulator::Now().GetMilliSeconds() - state->stateChangeTime[i].GetMilliSeconds();
 		}
 		rate[ssN - y - 1][x] = state->sampleRate[i];
 		ground[ssN - y - 1][x] = oc->trackMap[i];
@@ -1095,7 +1109,7 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 		if (i != ssN - 1) 
 			message += ",";
 	}
-	if (stateMod == "last" || stateMod == "action")
+	if (stateMod == "last" || stateMod == "change")
 	{
 		message += "],[";
 		for (uint32_t i=0; i<ssN; ++i)
@@ -1114,7 +1128,7 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 				message += ",";
 		}
 	}
-	if (stateMod == "action")
+	if (stateMod == "change")
 	{
 		message += "],[";
 		for (uint32_t i=0; i<ssN; ++i)
@@ -1122,7 +1136,7 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 			message += "[";
 			for (uint32_t j=0; j<ssN; ++j)
 			{
-				message += std::to_string(rate[i][j]);
+				message += std::to_string(change[i][j]);
 				
 				if (j != ssN - 1)
 					message += ",";
@@ -1166,11 +1180,13 @@ void ZMQSendObs (zmq::socket_t* zmqsocket, std::string stateMod, STATE* state, O
 	{
 		delete[] obs[i];
 		delete[] last[i];
+		delete[] change[i];
 		delete[] rate[i];
 		delete[] ground[i];
 	}
 	delete[] obs;
 	delete[] last;
+	delete[] change;
 	delete[] rate;
 	delete[] ground;
 }

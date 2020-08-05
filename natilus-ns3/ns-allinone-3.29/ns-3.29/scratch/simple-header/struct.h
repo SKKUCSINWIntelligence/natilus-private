@@ -11,6 +11,7 @@ typedef struct State{
 	int sampleCar[1000] = {0}; // Car Cell
 	uint64_t upInter[SEN_NUM] = {0}; // MilliSecond
 	Time lastUpdateTime[SEN_NUM]; // MilliSecond
+	Time stateChangeTime[SEN_NUM];
 	uint32_t action[SEN_NUM] = {0}; // #/s 
 }STATE;
 

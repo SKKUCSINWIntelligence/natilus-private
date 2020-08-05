@@ -90,20 +90,18 @@ void ObjectContain::Start ()
 	// If Multi Init loc
 	if (obsMod == "multi")
 	{
-		loc = new uint32_t[unitN/2];
+		loc = new uint32_t[unitN/2 -1];
 		
 		if (unitN == 6)
 		{
 			loc[0] = 7;
 			loc[1] = 16;
-			loc[2] = 26;
 		}
 		else if (unitN == 8)
 		{
-			loc[0] = 19;
-			loc[1] = 30; 
-			loc[2] = 34;
-			loc[3] = 53;
+			loc[0] = 18;
+			loc[1] = 29; 
+			loc[2] = 43;
 		}
 		else if (unitN == 10)
 		{
@@ -111,7 +109,6 @@ void ObjectContain::Start ()
 			loc[1] = 47; 
 			loc[2] = 52;
 			loc[3] = 74;
-			loc[4] = 88;
 		}
 		else if (unitN == 12)
 		{
@@ -120,7 +117,6 @@ void ObjectContain::Start ()
 			loc[2] = 76;
 			loc[3] = 93;
 			loc[4] = 98;
-			loc[5] = 115;
 		}
 		else if (unitN == 14)
 		{
@@ -130,7 +126,6 @@ void ObjectContain::Start ()
 			loc[3] = 89;
 			loc[4] = 119;
 			loc[5] = 136;
-			loc[6] = 143;
 		}
 		else if (unitN == 16)
 		{
@@ -141,7 +136,6 @@ void ObjectContain::Start ()
 			loc[4] = 119;
 			loc[5] = 163;
 			loc[6] = 204;
-			loc[7] = 217;
 		}
 	}
 	// Create Map
@@ -397,7 +391,7 @@ void ObjectContain::NewMulti (bool reGen)
 		//newMap[c] += d;
 
 		// Make a	cluster
-		uint32_t p = rand()%4;
+		uint32_t p = 0; //rand()%4;
 		uint32_t cell[3] = {0};
 
 		switch(p) 
@@ -430,7 +424,7 @@ void ObjectContain::NewMulti (bool reGen)
 			uint32_t _yid = cell[i] / unitN;
 			double _x = cellUnit*_xid + cellUnit/2;
 			double _y = cellUnit*_yid + cellUnit/2;
-			uint32_t _d = (rand() % (int)(d/2)) + 1;
+			uint32_t _d = (rand() % (d-2)) + 1;
 			// Save New Generation
 			//newMap[cell[i]] += _d; 
 			//std::cout << d << " " << _d << std::endl;	
