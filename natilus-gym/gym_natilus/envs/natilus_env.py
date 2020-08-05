@@ -234,14 +234,39 @@ class NatilusEnv(gym.Env):
                 # change last udpate map
                 if obs[1][i][j] == 0:
                     obs[1][i][j] = 0
-                elif obs[1][i][j] <= 33:
-                    obs[1][i][j] = 1/4.0
-                elif obs[1][i][j] <= 66:
-                    obs[1][i][j] = 2/4.0
-                elif obs[1][i][j] <= 99:
-                    obs[1][i][j] = 3/4.0
+                elif obs[1][i][j] <= 10:
+                    obs[1][i][j] = 0.1
+                elif obs[1][i][j] <= 20:
+                    obs[1][i][j] = 0.2
+                elif obs[1][i][j] <= 30:
+                    obs[1][i][j] = 0.3
+                elif obs[1][i][j] <= 40:
+                    obs[1][i][j] = 0.4
+                elif obs[1][i][j] <= 50:
+                    obs[1][i][j] = 0.5
+                elif obs[1][i][j] <= 60:
+                    obs[1][i][j] = 0.6
+                elif obs[1][i][j] <= 70:
+                    obs[1][i][j] = 0.7
+                elif obs[1][i][j] <= 80:
+                    obs[1][i][j] = 0.8
+                elif obs[1][i][j] <= 90:
+                    obs[1][i][j] = 0.9
                 else:
-                    obs[1][i][j] = 4/4.0
+                    obs[1][i][j] = 1
+
+                # change change time map
+                if obs[2][i][j] == 0:
+                    obs[2][i][j] = 0
+                elif obs[2][i][j] <= 33:
+                    obs[2][i][j] = 1/4.0
+                elif obs[2][i][j] <= 66:
+                    obs[2][i][j] = 2/4.0
+                elif obs[2][i][j] <= 99:
+                    obs[2][i][j] = 3/4.0
+                else:
+                    obs[2][i][j] = 4/4.0
+
         # change multi object
         sum = np.sum(obs[0])
         if sum != 0:
