@@ -433,7 +433,7 @@ void ObjectContain::NewMulti (bool reGen)
 			uint32_t _d = (rand() % (int)(d/2)) + 1;
 			// Save New Generation
 			//newMap[cell[i]] += _d; 
-			std::cout << d << " " << _d << std::endl;	
+			//std::cout << d << " " << _d << std::endl;	
 
 			for (uint32_t j=0; j<_d; j++)
 			{
