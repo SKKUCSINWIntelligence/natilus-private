@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Transformer(nn.Module):
-    def __init__(self, n_sensors=25, d_info=3, n_point=9, n_head=1, n_history=3):
+    def __init__(self, n_sensors=25, d_info=3, n_point=9, n_head=1, n_history=3, test=False):
         super(Transformer, self).__init__()
 
         self.n_sensors = n_sensors
@@ -14,22 +14,21 @@ class Transformer(nn.Module):
         self.n_head = n_head
         self.n_history = n_history
         
-        if self.side==6 || self.side==8 || self.side==10:
+        if self.side==6 or self.side==8 or self.side==10:
             self.n_obsv = 144
-        elif self.side==12 || self.side==14 || self.side==16:
+        elif self.side==12 or self.side==14 or self.side==16:
             self.n_obsv = 324
 
-        # Hidden Node Size 
-        #d_feedforward = math.ceil(n_sensors * n_history * d_info * 1.5)
-        #print("Hidden Node Size:", d_feedforward)
-
         # Embedding
-        self.embed = Embedding(n_sensors, d_info, n_history, self.n_obsv)
+        self.embed = Embedding(n_sensors, d_info, n_history, self.n_obsv, test=test)
           
         # Self Attention
         self.sattn = TransformerEncoderLayer(d_info, n_head)
-        
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+         
+        if test:
+            self.device = "cpu"
+        else:
+            self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     def forward(self, x):
         """
@@ -44,6 +43,7 @@ class Transformer(nn.Module):
         out = torch.chunk(out, 9, dim=1)
         tmp = torch.tensor([]).to(self.device)
         
+        
         for o in out:
             out = self.sattn(o)
             out = torch.sum(out, dim=1)
@@ -52,7 +52,7 @@ class Transformer(nn.Module):
         return tmp
 
 class Embedding(nn.Module):
-    def __init__(self, n_sensors=25, d_info=3, n_history=3, n_obsv=144, dropout=0.1, activation="relu"):
+    def __init__(self, n_sensors=25, d_info=3, n_history=3, n_obsv=144, dropout=0.1, activation="relu", test=False):
         super(Embedding, self).__init__()
         
         self.n_sensors = n_sensors
@@ -68,10 +68,14 @@ class Embedding(nn.Module):
 
         self.activation = _get_activation_fn(activation)
         self.tanh = _get_activation_fn("tanh")
-        
+        self.sigmoid = _get_activation_fn("sigmoid")
+
         if n_history > 1:
-            device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-            self.factor = torch.zeros([1, n_obsv*n_history, d_info]).to(device)
+            if test:
+                self.device = "cpu"
+            else:
+                self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+            self.factor = torch.zeros([1, n_obsv*n_history, d_info]).to(self.device)
             f = 1 
             for i in range(n_obsv*n_history):
                 self.factor[0][i] = f
@@ -86,13 +90,12 @@ class Embedding(nn.Module):
         
         """
         Time Encoding
-        """ 
+        """
         out = self.tanh(out)
-   
         if self.n_history > 1:
             out = out * self.factor
         out = out.view(-1, self.n_obsv, self.d_info*self.n_history)
-
+        
         out = self.linear3(out)
         out = self.activation(out)
         out = self.linear4(out)
@@ -123,27 +126,22 @@ class MultiheadAttention(nn.Module):
         self.w_ks = nn.Linear(d_embed, d_embed*n_head, bias=False)
         self.w_vs = nn.Linear(d_embed, d_embed*n_head, bias=False)
         
-        #self.dropout1 = nn.Dropout(dropout)
-        
+        #self.dropout1 = nn.Dropout(dropout) 
         #self.layer_norm = nn.LayerNorm(d_embed)
 
     def forward(self, query, key, value):
         residual = query
-
         q = self.w_qs(query)
         k = self.w_ks(query)
         v = self.w_vs(query)
 
-
         k = k.permute(0,2,1)
-        attn = torch.matmul(q, k)
-
-        #attn = F.softmax(attn, dim=-1)
+        attn = torch.matmul(q/(2**0.5), k)
+        attn = F.softmax(attn, dim=-1)
         #attn = self.dropout1(attn)
- 
+    
         out = torch.matmul(attn, v)
-        #out += residual
-        
+        #out += residual 
         #out = self.layer_norm(out)
         return out
 
@@ -166,7 +164,6 @@ class FeedForward(nn.Module):
 
         out = self.dropout(out)
         #out += residual
-
         #out = self.layer_norm(out)
         return out
 
@@ -175,3 +172,5 @@ def _get_activation_fn(activation):
         return F.relu
     if activation == "tanh":
         return F.tanh
+    if activation == "sigmoid":
+        return F.sigmoid
