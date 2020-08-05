@@ -70,7 +70,7 @@ class Actor(BasePolicy):
         # woo
         sensors = int(input("Sensor Num "))
         historys = int(input("History Num "))
-        features_dim = 9 * 2 #int(features_dim / historys)
+        features_dim = 9 * 3 #int(features_dim / historys)
         
         self.use_sde = use_sde
         self.sde_features_extractor = None
@@ -112,7 +112,7 @@ class Actor(BasePolicy):
         
         # woo
         
-        self.transformer = Transformer(sensors, 2, 25, 1, historys)
+        self.transformer = Transformer(sensors, 3, 25, 1, historys)
 
     def _get_data(self) -> Dict[str, Any]:
         data = super()._get_data()
@@ -234,7 +234,7 @@ class Critic(BasePolicy):
         # woo 
         sensors = int(input("Sensor Num "))
         historys = int(input("History Num "))
-        features_dim = 9 * 2 #int(features_dim / historys)
+        features_dim = 9 * 3 #int(features_dim / historys)
 
         action_dim = get_action_dim(self.action_space)
 
@@ -247,7 +247,7 @@ class Critic(BasePolicy):
         self.q_networks = [self.q1_net, self.q2_net]
         
         # woo
-        self.transformer = Transformer(sensors, 2, 25, 1, historys) #sensors, innfo, points, heads, history
+        self.transformer = Transformer(sensors, 3, 25, 1, historys) #sensors, innfo, points, heads, history
 
     def forward(self, obs: th.Tensor, action: th.Tensor) -> List[th.Tensor]:
         # Learn the features extractor using the policy loss only

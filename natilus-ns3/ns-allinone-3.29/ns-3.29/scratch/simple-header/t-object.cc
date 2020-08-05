@@ -336,7 +336,7 @@ void ObjectContain::NewMulti (bool reGen)
 {	
 	// (0731)
 	// Generation Loc is fixed. Should Angle also fixed?
-	uint32_t r = rand() % (int) (unitN/2 -1);
+	uint32_t r = rand() % (int) (unitN/2 - 1);
 	uint32_t c = loc[r]; 
 	uint32_t xid = c % unitN;
 	uint32_t yid = c / unitN;
