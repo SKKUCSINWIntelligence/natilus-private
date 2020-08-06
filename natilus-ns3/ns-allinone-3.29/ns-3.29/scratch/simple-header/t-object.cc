@@ -18,6 +18,7 @@ ObjectContain::~ObjectContain ()
 	if (obsMod == "multi")
 	{
 		delete[] loc;	
+		delete[] ang;
 	}
 }
 
@@ -91,7 +92,7 @@ void ObjectContain::Start ()
 	if (obsMod == "multi")
 	{
 		loc = new uint32_t[unitN/2 -1];
-		
+		ang = new double[3*(unitN/2-1)];	
 		if (unitN == 6)
 		{
 			loc[0] = 7;
@@ -102,21 +103,60 @@ void ObjectContain::Start ()
 			loc[0] = 18;
 			loc[1] = 29; 
 			loc[2] = 43;
+			
+			ang[0] = 35.0/360.0*2*PI;
+			ang[1] = 105.0/360.0*2*PI;
+			ang[2] = 200.0/360.0*2*PI;
+			ang[3] = 220.0/360.0*2*PI;
+			ang[4] = 145.0/360.0*2*PI;
+			ang[5] = 90.0/360.0*2*PI;
+			ang[6] = 12.0/360.0*2*PI;
+			ang[7] = 110.0/360.0*2*PI;
+			ang[8] = 255.0/360.0*2*PI;
 		}
 		else if (unitN == 10)
 		{
-			loc[0] = 22;
-			loc[1] = 47; 
-			loc[2] = 52;
-			loc[3] = 74;
+			loc[0] = 34;
+			loc[1] = 57; 
+			loc[2] = 62;
+			loc[3] = 85;
+
+			ang[0] = 45.0/360.0*2*PI;
+			ang[1] = 135.0/360.0*2*PI;
+			ang[2] = 225.0/360.0*2*PI;
+			ang[3] = 100.0/360.0*2*PI;
+			ang[4] = 190.0/360.0*2*PI;
+			ang[5] = 270.0/360.0*2*PI;
+			ang[6] = 30.0/360.0*2*PI;
+			ang[7] = 90.0/360.0*2*PI;
+			ang[8] = 345.0/360.0*2*PI;
+			ang[9] = 0;
+			ang[10] = 180.0/360.0*2*PI;
+			ang[11] = 270.0/360.0*2*PI;
 		}
 		else if (unitN == 12)
 		{
 			loc[0] = 39;
-			loc[1] = 56; 
-			loc[2] = 76;
-			loc[3] = 93;
-			loc[4] = 98;
+			loc[1] = 57; 
+			loc[2] = 78;
+			loc[3] = 116;
+			loc[4] = 124;
+		
+			ang[0] = 10.0/360.0*2*PI;
+			ang[1] = 50.0/360.0*2*PI;
+			ang[2] = 340.0/360.0*2*PI;
+			ang[3] = 100.0/360.0*2*PI;
+			ang[4] = 180.0/360.0*2*PI;
+			ang[5] = 240.0/360.0*2*PI;
+			ang[6] = 70.0/360.0*2*PI;
+			ang[7] = 170.0/360.0*2*PI;
+			ang[8] = 270.0/360.0*2*PI;
+			ang[9] = 120.0/360.0*2*PI;;
+			ang[10] = 200.0/360.0*2*PI;
+			ang[11] = 280.0/360.0*2*PI;	
+			ang[12] = 10.0/360.0*2*PI;;
+			ang[13] = 190.0/360.0*2*PI;
+			ang[14] = 340.0/360.0*2*PI;	
 		}
 		else if (unitN == 14)
 		{
@@ -342,8 +382,9 @@ void ObjectContain::NewMulti (bool reGen)
 	uint32_t yid = c / unitN;
 	double x = cellUnit*xid + cellUnit/2;
 	double y = cellUnit*yid + cellUnit/2;
-	double a = (rand() % 360)/360.0*2*PI;
-	
+	//double a = (rand() % 360)/360.0*2*PI;
+	uint32_t ar = rand() % 3;
+	double a = ang[r*3+ar];
 		
 	int o = rand() % objectMax / 4;
 	int d = o - (int) (objectN / 4);
@@ -428,6 +469,8 @@ void ObjectContain::NewMulti (bool reGen)
 			// Save New Generation
 			//newMap[cell[i]] += _d; 
 			//std::cout << d << " " << _d << std::endl;	
+			if (objectN+_d >= objectMax)
+				break;
 
 			for (uint32_t j=0; j<_d; j++)
 			{
