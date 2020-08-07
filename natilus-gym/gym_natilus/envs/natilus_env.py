@@ -30,21 +30,27 @@ class NatilusEnv(gym.Env):
         if self.sensor_xnum == 6:
             self.cell_num = 4
             self.point = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+            self.ypoint = [0, 0, 0, 1, 1, 1, 2, 2, 2]
         elif self.sensor_xnum == 8:
             self.cell_num = 4
             self.point = [0, 2, 4, 0, 2, 4, 0, 2, 4]
+            self.ypoint = [0, 0, 0, 2, 2, 2, 4, 4, 4]
         elif self.sensor_xnum == 10:
             self.cell_num = 4
             self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
+            self.ypoint = [0, 0, 0, 3, 3, 3, 6, 6, 6]
         elif self.sensor_xnum == 12:
             self.cell_num = 6
             self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
+            self.ypoint = [0, 0, 0, 3, 3, 3, 6, 6, 6]
         elif self.sensor_xnum == 14:
             self.cell_num = 6
             self.point = [0, 4, 8, 0, 4, 8, 0, 4, 8]
+            self.ypoint = [0, 0, 0, 4, 4, 4, 8, 8, 8]
         elif self.sensor_xnum == 16:
             self.cell_num = 6
             self.point = [0, 5, 10, 0, 5, 10, 0, 5, 10]
+            self.ypoint = [0, 0, 0, 5, 5, 5, 10, 10, 10]
 
         # Observiation & Action Space
         if self.rlMod == 1:
@@ -71,6 +77,7 @@ class NatilusEnv(gym.Env):
         self.sum_reward = 0
 
     def step(self, action):
+        action = self.ganInstead(action)
         action = self.softmax(action)
         self.server._action (action)
         done = self.server._end()
@@ -325,7 +332,26 @@ class NatilusEnv(gym.Env):
         y = exp_a / sum_exp_a
 
         return y
+    
+    def ganInstead(self, action):
+        _actions = []
 
+        cnt = 0
+        for i in range(self.sensor_xnum):
+            for j in range(self.sensor_xnum):
+                y = i*2 + 1
+                x = j*2 + 1
+                
+                tmp = 0
+                for k in range(self.point_num): 
+                    cell_x = self.point[k]*2 + (self.cell_num/2 * 2)
+                    cell_y = self.ypoint[k]*2 + (self.cell_num/2 *2)
+                    dist = ((x-cell_x)*(x-cell_x)+(y-cell_y)*(y-cell_y)) ** 0.5
+                    if dist < 1:
+                        dist = 1
+                    tmp += action[k] / dist
+                _actions.append(tmp)
+        return _actions
 
         """
         if self.rlMod == 2:
