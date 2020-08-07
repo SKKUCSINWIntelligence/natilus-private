@@ -12,7 +12,6 @@ ObjectContain::~ObjectContain ()
 	delete[] object;
 	delete[] trackMap;
 	delete[] tempMap;
-	delete[] newMap;
 	delete[] zero;
 	delete[] room;
 	if (obsMod == "multi")
@@ -91,8 +90,9 @@ void ObjectContain::Start ()
 	// If Multi Init loc
 	if (obsMod == "multi")
 	{
-		loc = new uint32_t[unitN/2 -1];
-		ang = new double[3*(unitN/2-1)];	
+		loc = new uint32_t[(unitN/2) -1];
+		ang = new double[3*((unitN/2)-1)];
+		
 		if (unitN == 6)
 		{
 			loc[0] = 7;
@@ -181,7 +181,6 @@ void ObjectContain::Start ()
 	// Create Map
 	trackMap = new double[senN];
 	tempMap = new double[senN];
-	newMap = new uint32_t[senN];
 
 	zero = new double[senN];
 	room = new double[senN];
@@ -191,7 +190,6 @@ void ObjectContain::Start ()
 		room[i] = 25;
 		trackMap[i] = 0;
 		tempMap[i] = 25;
-		newMap = 0;
 	}
 
 	MapUpdate ();
@@ -199,7 +197,7 @@ void ObjectContain::Start ()
 	
 	if (obsMod == "car")
 	{
-		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, true);
+		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, false);
 	}
 	if (obsMod == "multi")
 	{
@@ -376,7 +374,7 @@ void ObjectContain::NewMulti (bool reGen)
 {	
 	// (0731)
 	// Generation Loc is fixed. Should Angle also fixed?
-	uint32_t r = rand() % (int) (unitN/2 - 1);
+	uint32_t r = rand() % (int) ((unitN/2) - 1);
 	uint32_t c = loc[r]; 
 	uint32_t xid = c % unitN;
 	uint32_t yid = c / unitN;
@@ -427,9 +425,6 @@ void ObjectContain::NewMulti (bool reGen)
 				}
 			}
 		}
-		
-		// Save New Generation 
-		//newMap[c] += d;
 
 		// Make a	cluster
 		uint32_t p = 0; //rand()%4;
@@ -466,9 +461,9 @@ void ObjectContain::NewMulti (bool reGen)
 			double _x = cellUnit*_xid + cellUnit/2;
 			double _y = cellUnit*_yid + cellUnit/2;
 			uint32_t _d = (rand() % (d-2)) + 1;
-			// Save New Generation
-			//newMap[cell[i]] += _d; 
-			//std::cout << d << " " << _d << std::endl;	
+
+			if (objectN >= objectMax)
+				break;
 			if (objectN+_d >= objectMax)
 				break;
 

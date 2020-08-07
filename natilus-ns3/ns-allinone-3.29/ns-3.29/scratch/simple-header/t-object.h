@@ -51,7 +51,6 @@ public:
 	// Map (Observation)
 	double *trackMap;
 	double *tempMap;
-	uint32_t *newMap; // New Generation for Multi
 	double *zero; // array 0
 	double *room; // array 25 (c)
 	uint32_t *loc; // Location for Multi

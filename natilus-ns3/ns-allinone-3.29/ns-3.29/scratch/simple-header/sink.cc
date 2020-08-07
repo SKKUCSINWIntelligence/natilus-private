@@ -231,6 +231,8 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 		state[serId].upInter[cellId] = delay;
 		state[serId].lastUpdateTime[cellId] = Simulator::Now (); 
 		
+		if (obsMod == "multi" || obsMod == "car")
+			delete[] data->carCell;
 		delete data;
 	}	
 	delete dataContain;
