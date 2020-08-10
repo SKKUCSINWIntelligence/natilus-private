@@ -106,7 +106,7 @@ void Link::SensorRecv (std::queue<DATA*> *dataContain)
 		(ser->totActDelay) += ( now - (data->genTime).GetMilliSeconds() );
 		ser->sampleRate = data->action;
 		ser->ReSchedule ();
-
+	
 		delete data;
 	}
 	delete dataContain;

@@ -71,13 +71,14 @@ class NatilusEnv(gym.Env):
             self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
         else:"""
         self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
+        #self.action_sapce = spaces.Box (low=-1, high=1, shape=(self.point_num,), dtype=np.float32) 
         
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
         self.sum_reward = 0
 
     def step(self, action):
-        action = self.ganInstead(action)
+        #action = self.ganInstead(action)
         action = self.softmax(action)
         self.server._action (action)
         done = self.server._end()
