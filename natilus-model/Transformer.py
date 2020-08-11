@@ -136,7 +136,7 @@ class MultiheadAttention(nn.Module):
         v = self.w_vs(query)
 
         k = k.permute(0,2,1)
-        attn = torch.matmul(q/(2**0.5), k)
+        attn = torch.matmul(q/(3**0.5), k)
         attn = F.softmax(attn, dim=-1)
         #attn = self.dropout1(attn)
     

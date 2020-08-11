@@ -70,19 +70,20 @@ class NatilusEnv(gym.Env):
             self.action_space = spaces.Box (low=-1, high=1, shape=((self.sensor_xnum-2)*(self.sensor_xnum-2),), dtype=np.float32)
             self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
         else:"""
-        self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
-        #self.action_sapce = spaces.Box (low=-1, high=1, shape=(self.point_num,), dtype=np.float32) 
+        #self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
+        self.action_space = spaces.Box (low=-1, high=1, shape=(16,), dtype=np.float32) 
         
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
         self.sum_reward = 0
 
     def step(self, action):
-        #action = self.ganInstead(action)
+        action = self.ganInstead(action)
+        action = self.clipFunc(action)
         action = self.softmax(action)
         self.server._action (action)
         done = self.server._end()
-        reward = self.server._reward()
+        reward = self.server._reward() 
         obs = np.array(self.server._observation(), dtype=np.float32)
 
         self.sum_reward = self.sum_reward + reward;
@@ -94,7 +95,6 @@ class NatilusEnv(gym.Env):
             obs = self.obs_figure_multi(obs)
 
         if done:
-            self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
             self.file = open(self.reward_text, 'a')
             data = "%f\n" % self.sum_reward
             self.file.write(data)
@@ -334,19 +334,32 @@ class NatilusEnv(gym.Env):
 
         return y
     
+    def clipFunc(self, action):
+        _actions = []
+        
+        for a in action: 
+            if a <= 0.5:
+                _actions.append(-2)
+            else:
+                _actions.append(a*2)
+        return _actions
+
     def ganInstead(self, action):
         _actions = []
+        length = 1 
+        xcell = [1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5]
+        ycell = [1.5, 1.5, 1.5, 1.5, 4.5, 4.5, 4.5, 4.5, 7.5, 7.5, 7.5, 7.5, 10.5, 10.5, 10.5, 10.5]
 
         cnt = 0
         for i in range(self.sensor_xnum):
             for j in range(self.sensor_xnum):
-                y = i*2 + 1
-                x = j*2 + 1
+                y = i*length + 1
+                x = j*length + 1
                 
                 tmp = 0
-                for k in range(self.point_num): 
-                    cell_x = self.point[k]*2 + (self.cell_num/2 * 2)
-                    cell_y = self.ypoint[k]*2 + (self.cell_num/2 *2)
+                for k in range(16): 
+                    cell_x = xcell[k] #self.point[k]*2 + (self.cell_num/2 * 2)
+                    cell_y = ycell[k] #self.ypoint[k]*2 + (self.cell_num/2 *2)
                     dist = ((x-cell_x)*(x-cell_x)+(y-cell_y)*(y-cell_y)) ** 0.5
                     if dist < 1:
                         dist = 1

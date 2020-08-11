@@ -265,8 +265,8 @@ void Sink::Eval ()
 		oc[i].Moving();
 	}
 
-	//if (stateInfo)
-	//	PrintInfo ();
+	if (stateInfo)
+		PrintInfo ();
 	
 	// Evaluation Method
 	Evaluation ();
@@ -279,9 +279,9 @@ void Sink::Eval ()
 void Sink::Communication ()
 {
 
-	if (stateInfo)
-		PrintInfo ();
-
+	//if (stateInfo)
+	//	PrintInfo ();
+	//std::cout << "reward: " << reward[0] / cnt[0] << std::endl;
 	if (obsMod=="car")
 	{ 
 		// Count the Car Clusters
@@ -743,6 +743,8 @@ void Sink::Reward (void)
                                 
     reward[0] += l*c*s;
 		reward_avg[0] += l*c*s;
+
+		//std::cout << "Reward: " << l*c*s << std::endl;
 	}
 }
 
