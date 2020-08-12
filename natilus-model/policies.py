@@ -11,8 +11,6 @@ from stable_baselines3.common.distributions import SquashedDiagGaussianDistribut
 
 import numpy as np
 import sys 
-sys.path.append('/home/woo/natilus/natilus-model')
-from Transformer import Transformer
 
 # CAP the standard deviation of the actor
 LOG_STD_MAX = 2

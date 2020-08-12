@@ -4,13 +4,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Transformer(nn.Module):
-    def __init__(self, n_sensors=25, d_info=3, n_point=9, n_head=1, n_history=3, test=False):
+    def __init__(self, n_sensors=25, d_info=3, n_head=1, n_history=3, test=False):
         super(Transformer, self).__init__()
 
         self.n_sensors = n_sensors
         self.side = n_sensors ** 0.5
-        self.d_info = d_info
-        self.n_point = n_point
+        self.d_info = d_info 
         self.n_head = n_head
         self.n_history = n_history 
 
@@ -37,7 +36,7 @@ class Transformer(nn.Module):
         """
 
         out = self.sattn(out)
-
+        out = out.view(-1, self.n_sensors*self.d_info)
         # [batch, sensor X info] 
         return out
 
