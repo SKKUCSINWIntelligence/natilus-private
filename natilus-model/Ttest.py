@@ -2,7 +2,7 @@ import torch
 from SingleTransformer import Transformer
 
 # sensor, info, point, head, history, test
-net = Transformer(16, 3, 9, 1, 3, True)
+net = Transformer(16, 3, 1, 3, True)
 
 input = torch.rand(2, 16*3, 3)
 #print(input)
@@ -10,5 +10,4 @@ input = torch.rand(2, 16*3, 3)
 out = net(input)
 
 #print(out.shape)
-#out = out.view(-1, 72)
-#print(out)
+print(out)
