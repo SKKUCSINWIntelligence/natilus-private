@@ -51,6 +51,7 @@ class NatilusEnv(gym.Env):
             self.cell_num = 6
             self.point = [0, 5, 10, 0, 5, 10, 0, 5, 10]
             self.ypoint = [0, 0, 0, 5, 5, 5, 10, 10, 10]
+        self.action_point = 16
 
         # Observiation & Action Space
         if self.rlMod == 1:
@@ -71,14 +72,14 @@ class NatilusEnv(gym.Env):
             self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
         else:"""
         #self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
-        self.action_space = spaces.Box (low=-1, high=1, shape=(16,), dtype=np.float32) 
+        self.action_space = spaces.Box (low=-1, high=1, shape=(self.action_point,), dtype=np.float32) 
         
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
         self.sum_reward = 0
 
     def step(self, action):
-        action = self.ganInstead(action)
+        action = self.LA3(action)
         action = self.clipFunc(action)
         action = self.softmax(action)
         self.server._action (action)
@@ -337,35 +338,41 @@ class NatilusEnv(gym.Env):
     def clipFunc(self, action):
         _actions = []
         
+        thresh = 0.5  
         for a in action: 
-            if a <= 0.5:
+            if a <= thresh:
                 _actions.append(-2)
             else:
                 _actions.append(a*2)
         return _actions
 
-    def ganInstead(self, action):
+    def LA3(self, action):
         _actions = []
         length = 1 
-        xcell = [1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5]
-        ycell = [1.5, 1.5, 1.5, 1.5, 4.5, 4.5, 4.5, 4.5, 7.5, 7.5, 7.5, 7.5, 10.5, 10.5, 10.5, 10.5]
+        if self.sensor_xnum == 12:
+            xcell = [1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5]
+            ycell = [1.5, 1.5, 1.5, 1.5, 4.5, 4.5, 4.5, 4.5, 7.5, 7.5, 7.5, 7.5, 10.5, 10.5, 10.5, 10.5]
+        elif self.sensor_xnum == 16:
+            xcell = [2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14]
+            ycell = [2, 2, 2, 2, 6, 6, 6, 6, 10, 10, 10, 10, 14, 14, 14, 14]
 
-        cnt = 0
         for i in range(self.sensor_xnum):
             for j in range(self.sensor_xnum):
                 y = i*length + 1
                 x = j*length + 1
                 
-                tmp = 0
-                for k in range(16): 
+                score = 0
+                for k in range(self.action_point): 
                     cell_x = xcell[k] #self.point[k]*2 + (self.cell_num/2 * 2)
                     cell_y = ycell[k] #self.ypoint[k]*2 + (self.cell_num/2 *2)
                     dist = ((x-cell_x)*(x-cell_x)+(y-cell_y)*(y-cell_y)) ** 0.5
                     if dist < 1:
                         dist = 1
-                    tmp += action[k] / dist
-                _actions.append(tmp)
+                    score += action[k] / dist
+                _actions.append(score)
         return _actions
+
+
 
         """
         if self.rlMod == 2:
