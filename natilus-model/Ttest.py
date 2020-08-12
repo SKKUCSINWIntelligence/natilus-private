@@ -1,9 +1,10 @@
 import torch
-from Transformer import Transformer
+from SingleTransformer import Transformer
 
-net = Transformer(64, 2, 25, 1, 3, True)
+# sensor, info, point, head, history, test
+net = Transformer(16, 3, 9, 1, 3, True)
 
-input = torch.rand(1, 144*3, 2)
+input = torch.rand(2, 16*3, 3)
 #print(input)
 
 out = net(input)
