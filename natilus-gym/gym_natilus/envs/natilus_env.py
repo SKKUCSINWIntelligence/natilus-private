@@ -3,9 +3,11 @@ import numpy as np
 import queue
 import copy
 import math
+import torch
 
 from gym import spaces
 from gym_natilus.envs.natilus import Server
+from gym_natilus.envs import Generator
 
 class NatilusEnv(gym.Env):
     """
@@ -20,6 +22,7 @@ class NatilusEnv(gym.Env):
         print("Sensor XNum:", self.sensor_xnum)
 
         self.obsMod = int(input("Obs Mode (1. track, 2. temp 3. multi): "))
+        self.actMod = int(input("Action Mode (1. LA3 2. GAN): "))
         self.rlMod = int(input("RL Mode (1. General, 2. Transformer): "))
         self.infoNum = int(input("Info Num: "))
         self.history_num = int(input("History Num: "))
@@ -40,7 +43,7 @@ class NatilusEnv(gym.Env):
             self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
             self.ypoint = [0, 0, 0, 3, 3, 3, 6, 6, 6]
         elif self.sensor_xnum == 12:
-            self.cell_num = 6
+            self.cell_num = 6    
             self.point = [0, 3, 6, 0, 3, 6, 0, 3, 6]
             self.ypoint = [0, 0, 0, 3, 3, 3, 6, 6, 6]
         elif self.sensor_xnum == 14:
@@ -77,11 +80,29 @@ class NatilusEnv(gym.Env):
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
         self.sum_reward = 0
+        
+        if actMod == 2:
+            self.generator = Generator.Generator().cuda
+            self.ganModel = torch.load("./ganModels/gan.tar")
+            self.generator.load_state_dict(self.ganModel['model_state_dict'])
+            self.generator.eval ()
 
     def step(self, action):
-        action = self.LA3(action)
-        action = self.clipFunc(action)
-        action = self.softmax(action)
+        if actMod == 2:
+            """ Gan Model """
+            ganInput = torch.cuda.FloatTensor(np.reshape(action(1,16)))
+            action = self.generator(ganInput)
+            action = action.detach().cpu().numpy()
+            action = action/np.sum(action)
+            action = action.squeeze()
+            action = np.reshape(action, (144))
+  
+        elif actMod == 1:
+            """ LA3 Model """
+            action = self.LA3(action)
+            action = self.clipFunc(action)
+            action = self.softmax(action)
+        
         self.server._action (action)
         done = self.server._end()
         reward = self.server._reward() 
@@ -371,8 +392,6 @@ class NatilusEnv(gym.Env):
                     score += action[k] / dist
                 _actions.append(score)
         return _actions
-
-
 
         """
         if self.rlMod == 2:
