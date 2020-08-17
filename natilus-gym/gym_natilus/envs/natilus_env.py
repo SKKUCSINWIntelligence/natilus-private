@@ -81,14 +81,14 @@ class NatilusEnv(gym.Env):
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
         self.sum_reward = 0
         
-        if actMod == 2:
+        if self.actMod == 2:
             self.generator = Generator.Generator().cuda
             self.ganModel = torch.load("./ganModels/gan.tar")
             self.generator.load_state_dict(self.ganModel['model_state_dict'])
             self.generator.eval ()
 
     def step(self, action):
-        if actMod == 2:
+        if self.actMod == 2:
             """ Gan Model """
             ganInput = torch.cuda.FloatTensor(np.reshape(action(1,16)))
             action = self.generator(ganInput)
@@ -97,7 +97,7 @@ class NatilusEnv(gym.Env):
             action = action.squeeze()
             action = np.reshape(action, (144))
   
-        elif actMod == 1:
+        elif self.actMod == 1:
             """ LA3 Model """
             action = self.LA3(action)
             action = self.clipFunc(action)
