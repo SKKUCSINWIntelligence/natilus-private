@@ -84,7 +84,7 @@ class NatilusEnv(gym.Env):
         if self.actMod == 2:
             modelName = input("Gan Model Name (.tar):")
             device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-            self.generator = Generator.Generator().to(cuda)
+            self.generator = Generator.Generator().to(device)
             self.ganModel = torch.load("./ganModels/"+modelName)
             self.generator.load_state_dict(self.ganModel['model_state_dict'])
             self.generator.eval ()
