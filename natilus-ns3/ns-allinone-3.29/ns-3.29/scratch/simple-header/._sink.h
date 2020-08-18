@@ -96,9 +96,7 @@ public:
 	double *reward;
 	double *cnt;
 	double *threshold;
-  double **trackMap;
-	double multiCnt = 0;
-
+  double** trackMap;
 	double *tempAcc_avg;
 	double *tempDiff_avg;
 	double *reward_avg;
@@ -115,10 +113,8 @@ public:
 
   //DAFU
   double** p_tempMap;
-  int32_t target_num;
-  int32_t* DAFU_target;
   void DAFU (void);
-	void DAFU_setAction ( int32_t*, uint32_t);
+	void DAFU_setAction (double*, int32_t*, uint32_t);
 
 	// OpenGym
 	bool episodeStart;

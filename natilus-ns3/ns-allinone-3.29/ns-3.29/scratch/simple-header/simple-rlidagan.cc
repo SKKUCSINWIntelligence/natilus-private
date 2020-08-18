@@ -74,7 +74,7 @@ main (int argc, char *argv[])
 	
 	// Sensor #
 	uint32_t ssN = 8;
-
+	uint32_t objectMax = 80; 
 	/********************
 	* Command Setting
 	*********************/
@@ -86,6 +86,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
 	cmd.AddValue ("testMod", "Test Mode: test/else", testMod);
 	cmd.AddValue ("ssN", "Sensor #", ssN);
+	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.Parse (argc, argv);
 
@@ -119,7 +120,6 @@ main (int argc, char *argv[])
 		objectN = 0;
 	double cellUnit = 2; // unit: m
 	double speedRate = 40; // unit: %
-	uint32_t objectMax = 80; // used in car obsMod
 
 	// Car Setting 
 	std::string navFunc = "Greedy"; // Random, Greedy	
@@ -438,6 +438,10 @@ main (int argc, char *argv[])
 			else if (obsMod == "car")
 			{
 				std::cout << "Simulation Multi ObjectCnt: " << (sink->multi_cnt/1000.0) << std::endl;
+			}
+			else if (obsMod == "multi")
+			{
+				std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/1000.0) << std::endl;
 			}
 			std::cout << "Simulation Avg Reward: " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
 		}
