@@ -113,7 +113,11 @@ main (int argc, char *argv[])
 	uint32_t sampleSize = 1500; // Bytes per Sample
 	uint32_t actionPacketSize = 100; // Bytes per Action
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
-
+	if (ssN==8)
+		objectMax = 80;
+	else if (ssN==12)
+		objectMax = 160;
+	std::cout << "Objet Max: " << objecMax << std::endl;
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
 	if (obsMod=="car" || obsMod=="multi")
