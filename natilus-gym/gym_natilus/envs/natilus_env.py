@@ -378,6 +378,9 @@ class NatilusEnv(gym.Env):
         elif self.sensor_xnum == 16:
             xcell = [2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14]
             ycell = [2, 2, 2, 2, 6, 6, 6, 6, 10, 10, 10, 10, 14, 14, 14, 14]
+        elif self.sensor_xnum == 24:
+            xcell = [3, 9, 15, 21, 3, 9, 15, 21, 3, 9, 15, 21, 3, 9, 15, 21]
+            ycell = [3, 3, 3, 3, 9, 9, 9, 9, 15, 15, 15, 15, 21, 21, 21, 21]
 
         for i in range(self.sensor_xnum):
             for j in range(self.sensor_xnum):
