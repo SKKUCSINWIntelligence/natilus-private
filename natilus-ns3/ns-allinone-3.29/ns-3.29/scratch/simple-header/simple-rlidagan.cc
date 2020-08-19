@@ -117,7 +117,10 @@ main (int argc, char *argv[])
 		objectMax = 80;
 	else if (ssN==12)
 		objectMax = 160;
-	std::cout << "Objet Max: " << objecMax << std::endl;
+	ekse if (ssN=24)
+		obejctMax = 440;
+	std::cout << "Objet Max: " << objectMax << std::endl;
+	
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
 	if (obsMod=="car" || obsMod=="multi")
