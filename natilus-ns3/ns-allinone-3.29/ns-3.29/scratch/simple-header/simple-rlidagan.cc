@@ -138,13 +138,14 @@ main (int argc, char *argv[])
 	}
 	
 	// Test Mode Setting
-	double totalTest = 2000;
+	double totalTest = 100;
 	double cntTest = 0;
 	double tempDiffTest = 0;
 	double tempAccTest = 0;
 	double carErrorTest = 0;
 	double singleAccTest = 0;
 	double rewardAvgTest = 0;
+	double multiCntTest = 0;
 
 	/********************
 	* Automatic Calculation
@@ -459,6 +460,10 @@ main (int argc, char *argv[])
 			{
 				singleAccTest += sink->singleAcc_avg[0]/sink->reward_cnt[0];
 			}
+			else if (obsMod == "multi")
+			{
+				multiCntTest += (sink->multiCnt/1000.0);
+			}
 			rewardAvgTest += sink->reward_avg[0]/sink->reward_cnt[0];
 
 			std::cout << "Test Cnt: " << cntTest << std::endl;
@@ -474,6 +479,10 @@ main (int argc, char *argv[])
 				else if (obsMod == "track")
 				{
 					std::cout << "Simulation Test SingleAcc: " << singleAccTest/totalTest * 100 << " %" << std::endl;
+				}
+				else if (obsMod == "multi")
+				{
+					std::cout << "Simulation Test MultiCnt: " << multiCntTest/totalTest * 100 << " %" << std::endl;	
 				}
 				std::cout << "Simulation Test RewardAvg: " << rewardAvgTest/totalTest << std::endl;
 				break;

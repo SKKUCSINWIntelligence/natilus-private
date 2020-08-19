@@ -809,16 +809,13 @@ namespace ns3{
       }
 
     }
-    /*
-    PrintState<double>(state[0].sampleValue, service_ssN[0]);
-    */
-    for(int32_t k =0 ; k<target_num; k++)
+		/*
+		for(int32_t k =0 ; k<target_num; k++)
     {
       std::cout<<DAFU_target[k]<<" ";
-
     }
     std::cout<<std::endl;
-    
+    */
     DAFU_setAction(DAFU_target,0);
   }
 
@@ -859,7 +856,7 @@ namespace ns3{
       }
     }
     location = target2;
-    std::cout<< location[0]<<location[1]<<location[2]<<std::endl;
+    //std::cout<< location[0]<<location[1]<<location[2]<<std::endl;
     for(int32_t i = 0; i<5; i++)
     {
       if(location[i]>=0 && location[i]<(int32_t)nodeNum)
@@ -885,8 +882,8 @@ namespace ns3{
     uint32_t targetNum = 0;
     uint32_t targetNum2 = 0;
     double FPS_for_target = 0;
-    double FPS_for_target_min = 1;
-    double FPS_for_init = 1;
+    double FPS_for_target_min = 10;
+    double FPS_for_init = 10;
     
     for(uint32_t i = 0; i<nodeNum; i++)
     {
@@ -915,11 +912,13 @@ namespace ns3{
         state[index].action[i] = (uint32_t)FPS_for_target_min;
     }
     
-       printf("[action]::Observed\n");
-       PrintState<double>(oc[0].trackMap, service_ssN[0]);
-       PrintState<double>(state[0].sampleValue, service_ssN[0]);
-       PrintState<uint32_t> (state[0].action,nodeNum);
-       
+		/*
+		printf("[action]::Observed\n");
+    PrintState<double>(oc[0].trackMap, service_ssN[0]);
+    PrintState<double>(state[0].sampleValue, service_ssN[0]);
+    PrintState<uint32_t> (state[0].action,nodeNum);
+    */
+
     for(int32_t i = 0; i<target_num; i++)
       DAFU_target[i] = -1;
 
@@ -987,7 +986,8 @@ namespace ns3{
         {
           for (uint32_t i=0; i<ssN * ssN; i++)
           { 
-            state[j].action[i] = actionTmp[j*ssN*ssN+i] * (avgRate * ssN * ssN*serviceN-ssN*ssN*serviceN);
+						// 0819 set offset as 10FPS
+            state[j].action[i] = actionTmp[j*ssN*ssN+i] * ((avgRate-10)*ssN*ssN*serviceN-ssN*ssN*serviceN) + 10; 
             if(state[j].action[i]==0)
               state[j].action[i] = 1;
           }
