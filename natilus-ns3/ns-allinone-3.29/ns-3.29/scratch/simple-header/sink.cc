@@ -354,7 +354,7 @@ namespace ns3{
       Send();
     }
 
-		/* Clear New Multi */
+		/* Clear New Multi: Does not affect DAFU */
 		if (obsMod == "multi")
 		{
 			for (uint32_t i=0; i<service_ssN[0]; i++)
@@ -363,6 +363,7 @@ namespace ns3{
 					state[0].sampleValue[i] = 0;
 			}
 		}
+
     else if (upMod == "DAFU")
     {
       DAFU();
@@ -1028,8 +1029,8 @@ namespace ns3{
         {
           for (uint32_t i=0; i<ssN * ssN; i++)
           { 
-						// 0819 set offset as 10FPS
-            state[j].action[i] = actionTmp[j*ssN*ssN+i] * ((avgRate-10)*ssN*ssN*serviceN-ssN*ssN*serviceN) + 10; 
+						// 0819 set offset as 10FPS XXX
+            state[j].action[i] = actionTmp[j*ssN*ssN+i] * (avgRate*ssN*ssN*serviceN-ssN*ssN*serviceN); 
             if(state[j].action[i]==0)
               state[j].action[i] = 1;
           }
