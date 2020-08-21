@@ -18,6 +18,7 @@ ObjectContain::~ObjectContain ()
 	{
 		delete[] loc;	
 		delete[] ang;
+		delete[] tag;
 	}
 }
 
