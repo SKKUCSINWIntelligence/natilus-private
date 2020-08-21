@@ -67,7 +67,7 @@ class NatilusEnv(gym.Env):
         elif self.obsMod == 2:
             self.observation_space = spaces.Box (low=-10, high=10, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
         elif self.obsMod == 3:
-            self.observation_space = spaces.Box (low=0, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
+            self.observation_space = spaces.Box (low=-1, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
         
         
         """if self.obsMod == 3:
@@ -299,11 +299,23 @@ class NatilusEnv(gym.Env):
                 else:
                     obs[2][i][j] = 4/4.0
 
-        # change multi object
-        sum = np.sum(obs[0])
+        # change multi object 
+        sum = 0
+        for i in range(self.sensor_xnum):
+            for j in range(self.sensor_xnum):
+                if obs[0][i][j] > 0: 
+                    sum += obs[0][i][j]
         if sum != 0:
-            obs[0] = obs[0] / sum
-            obs[0] = np.round(obs[0], 2) 
+            for i in range(self.sensor_xnum):
+                for j in range(self.sensor_xnum):
+                    if obs[0][i][j] > 0:
+                        obs[0][i][j] = obs[0][i][j] / sum
+            obs[0] = np.round(obs[0], 2)
+        
+        #sum = np.sum(obs[0])
+        #if sum != 0:
+            #obs[0] = obs[0] / sum
+            #obs[0] = np.round(obs[0], 2) 
 
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
         obs = np.transpose(obs, (1,0))
