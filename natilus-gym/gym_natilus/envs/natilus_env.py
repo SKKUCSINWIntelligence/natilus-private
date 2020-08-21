@@ -383,8 +383,11 @@ class NatilusEnv(gym.Env):
 
     def LA3(self, action):
         _actions = []
-        length = 1 
-        if self.sensor_xnum == 12:
+        length = 1
+        if self.sensor_xnum == 8:
+            xcell = [1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7]
+            ycell = [1, 1, 1, 1, 3, 3, 3, 3, 5, 5, 5, 5, 7, 7, 7, 7]
+        elif self.sensor_xnum == 12:
             xcell = [1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5]
             ycell = [1.5, 1.5, 1.5, 1.5, 4.5, 4.5, 4.5, 4.5, 7.5, 7.5, 7.5, 7.5, 10.5, 10.5, 10.5, 10.5]
         elif self.sensor_xnum == 16:
