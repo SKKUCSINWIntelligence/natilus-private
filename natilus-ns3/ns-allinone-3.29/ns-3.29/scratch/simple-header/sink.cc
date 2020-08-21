@@ -203,7 +203,9 @@ namespace ns3{
 
         // Clear the map
         for (uint32_t i=0; i<service_ssN[0]; i++)
-          state[serId].sampleValue[i] = 0;
+				{
+					state[serId].sampleValue[i] = 0;
+				}
 
         // Fill in the map
         for (uint32_t i=0; i<oc[serId].objectMax; i++)
@@ -289,9 +291,6 @@ namespace ns3{
   void Sink::Communication ()
   {
 
-    if (stateInfo)
-      PrintInfo ();
-
     if (obsMod=="car")
     { 
       // Count the Car Clusters
@@ -311,7 +310,38 @@ namespace ns3{
       }
     }
 
-    for (uint32_t i=0; i<serviceN; i++)
+		/* Check New Multi */
+		if (obsMod == "multi")
+		{
+			for (uint32_t i=0; i<(oc->unitN/2)-1; i++)
+			{
+				uint32_t tag = oc->tag[i];
+				if (tag != 0)
+				{
+					if (state[0].sampleValue[tag] == 0)
+						state[0].sampleValue[tag] = -1;
+					
+					uint32_t xid = tag % (oc->unitN);
+					uint32_t yid = tag / (oc->unitN);
+					
+					uint32_t cell[3] = {0};
+					cell[0] = (yid+1)*(oc->unitN) + xid;
+					cell[1] = (yid+1)*(oc->unitN) + (xid+1);
+					cell[2] = yid*(oc->unitN) + (xid+1);
+
+					for (uint32_t j=0; j<3; j++)
+						if (state[0].sampleValue[cell[j]] == 0)
+							state[0].sampleValue[cell[j]] = -1;
+				}
+				oc->tag[i] = 0;
+			}
+		}
+		
+		/* Print Before Comm */
+    if (stateInfo)
+      PrintInfo ();
+
+		for (uint32_t i=0; i<serviceN; i++)
     {
       reward[i] = reward[i] / cnt[i];
       if (cnt[i] == 0)
@@ -323,6 +353,16 @@ namespace ns3{
       ZMQCommunication ();
       Send();
     }
+
+		/* Clear New Multi */
+		if (obsMod == "multi")
+		{
+			for (uint32_t i=0; i<service_ssN[0]; i++)
+			{
+				if (state[0].sampleValue[i] == -1)
+					state[0].sampleValue[i] = 0;
+			}
+		}
     else if (upMod == "DAFU")
     {
       DAFU();
@@ -762,6 +802,8 @@ namespace ns3{
 
       reward[0] += l*c*s;
       reward_avg[0] += l*c*s;
+			
+			//std::cout << "Reward: " << l*c*s << std::endl;
     }
   }
 
@@ -882,8 +924,8 @@ namespace ns3{
     uint32_t targetNum = 0;
     uint32_t targetNum2 = 0;
     double FPS_for_target = 0;
-    double FPS_for_target_min = 10;
-    double FPS_for_init = 10;
+    double FPS_for_target_min = 1;
+    double FPS_for_init = 1;
     
     for(uint32_t i = 0; i<nodeNum; i++)
     {

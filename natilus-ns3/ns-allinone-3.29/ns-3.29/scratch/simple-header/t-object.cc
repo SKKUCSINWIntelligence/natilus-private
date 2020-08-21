@@ -92,7 +92,13 @@ void ObjectContain::Start ()
 	{
 		loc = new uint32_t[(unitN/2) -1];
 		ang = new double[3*((unitN/2)-1)];
+		tag = new uint32_t[(unitN/2) -1];
 		
+		for (uint32_t i=0; i<(unitN/2)-1; i++)
+		{
+			tag[i] = 0;
+		}
+
 		if (unitN == 6)
 		{
 			loc[0] = 7;
@@ -143,7 +149,30 @@ void ObjectContain::Start ()
 		}
 		else if (unitN == 12)
 		{
-			loc[0] = 39;
+
+			loc[0] = 27;
+			loc[1] = 43; 
+			loc[2] = 77;
+			loc[3] = 105;
+			loc[4] = 110;
+		
+			ang[0] = 0.0/360.0*2*PI;
+			ang[1] = 45.0/360.0*2*PI;
+			ang[2] = 135.0/360.0*2*PI;
+			ang[3] = 45.0/360.0*2*PI;
+			ang[4] = 90.0/360.0*2*PI;
+			ang[5] = 135.0/360.0*2*PI;
+			ang[6] = 50.0/360.0*2*PI;
+			ang[7] = 200.0/360.0*2*PI;
+			ang[8] = 340.0/360.0*2*PI;
+			ang[9] = 180.0/360.0*2*PI;;
+			ang[10] = 250.0/360.0*2*PI;
+			ang[11] = 270.0/360.0*2*PI;	
+			ang[12] = 20.0/360.0*2*PI;;
+			ang[13] = 260.0/360.0*2*PI;
+			ang[14] = 330.0/360.0*2*PI;	
+			
+			/*loc[0] = 39;
 			loc[1] = 57; 
 			loc[2] = 78;
 			loc[3] = 116;
@@ -163,7 +192,7 @@ void ObjectContain::Start ()
 			ang[11] = 280.0/360.0*2*PI;	
 			ang[12] = 10.0/360.0*2*PI;;
 			ang[13] = 190.0/360.0*2*PI;
-			ang[14] = 340.0/360.0*2*PI;	
+			ang[14] = 340.0/360.0*2*PI;*/	
 		}
 		else if (unitN == 14)
 		{
@@ -496,6 +525,7 @@ void ObjectContain::NewMulti (bool reGen)
 
 	if (d >= 5)
 	{
+		tag[r] = c;
 		for (int i=0; i<d; i++)
 		{
 			if (i >= 10)
@@ -529,7 +559,7 @@ void ObjectContain::NewMulti (bool reGen)
 
 		switch(p) 
 		{
-			case 0:
+			case 0: // only works on this case
 				cell[0] = (yid+1)*unitN + xid;
 				cell[1] = (yid+1)*unitN + (xid+1);
 				cell[2] = yid*unitN + (xid+1);

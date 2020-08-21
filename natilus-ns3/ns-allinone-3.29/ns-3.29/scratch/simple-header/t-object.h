@@ -55,6 +55,7 @@ public:
 	double *room; // array 25 (c)
 	uint32_t *loc; // Location for Multi
 	double *ang; // Angle for Multi	
+	uint32_t *tag; // Tag for NewMulti
 
 	// Funtion
 	ObjectContain ();
