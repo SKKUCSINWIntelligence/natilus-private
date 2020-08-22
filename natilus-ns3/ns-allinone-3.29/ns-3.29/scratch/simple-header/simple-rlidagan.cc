@@ -119,6 +119,8 @@ main (int argc, char *argv[])
 		objectMax = 80;
 	else if (ssN==16)
 		objectMax = 160;
+	else if (ssN==20)
+		objectMax = 200;
 	else if (ssN==24)
 		objectMax = 440;
 	std::cout << "Objet Max: " << objectMax << std::endl;
