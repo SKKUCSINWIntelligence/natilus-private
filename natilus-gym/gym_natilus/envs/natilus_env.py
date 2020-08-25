@@ -54,7 +54,11 @@ class NatilusEnv(gym.Env):
             self.cell_num = 6
             self.point = [0, 5, 10, 0, 5, 10, 0, 5, 10]
             self.ypoint = [0, 0, 0, 5, 5, 5, 10, 10, 10]
-        self.action_point = 16
+        
+        if self.sensor_xnum == 6:
+            self.action_point = 4
+        else:
+            self.action_point = 16
 
         # Observiation & Action Space
         if self.rlMod == 1:
@@ -385,9 +389,15 @@ class NatilusEnv(gym.Env):
     def LA3(self, action):
         _actions = []
         length = 1
-        if self.sensor_xnum == 8:
+        if self.sensor_xnum == 6:
+            xcell = [1.5, 4.5, 1,5, 4.5]
+            ycell = [1.5, 4.5, 1.5, 4.5]
+        elif self.sensor_xnum == 8:
             xcell = [1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7]
             ycell = [1, 1, 1, 1, 3, 3, 3, 3, 5, 5, 5, 5, 7, 7, 7, 7]
+        elif self.sensor_xnum == 10:
+            xcell = [1.25, 3.75, 6.25, 8.75, 1.25, 3.75, 6.25, 8.75, 1.25, 3.75, 6.25, 8.75, 1.25, 3.75, 6.25, 8.75]
+            ycell = [1.25, 1.25, 1.25, 1.25, 3.75, 3.75, 3.75, 3.75, 6.25, 6.25, 6.25, 6.25, 8.75, 8.75, 8.75, 8.75]
         elif self.sensor_xnum == 12:
             xcell = [1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5]
             ycell = [1.5, 1.5, 1.5, 1.5, 4.5, 4.5, 4.5, 4.5, 7.5, 7.5, 7.5, 7.5, 10.5, 10.5, 10.5, 10.5]
