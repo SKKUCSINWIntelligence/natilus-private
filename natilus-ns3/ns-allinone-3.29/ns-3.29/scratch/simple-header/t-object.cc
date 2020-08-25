@@ -103,14 +103,14 @@ void ObjectContain::Start ()
 		if (unitN == 6)
 		{
 			loc[0] = 7;
-			loc[1] = 27;
+			loc[1] = 28;
 
-			ang[0] = 0/360.0*2*PI;
+			ang[0] = 30/360.0*2*PI;
 			ang[1] = 45.0/360.0*2*PI;
 			ang[2] = 90.0/360.0*2*PI;
-			ang[3] = 180.0/360.0*2*PI;
-			ang[4] = 270.0/360.0*2*PI;
-			ang[5] = 295.0/360.0*2*PI;
+			ang[3] = 330.0/360.0*2*PI;
+			ang[4] = 225.0/360.0*2*PI;
+			ang[5] = 270.0/360.0*2*PI;
 		}
 		else if (unitN == 8)
 		{
@@ -144,10 +144,10 @@ void ObjectContain::Start ()
 		}
 		else if (unitN == 10)
 		{
-			loc[0] = 34;
-			loc[1] = 57; 
-			loc[2] = 62;
-			loc[3] = 85;
+			loc[0] = 11;
+			loc[1] = 48; 
+			loc[2] = 55;
+			loc[3] = 73;
 
 			ang[0] = 45.0/360.0*2*PI;
 			ang[1] = 135.0/360.0*2*PI;
