@@ -300,6 +300,7 @@ class NatilusEnv(gym.Env):
                     obs[2][i][j] = 4/4.0
 
         # change multi object 
+        """
         sum = 0
         for i in range(self.sensor_xnum):
             for j in range(self.sensor_xnum):
@@ -311,11 +312,11 @@ class NatilusEnv(gym.Env):
                     if obs[0][i][j] > 0:
                         obs[0][i][j] = obs[0][i][j] / sum
             obs[0] = np.round(obs[0], 2)
-        
-        #sum = np.sum(obs[0])
-        #if sum != 0:
-            #obs[0] = obs[0] / sum
-            #obs[0] = np.round(obs[0], 2) 
+        """
+        sum = np.sum(obs[0])
+        if sum != 0:
+            obs[0] = obs[0] / sum
+            obs[0] = np.round(obs[0], 2) 
 
         obs = np.reshape(obs, (self.infoNum, self.sensor_num))
         obs = np.transpose(obs, (1,0))

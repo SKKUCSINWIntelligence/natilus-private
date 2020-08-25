@@ -311,7 +311,7 @@ namespace ns3{
     }
 
 		/* Check New Multi */
-		if (obsMod == "multi")
+		/*if (obsMod == "multi")
 		{
 			for (uint32_t i=0; i<(oc->unitN/2)-1; i++)
 			{
@@ -335,7 +335,7 @@ namespace ns3{
 				}
 				oc->tag[i] = 0;
 			}
-		}
+		}*/
 		
 		/* Print Before Comm */
     if (stateInfo)
@@ -355,14 +355,14 @@ namespace ns3{
     }
 
 		/* Clear New Multi: Does not affect DAFU */
-		if (obsMod == "multi")
+		/*if (obsMod == "multi")
 		{
 			for (uint32_t i=0; i<service_ssN[0]; i++)
 			{
 				if (state[0].sampleValue[i] == -1)
 					state[0].sampleValue[i] = 0;
 			}
-		}
+		}*/
 
     if (upMod == "DAFU")
     {
