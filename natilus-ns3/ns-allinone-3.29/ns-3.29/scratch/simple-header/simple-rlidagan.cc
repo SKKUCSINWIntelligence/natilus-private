@@ -117,6 +117,8 @@ main (int argc, char *argv[])
 		objectMax = 28;
 	else if (ssN==8)
 		objectMax = 32;
+	else if (ssN==10)
+		objectMax = 52;
 	else if (ssN==12)
 		objectMax = 80;
 	else if (ssN==16)
