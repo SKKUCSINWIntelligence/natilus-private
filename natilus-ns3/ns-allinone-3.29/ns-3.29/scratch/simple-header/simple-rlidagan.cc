@@ -120,7 +120,7 @@ main (int argc, char *argv[])
 	else if (ssN==16)
 		objectMax = 160;
 	else if (ssN==20)
-		objectMax = 200;
+		objectMax = 300;
 	else if (ssN==24)
 		objectMax = 440;
 	std::cout << "Objet Max: " << objectMax << std::endl;
@@ -149,7 +149,7 @@ main (int argc, char *argv[])
 	}
 	
 	// Test Mode Setting
-	double totalTest = 100;
+	double totalTest = 10;
 	double cntTest = 0;
 	double tempDiffTest = 0;
 	double tempAccTest = 0;

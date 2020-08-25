@@ -364,7 +364,7 @@ namespace ns3{
 			}
 		}
 
-    else if (upMod == "DAFU")
+    if (upMod == "DAFU")
     {
       DAFU();
       Send();
