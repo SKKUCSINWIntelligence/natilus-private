@@ -56,7 +56,7 @@ class NatilusEnv(gym.Env):
             self.ypoint = [0, 0, 0, 5, 5, 5, 10, 10, 10]
         
         if self.sensor_xnum == 6:
-            self.action_point = 4
+            self.action_point = 9
         else:
             self.action_point = 16
 
@@ -390,8 +390,8 @@ class NatilusEnv(gym.Env):
         _actions = []
         length = 1
         if self.sensor_xnum == 6:
-            xcell = [1.5, 4.5, 1,5, 4.5]
-            ycell = [1.5, 4.5, 1.5, 4.5]
+            xcell = [1, 3, 5, 1, 3, 5, 1, 3, 5]
+            ycell = [1, 1, 1, 3, 3, 3, 5, 5, 5]
         elif self.sensor_xnum == 8:
             xcell = [1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7]
             ycell = [1, 1, 1, 1, 3, 3, 3, 3, 5, 5, 5, 5, 7, 7, 7, 7]
