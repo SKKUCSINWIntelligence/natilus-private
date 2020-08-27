@@ -76,8 +76,8 @@ main (int argc, char *argv[])
 	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
 	uint32_t bwLimit = 50; // unit: %
-	
-		/********************
+	uint32_t objLimit = 25; // unit: %
+	/********************
 	* Command Setting
 	*********************/
 	CommandLine cmd;
@@ -91,6 +91,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
+	cmd.AddValue ("objLimit", "Object Limit", objLimit);
 	cmd.Parse (argc, argv);
 
 	if (upMod =="rlidagan")
@@ -114,7 +115,18 @@ main (int argc, char *argv[])
 	else if (ssN==10)
 		objectMax = 260; // 52
 	else if (ssN==12)
-		objectMax = 400; // 80
+	{ // 80
+		if (objLimit == 15)
+			objectMax = 160;
+		else if (objLimit == 20)
+			objectMax = 260;
+		else if (objLimit == 25)
+			objectMax = 400;
+		else if (objLimit == 30)
+			objectMax = 600;
+		else if (objLimit == 35)
+			objectMax = 900;
+	}
 	else if (ssN==16)
 		objectMax = 160;
 	else if (ssN==20)
@@ -124,7 +136,7 @@ main (int argc, char *argv[])
 
 
 	std::cout << "Objet Max: " << objectMax << std::endl;	
-	
+			
 	// Variable Setting
 	uint32_t serviceN = 1; // Service #
 	
@@ -360,6 +372,7 @@ main (int argc, char *argv[])
 		cout << "obsMod: " << obsMod << endl;
 		cout << "algorithm: " << upMod << endl;
 		cout << "speedRate (%): " << speedRate << endl;
+		cout << "objLimit (%): " << objLimit << endl;
 		printf("\n[Channel Info]\n");
 		cout << "Sensor Avg Rate: " << sensorAvgRate << std::endl;
 		cout << "BW Limit: " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;

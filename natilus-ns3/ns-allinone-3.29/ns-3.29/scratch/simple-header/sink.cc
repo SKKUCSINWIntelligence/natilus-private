@@ -63,7 +63,7 @@ namespace ns3{
       target_num = (int32_t)avgRate*service_ssN[0]/90;
     else
       target_num = service_ssN[0];
-    target_num = 3;
+    target_num = 12;
     DAFU_target = new int32_t[target_num];
 
 
