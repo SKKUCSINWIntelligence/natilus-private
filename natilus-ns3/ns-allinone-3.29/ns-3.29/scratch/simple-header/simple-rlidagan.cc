@@ -75,7 +75,9 @@ main (int argc, char *argv[])
 	// Sensor #
 	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
-	/********************
+	uint32_t bwLimit = 50; // unit: %
+	
+		/********************
 	* Command Setting
 	*********************/
 	CommandLine cmd;
@@ -88,6 +90,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
+	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
 	cmd.Parse (argc, argv);
 
 	if (upMod =="rlidagan")
@@ -103,32 +106,33 @@ main (int argc, char *argv[])
 	/********************
 	* Fixed
 	*********************/
-
-	
-	// Variable Setting
-	uint32_t serviceN = 1; // Service #
-	uint32_t bwLimit = 50; // unit: %
-
-	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
-	uint32_t sampleSize = 1500; // Bytes per Sample
-	uint32_t actionPacketSize = 100; // Bytes per Action
-	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
+	// 25% 
 	if (ssN==6)
-		objectMax = 28;
+		objectMax = 68; //28 
 	else if (ssN==8)
-		objectMax = 32;
+		objectMax = 128; // 32
 	else if (ssN==10)
-		objectMax = 52;
+		objectMax = 260; // 52
 	else if (ssN==12)
-		objectMax = 80;
+		objectMax = 400; // 80
 	else if (ssN==16)
 		objectMax = 160;
 	else if (ssN==20)
 		objectMax = 300;
 	else if (ssN==24)
 		objectMax = 440;
-	std::cout << "Objet Max: " << objectMax << std::endl;
+
+
+	std::cout << "Objet Max: " << objectMax << std::endl;	
 	
+	// Variable Setting
+	uint32_t serviceN = 1; // Service #
+	
+	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
+	uint32_t sampleSize = 1500; // Bytes per Sample
+	uint32_t actionPacketSize = 100; // Bytes per Action
+	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
+
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
 	if (obsMod=="car" || obsMod=="multi")
@@ -457,7 +461,7 @@ main (int argc, char *argv[])
 			}
 			else if (obsMod == "multi")
 			{
-				std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/1000.0) << std::endl;
+				std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/(sink->reward_cnt[i])) << std::endl;
 			}
 			std::cout << "Simulation Avg Reward: " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
 		}
@@ -477,7 +481,7 @@ main (int argc, char *argv[])
 			}
 			else if (obsMod == "multi")
 			{
-				multiCntTest += (sink->multiCnt/1000.0);
+				multiCntTest += (sink->multiCnt/(sink->reward_cnt[0]));
 			}
 			rewardAvgTest += sink->reward_avg[0]/sink->reward_cnt[0];
 
