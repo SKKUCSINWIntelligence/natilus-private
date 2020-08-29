@@ -51,7 +51,7 @@ main (int argc, char *argv[])
 	* Variable Setting
 	*********************/
 	srand (time(NULL));
-	uint64_t maxStep = 2000;
+	uint64_t maxStep = 1000;
 
 	// Mode Setting
 	bool rlMod = false;
