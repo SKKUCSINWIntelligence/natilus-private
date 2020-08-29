@@ -110,7 +110,7 @@ main (int argc, char *argv[])
 	// 25% 
 	if (ssN==6)
 	{ // 28
-		objectMax = 10
+		objectMax = 10;
 	}
 	else if (ssN==8)
 	{ // 32
