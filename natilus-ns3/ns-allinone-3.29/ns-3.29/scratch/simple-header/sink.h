@@ -98,6 +98,7 @@ public:
 	double *threshold;
   double **trackMap;
 	double multiCnt = 0;
+	double multiMax = 0; 
 
 	double *tempAcc_avg;
 	double *tempDiff_avg;

@@ -783,6 +783,10 @@ namespace ns3{
       }
 			tmpMultiCnt /= service_ssN[0];
 			multiCnt += tmpMultiCnt;
+			if (tmpMultiCnt > multiMax)
+			{
+				multiMax = tmpMultiCnt;
+			}
       Mx /= sssN;
       My /= sssN;
 

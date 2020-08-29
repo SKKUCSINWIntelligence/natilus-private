@@ -51,7 +51,7 @@ main (int argc, char *argv[])
 	* Variable Setting
 	*********************/
 	srand (time(NULL));
-	uint64_t maxStep = 1000;
+	uint64_t maxStep = 2000;
 
 	// Mode Setting
 	bool rlMod = false;
@@ -109,23 +109,45 @@ main (int argc, char *argv[])
 	*********************/
 	// 25% 
 	if (ssN==6)
-		objectMax = 68; //28 
+	{ // 28
+		if (objLimit == 15)
+			objectMax = 76;
+		else if (objLimit == 20)
+			objectMax = 120;
+		else if (objLimit == 25)
+			objectMax = 160;
+		else if (objLimit == 30)
+			objectMax = 240;
+		else if (objLimit == 35)
+			objectMax = 360;
+	}
 	else if (ssN==8)
-		objectMax = 128; // 32
+	{ // 32
+		if (objLimit == 15)
+			objectMax = 36;
+		else if (objLimit == 20)
+			objectMax = 48;
+		else if (objLimit == 25)
+			objectMax = 60;
+		else if (objLimit == 30)
+			objectMax = 72;
+		else if (objLimit == 35)
+			objectMax = 100;
+	}
 	else if (ssN==10)
-		objectMax = 260; // 52
+		objectMax = 52; // 52 260
 	else if (ssN==12)
 	{ // 80
 		if (objLimit == 15)
-			objectMax = 160;
+			objectMax = 80;
 		else if (objLimit == 20)
-			objectMax = 260;
+			objectMax = 120;
 		else if (objLimit == 25)
-			objectMax = 400;
+			objectMax = 180;
 		else if (objLimit == 30)
-			objectMax = 600;
+			objectMax = 280;
 		else if (objLimit == 35)
-			objectMax = 900;
+			objectMax = 400;
 	}
 	else if (ssN==16)
 		objectMax = 160;
@@ -475,8 +497,10 @@ main (int argc, char *argv[])
 			else if (obsMod == "multi")
 			{
 				std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/(sink->reward_cnt[i])) << std::endl;
+				std::cout << "Simulation Multi Max: " << (sink->multiMax) << std::endl;
 			}
 			std::cout << "Simulation Avg Reward: " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
+			std::cout << "Reward Cnt: " << sink->reward_cnt[i] << std::endl;
 		}
 
 		if (testMod == "test")
