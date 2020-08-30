@@ -110,7 +110,8 @@ main (int argc, char *argv[])
 	// 25% 
 	if (ssN==6)
 	{ // 28
-		objectMax = 10;
+		if(objLimit == 25)
+			objectMax = 32;
 	}
 	else if (ssN==8)
 	{ // 32
@@ -144,7 +145,10 @@ main (int argc, char *argv[])
 			objectMax = 400;
 	}
 	else if (ssN==16)
-		objectMax = 160;
+	{ // 160
+		if (objLimit == 25)
+			objectMax = 540;
+	}
 	else if (ssN==20)
 		objectMax = 300;
 	else if (ssN==24)
