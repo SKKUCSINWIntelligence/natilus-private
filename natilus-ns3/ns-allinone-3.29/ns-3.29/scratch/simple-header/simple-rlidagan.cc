@@ -112,6 +112,8 @@ main (int argc, char *argv[])
 	{ // 28
 		if(objLimit == 25)
 			objectMax = 32;
+		else if (objLimit == 40)
+			objectMax = 32;
 	}
 	else if (ssN==8)
 	{ // 32
@@ -125,10 +127,14 @@ main (int argc, char *argv[])
 			objectMax = 72;
 		else if (objLimit == 35)
 			objectMax = 100;
+		else if (objLimit == 40)
+			objectMax = 48;
 	}
 	else if (ssN==10)
 	{ // 52
-		if (objLimit == 25)
+		if (objLimit == 20)
+			objectMax = 80;
+		else if (objLimit == 25)
 			objectMax = 108;
 	}
 	else if (ssN==12)
@@ -143,11 +149,15 @@ main (int argc, char *argv[])
 			objectMax = 280;
 		else if (objLimit == 35)
 			objectMax = 400;
+		else if (objLimit == 40)
+			objectMax = 128;
 	}
 	else if (ssN==16)
 	{ // 160
 		if (objLimit == 25)
 			objectMax = 540;
+		else if (objLimit == 40)
+			objectMax = 260;
 	}
 	else if (ssN==20)
 		objectMax = 300;
@@ -189,7 +199,7 @@ main (int argc, char *argv[])
 	}
 	
 	// Test Mode Setting
-	double totalTest = 10;
+	double totalTest = 100;
 	double cntTest = 0;
 	double tempDiffTest = 0;
 	double tempAccTest = 0;
@@ -197,7 +207,7 @@ main (int argc, char *argv[])
 	double singleAccTest = 0;
 	double rewardAvgTest = 0;
 	double multiCntTest = 0;
-
+	double multiMaxTest = 0;
 	/********************
 	* Automatic Calculation
 	*********************/
@@ -517,7 +527,9 @@ main (int argc, char *argv[])
 			else if (obsMod == "multi")
 			{
 				multiCntTest += (sink->multiCnt/(sink->reward_cnt[0]));
+				multiMaxTest += (sink->multiMax);
 			}
+
 			rewardAvgTest += sink->reward_avg[0]/sink->reward_cnt[0];
 
 			std::cout << "Test Cnt: " << cntTest << std::endl;
@@ -537,6 +549,7 @@ main (int argc, char *argv[])
 				else if (obsMod == "multi")
 				{
 					std::cout << "Simulation Test MultiCnt: " << multiCntTest/totalTest * 100 << " %" << std::endl;	
+					std::cout << "Simulation Test MultiMax: " << multiMaxTest/totalTest * 100 << " %" << std::endl;
 				}
 				std::cout << "Simulation Test RewardAvg: " << rewardAvgTest/totalTest << std::endl;
 				break;
