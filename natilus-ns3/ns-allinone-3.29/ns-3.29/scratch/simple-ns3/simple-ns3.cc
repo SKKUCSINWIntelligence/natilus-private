@@ -46,12 +46,13 @@ main (int argc, char *argv[])
 	uint32_t ssN = 6;
 	uint32_t objectN = 0;
 	uint32_t objectMax = 80;
+	uint32_t objectLimit = 40;
 	double cellUnit = 2; // unit: m
 	
 	double maxSpeed = cellUnit*sensorAvgRate; // m/s
 	double speedRate = 40; //unit: %
 	double objectSpeed = maxSpeed*speedRate / 100;
-
+	
 	/* Wifi Setting */
 	uint32_t dataSpeed = 9;
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
@@ -69,53 +70,53 @@ main (int argc, char *argv[])
 	
 	if (ssN==6)
 	{
-		if(objLimit == 25)
+		if(objectLimit == 25)
 			objectMax = 32;
-		else if (objLimit == 40)
+		else if (objectLimit == 40)
 			objectMax = 32;
 	}
 	else if (ssN==8)
 	{
-		if (objLimit == 15)
+		if (objectLimit == 15)
 			objectMax = 36;
-		else if (objLimit == 20)
+		else if (objectLimit == 20)
 			objectMax = 48;
-		else if (objLimit == 25)
+		else if (objectLimit == 25)
 			objectMax = 60;
-		else if (objLimit == 30)
+		else if (objectLimit == 30)
 			objectMax = 72;
-		else if (objLimit == 35)
+		else if (objectLimit == 35)
 			objectMax = 100;
-		else if (objLimit == 40)
+		else if (objectLimit == 40)
 			objectMax = 48;
 	}
 	else if (ssN==10)
 	{
-		if (objLimit == 25)
+		if (objectLimit == 25)
 			objectMax = 108;
-		else if (objLimit == 40)
+		else if (objectLimit == 40)
 			objectMax = 80;
 	}
 	else if (ssN==12)
 	{
-		if (objLimit == 15)
+		if (objectLimit == 15)
 			objectMax = 80;
-		else if (objLimit == 20)
+		else if (objectLimit == 20)
 			objectMax = 120;
-		else if (objLimit == 25)
+		else if (objectLimit == 25)
 			objectMax = 180;
-		else if (objLimit == 30)
+		else if (objectLimit == 30)
 			objectMax = 280;
-		else if (objLimit == 35)
+		else if (objectLimit == 35)
 			objectMax = 400;
-		else if (objLimit == 40)
+		else if (objectLimit == 40)
 			objectMax = 128;
 	}
 	else if (ssN==16)
 	{
-		if (objLimit == 25)
+		if (objectLimit == 25)
 			objectMax = 540;
-		else if (objLimit == 40)
+		else if (objectLimit == 40)
 			objectMax = 260;
 	}
 

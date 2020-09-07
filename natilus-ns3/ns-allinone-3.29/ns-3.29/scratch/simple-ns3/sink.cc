@@ -56,6 +56,8 @@ SimpleSink::~SimpleSink()
   NS_LOG_FUNCTION (this);
 
 	delete state;
+	delete[] addressList;
+	delete[] recvBytes;
 }
 
 void 
