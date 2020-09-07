@@ -17,7 +17,7 @@ class Server():
         Recieve form connectd socket.
         """
         recv = self.m_socket.recv()
-        print(recv)
+        #print(recv)
         return recv
     
     def _initialize(self):
