@@ -57,6 +57,8 @@ class NatilusEnv(gym.Env):
         
         if self.sensor_xnum == 6:
             self.action_point = 9
+        elif: self.sensor_xnum == 16:
+            self.action_point = 25
         else:
             self.action_point = 16
 
@@ -72,12 +74,7 @@ class NatilusEnv(gym.Env):
             self.observation_space = spaces.Box (low=-10, high=10, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
         elif self.obsMod == 3:
             self.observation_space = spaces.Box (low=0, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
-        
-        
-        """if self.obsMod == 3:
-            self.action_space = spaces.Box (low=-1, high=1, shape=((self.sensor_xnum-2)*(self.sensor_xnum-2),), dtype=np.float32)
-            self.server.m_action_size = (self.sensor_xnum-2) * (self.sensor_xnum-2)
-        else:"""
+         
         #self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
         self.action_space = spaces.Box (low=-1, high=1, shape=(self.action_point,), dtype=np.float32) 
         
@@ -402,8 +399,10 @@ class NatilusEnv(gym.Env):
             xcell = [1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5, 1.5, 4.5, 7.5, 10.5]
             ycell = [1.5, 1.5, 1.5, 1.5, 4.5, 4.5, 4.5, 4.5, 7.5, 7.5, 7.5, 7.5, 10.5, 10.5, 10.5, 10.5]
         elif self.sensor_xnum == 16:
-            xcell = [2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14]
-            ycell = [2, 2, 2, 2, 6, 6, 6, 6, 10, 10, 10, 10, 14, 14, 14, 14]
+            #xcell = [2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14, 2, 6, 10, 14]
+            #ycell = [2, 2, 2, 2, 6, 6, 6, 6, 10, 10, 10, 10, 14, 14, 14, 14]
+            xcell = [1.6, 4.8, 8, 11.2, 14.4, 1.6, 4.8, 8, 11.2, 14.4, 1.6, 4.8, 8, 11.2, 14.4, 1.6, 4.8, 8, 11.2, 14.4, 1.6, 4.8, 8, 11.2, 14.4]
+            ycell = [1.6, 1.6, 1.6, 1.6, 1.6, 4.8, 4.8, 4.8, 4.8, 4.8, 8, 8, 8, 8, 8, 11.2, 11.2, 11.2, 11.2, 11.2, 14.4, 14.4, 14.4, 14.4, 14.4] 
         elif self.sensor_xnum == 20:
             xcell = [2.5, 7.5, 12.5, 17.5, 2.5, 7.5, 12.5, 17.5, 2.5, 7.5, 12.5, 17.5, 2.5, 7.5, 12.5, 17.5]
             ycell = [2.5, 2.5, 2.5, 2.5, 7.5, 7.5, 7.5, 7.5, 12.5, 12.5, 12.5, 12.5, 17.5, 17.5, 17.5, 17.5]
