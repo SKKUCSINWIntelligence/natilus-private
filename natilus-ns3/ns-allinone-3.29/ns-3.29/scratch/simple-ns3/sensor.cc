@@ -151,28 +151,36 @@ SimpleSensor::SendData (void)
 	NS_LOG_FUNCTION (this);
 
 	NS_ASSERT (m_sendEvent.IsExpired ()); 
-
-	uint32_t sendSize = sampleSize - SH_SIZE; 
-	Ptr<Packet> pkt = Create<Packet> (sendSize);
-	uint8_t *carCell = new uint8_t[oc->objectMax];
-	for (uint32_t i=0; i<oc->objectMax; i++)
+	
+	// (0908) Send Multiple n Pacets
+	for (uint32_t i=0; i<sampleNum; i++)
 	{
-		if (carInfo[i] == (int)senId)
-			carCell[i] = 1;
-		else
-			carCell[i] = 0;
-		//if (carCell[i] == 0)
-		//	std::cout << "0";
-	}
 
-	SensorHeader spHeader;
-	spHeader.Set (senId, sampleValue, sampleRate, carCell, oc->objectMax);
-	pkt->AddHeader (spHeader);
+		uint32_t sendSize = sampleSize - SH_SIZE; 
+		Ptr<Packet> pkt = Create<Packet> (sendSize);
+		uint8_t *carCell = new uint8_t[oc->objectMax];
+		for (uint32_t i=0; i<oc->objectMax; i++)
+		{
+			if (carInfo[i] == (int)senId)
+				carCell[i] = 1;
+			else
+				carCell[i] = 0;
+			//if (carCell[i] == 0)
+			//	std::cout << "0";
+		}
+
+		SensorHeader spHeader;
+		spHeader.Set (0, senId, sampleValue, sampleRate, carCell, oc->objectMax);
+		pkt->AddHeader (spHeader);
 		
-	m_socket->Send (pkt);
+		m_socket->Send (pkt);
+	}	
 	eventTime = Simulator::Now ();
 
-	//std::cout << "Sensor " << senId << " send data at " << Simulator::Now().GetSeconds()<< std::endl;	
+	if (log == "woo")
+		//std::cout << "Sensor " << senId << " send data at " << Simulator::Now().GetSeconds()<< std::endl;	
+		PrintInfo ();
+
 	ScheduleTransmit ((double)(1.0/sampleRate));
 }
 
@@ -236,4 +244,15 @@ SimpleSensor::GetSample (void)
 		}
 	}
 }
+
+void
+SimpleSensor::PrintInfo (void)
+{
+	std::cout << "At " << Simulator::Now().GetSeconds() << std::endl;
+	std::cout << "Sensor " << senId << " sends " << sampleValue << std::endl;
+	printf("[sampleValue]::Truth\n");
+  PrintState<double> (oc->trackMap, oc->senN);
+  printf("--------------------------\n");
+}
+
 } // Namespace ns3

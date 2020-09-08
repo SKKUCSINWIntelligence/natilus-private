@@ -154,7 +154,7 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 		pkt->RemoveHeader (spHeader);
 		
 		uint32_t sensorId = spHeader.GetSensorId ();
-		//uint32_t sensorVl = spHeader.GetSensorVl ();
+		uint32_t sensorVl = spHeader.GetSensorVl ();
 		uint64_t fps = spHeader.GetFps ();
 		uint8_t *carCell = spHeader.GetCarInfo ();
 	
@@ -207,6 +207,10 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 				if (cell >= 0)
 					state->sampleValue[cell] += 1;
 			}
+		}
+		else if (obsMod == "sumo")
+		{
+			state->sampleValue[sensorId] = (double) sensorVl;
 		}
 		
 		// State Change Time

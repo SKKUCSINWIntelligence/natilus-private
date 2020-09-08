@@ -1,6 +1,6 @@
 #include "sensor-header.h"
 
-#define HEADER_SIZE 516
+#define HEADER_SIZE 524
 
 namespace ns3{
 
@@ -36,13 +36,14 @@ SensorHeader::Print (std::ostream &os) const
 uint32_t
 SensorHeader::GetSerializedSize (void) const
 {
-	// HEDAER SIZE = 4 + 4 + 8 + 1000
+	// HEDAER SIZE = 8 + 4 + 4 + 8 + 1000
   return HEADER_SIZE;
 }
 
 void
 SensorHeader::Serialize (Buffer::Iterator start) const
 {
+	start.WriteU64 (m_seqNum);
 	start.WriteU32 (m_sensorId);
 	start.WriteU32 (m_sensorVl);
 	start.WriteU64 (m_fps);
@@ -53,6 +54,7 @@ SensorHeader::Serialize (Buffer::Iterator start) const
 uint32_t
 SensorHeader::Deserialize (Buffer::Iterator start)
 {
+	m_seqNum = start.ReadU64 ();
 	m_sensorId = start.ReadU32 ();
 	m_sensorVl = start.ReadU32 ();
 	m_fps = start.ReadU64 ();
@@ -64,13 +66,20 @@ SensorHeader::Deserialize (Buffer::Iterator start)
 }
 
 void 
-SensorHeader::Set (uint32_t sensorId, uint32_t sensorVl, uint64_t fps, uint8_t* carInfo, uint32_t size)
+SensorHeader::Set (uint64_t seqNum, uint32_t sensorId, uint32_t sensorVl, uint64_t fps, uint8_t* carInfo, uint32_t size)
 {
+	m_seqNum = seqNum;
 	m_sensorId = sensorId;
 	m_sensorVl = sensorVl;
 	m_fps = fps;
 	for (uint32_t i=0; i<size; i++)
 		m_carInfo[i] = carInfo[i];
+}
+
+uint64_t
+SensorHeader::GetSeqNum (void)
+{
+	return m_seqNum;
 }
 
 uint32_t

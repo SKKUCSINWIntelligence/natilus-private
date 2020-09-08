@@ -15,10 +15,12 @@ NS_LOG_COMPONENT_DEFINE ("simple-ns3");
 using std::cout;
 using std::endl;
 
+int** ReadFile (std::string path, int history);
+
 int
 main (int argc, char *argv[])
 {
-	std::string log = "woo";
+	std::string log = "woox";
 	std::string port = "5050";
 	
 	srand (time(NULL));
@@ -27,8 +29,8 @@ main (int argc, char *argv[])
 	/* Mode Setting */
 	bool rlMod = false;
 	std::string env = "wireless";
-	std::string obsMod = "multi";
-	std::string upMod = "rlidagan"; // uniform/DAFU/rlidagan
+	std::string obsMod = "multi"; // multi/sumo
+	std::string upMod = "uniform"; // uniform/DAFU/rlidagan
 	std::string simMod = "x";
 	std::string stateMod = "change";
 	std::string testMod = "false";
@@ -37,10 +39,13 @@ main (int argc, char *argv[])
 	bool trace = false;
 	bool stateInfo = false;
 	
-	/* Variable Setting */
+	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
-	uint32_t sampleSize = 1500;		// Bytes per sample
-	uint32_t bwLimit = 50;				// unit: %
+	uint32_t bwLimit = 100;				// unit: %
+	uint32_t frameSize = 30;			// unit: KB (IP Camera)
+	uint32_t sampleSize = 1500;		// unit: Bytes per one packet
+	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
+																// Number of Packets to send
 
 	/* Object Setting */
 	uint32_t ssN = 6;
@@ -52,11 +57,15 @@ main (int argc, char *argv[])
 	double maxSpeed = cellUnit*sensorAvgRate; // m/s
 	double speedRate = 40; //unit: %
 	double objectSpeed = maxSpeed*speedRate / 100;
-	
+		
 	/* Wifi Setting */
 	uint32_t dataSpeed = 9;
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
+	/* Application Setting */
+	double appStart = 1.0;
+	double appEnd = 3.0;
+
 	/* Command Setting */
 	CommandLine cmd;
 	cmd.AddValue ("port", "Socket Port", port);
@@ -68,6 +77,21 @@ main (int argc, char *argv[])
 	cmd.AddValue ("sInfo", "State Info", stateInfo);
 	cmd.Parse (argc, argv);
 	
+	/* Read Sumo File */
+	int** memory_X = NULL;
+	int** memory_Y = NULL;
+
+	int history = 300000;
+	if(obsMod =="sumo")
+	{	
+		std::string xPath = "data/x_v6.txt";
+		std::string yPath = "data/y_v6.txt";
+
+		memory_X = ReadFile(xPath, history);
+		memory_Y = ReadFile(yPath, history);
+		std::cout<<"File Read Complete!\n";
+	}
+
 	if (ssN==6)
 	{
 		if(objectLimit == 25)
@@ -122,7 +146,10 @@ main (int argc, char *argv[])
 
 	ssN = ssN*ssN;
 	sensorAvgRate = sensorAvgRate * bwLimit / 100;
+	
 	uint64_t bw = Byte2Bit(sampleSize) * ssN *sensorAvgRate;
+	uint32_t totalSize = sampleNum * sampleSize;
+	double needsThr = (double) totalSize * 8 * sensorAvgRate * ssN / 1000000;
 	
 	/* ZMQ Setting */
 	zmq::context_t zmqcontext {1};
@@ -138,16 +165,24 @@ main (int argc, char *argv[])
 	do
 	{
 		/* Print Setting */
-		cout << "Sensor #: " << ssN << endl;
-		cout << "Object Speed: " << objectSpeed << endl;
-		
-		cout << "Wifi DataMode: " << dataMode << endl;
+		cout << "\n==================================" << endl;
+		cout << "[[Sensor Setting]]" << endl;
+		cout << "Sensor #: " << ssN << endl << endl;;
+		cout << "[[Object Setting]]" << endl;
+		cout << "Object Speed: " << objectSpeed << endl << endl;
+		cout << "[[Sample Setting]]" << endl;
+		cout << "Frame Size: " << frameSize << " KB (" << frameSize*1024 << " bytes)" <<  endl;
+		cout << "Sampel Num: " << sampleNum << endl;
+		cout << "Needs Thr : " << needsThr << " Mbps" << endl << endl;
+		cout << "[[Wifi Setting]]" << endl;
+		cout << "Wifi DataMode: " << dataMode << endl << endl;
+
 		// Create Object
 		ObjectContain *oc = new ObjectContain;
 		oc->obsMod = obsMod;
 		oc->objectMax = objectMax;
 		oc->objectN = objectN;
-
+		
 		oc->log = log;
 		oc->trace = trace;
 		oc->serId = 0;
@@ -156,7 +191,13 @@ main (int argc, char *argv[])
 		oc->unitN = std::sqrt(ssN); 
 		oc->bound = cellUnit*std::sqrt(ssN);
 		oc->vel = objectSpeed;
-		
+		oc->firstTime = appStart;
+		if (obsMod == "sumo")
+		{
+			oc->memory_X = memory_X;
+			oc->memory_Y = memory_Y;
+		}
+
 		// Node
 		NS_LOG_INFO ("Create Node");
 		NodeContainer sensorNode;
@@ -247,18 +288,20 @@ main (int argc, char *argv[])
 		simpleSink->upMod = upMod;
 		simpleSink->obsMod = obsMod;
 		simpleSink->stateMod = stateMod;
+
 		simpleSink->oc = oc;
 		simpleSink->ssN = ssN;
 		simpleSink->maxStep = maxStep;
 		simpleSink->avgRate = sensorAvgRate;
+
 		if (upMod == "rlidagan")
 		{
 			simpleSink->zmqsocket = &zmqsocket;
 		}
 
 		simpleSink->Set ();
-		sinkApp.Start (Seconds (0.0));
-		sinkApp.Stop (Seconds (40.0));
+		sinkApp.Start (Seconds (appStart - 1.0)); // 0sec
+		sinkApp.Stop (Seconds (appEnd));
 
 		// App Sensor
 		NS_LOG_INFO ("Create Sensor");
@@ -280,14 +323,16 @@ main (int argc, char *argv[])
 			simpleSensor->log = log;
 			simpleSensor->upMod = upMod;
 			simpleSensor->obsMod = obsMod;
+		
 			simpleSensor->senId = i;
 			simpleSensor->sampleSize = sampleSize;
+			simpleSensor->sampleNum = sampleNum;
 			simpleSensor->sampleRate = sensorAvgRate;
 			simpleSensor->oc = oc;
 			
 			simpleSensor->Set ();
-			sensorApp[i].Start (Seconds(1.0));
-			sensorApp[i].Stop (Seconds(40.0));
+			sensorApp[i].Start (Seconds(appStart)); // 1sec
+			sensorApp[i].Stop (Seconds(appEnd));
 		}
 	
 		simpleSink->addressList = sensorAddressList;
@@ -324,10 +369,70 @@ main (int argc, char *argv[])
 		std::cout << "Simulation Multi Cnt: " << simpleSink->multiCnt/simpleSink->cntAvg << std::endl;
 		std::cout << "Simulation Multi Max: " << simpleSink->multiMax << std::endl;
 		std::cout << "Simulation Avg Reward: " << simpleSink->rewardAvg/simpleSink->cntAvg  << std::endl;
-
-		delete oc;
+		
+		//delete oc;	
 		delete[] sensorAddressList;
 	}while(rlMod);
-
+	
+	if (obsMod == "sumo")
+	{
+		for(int i =0; i<history; i++)
+		{
+			delete[] memory_X[i];
+			delete[] memory_Y[i];
+		}
+		delete[] memory_X;
+		delete[] memory_Y;
+	}
 	return 0;
+}
+
+int** ReadFile(std::string path, int history)
+{
+	int** memory = new int*[sizeof(int*)*history];
+
+	std::ifstream File(path.data());
+	int case_num = 0;
+	int case_max = 0;
+	int case_temp = 0;
+	char * tok ;
+	char * case_buffer = new char[600];
+	int i = 0;
+	
+	if(File.is_open())
+	{
+		std::string case_line; 
+		int* v1;
+	
+		while(i<history)
+		{
+      getline(File,case_line);        
+			case_num ++;
+			v1 = new int[100];
+      
+			int j = 0;
+			strcpy(case_buffer, case_line.c_str());
+			tok = strtok(case_buffer," ");
+			while(tok!=NULL)
+			{
+				v1[j] =atoi(tok);
+				case_temp ++;
+				tok = strtok(NULL, " ");
+				j++;
+			}
+			memory[i] = v1;
+			if(case_temp>case_max)
+				case_max = case_temp;
+			case_temp = 0;
+			i++;	
+		}
+		std::cout<<"MAX : "<<case_max<<std::endl;
+	}	
+	else
+		std::cout<<"[ERROR] :: There are no file exist!"<<std::endl;
+
+	File.close();
+	
+	delete[] case_buffer;
+	return memory;
 }

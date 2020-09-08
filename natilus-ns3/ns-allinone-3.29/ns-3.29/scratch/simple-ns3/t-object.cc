@@ -128,19 +128,6 @@ void ObjectContain::Start ()
 			ang[7] = 255.0/360.0*2*PI;
 			ang[8] = 315.0/360.0*2*PI;
 
-			/*loc[0] = 18;
-			loc[1] = 29; 
-			loc[2] = 43;
-			
-			ang[0] = 35.0/360.0*2*PI;
-			ang[1] = 105.0/360.0*2*PI;
-			ang[2] = 200.0/360.0*2*PI;
-			ang[3] = 220.0/360.0*2*PI;
-			ang[4] = 145.0/360.0*2*PI;
-			ang[5] = 90.0/360.0*2*PI;
-			ang[6] = 12.0/360.0*2*PI;
-			ang[7] = 110.0/360.0*2*PI;
-			ang[8] = 255.0/360.0*2*PI;*/
 		}
 		else if (unitN == 10)
 		{
@@ -185,29 +172,7 @@ void ObjectContain::Start ()
 			ang[11] = 270.0/360.0*2*PI;	
 			ang[12] = 20.0/360.0*2*PI;;
 			ang[13] = 260.0/360.0*2*PI;
-			ang[14] = 330.0/360.0*2*PI;	
-			
-			/*loc[0] = 39;
-			loc[1] = 57; 
-			loc[2] = 78;
-			loc[3] = 116;
-			loc[4] = 124;
-		
-			ang[0] = 10.0/360.0*2*PI;
-			ang[1] = 50.0/360.0*2*PI;
-			ang[2] = 340.0/360.0*2*PI;
-			ang[3] = 100.0/360.0*2*PI;
-			ang[4] = 180.0/360.0*2*PI;
-			ang[5] = 240.0/360.0*2*PI;
-			ang[6] = 70.0/360.0*2*PI;
-			ang[7] = 170.0/360.0*2*PI;
-			ang[8] = 270.0/360.0*2*PI;
-			ang[9] = 120.0/360.0*2*PI;;
-			ang[10] = 200.0/360.0*2*PI;
-			ang[11] = 280.0/360.0*2*PI;	
-			ang[12] = 10.0/360.0*2*PI;;
-			ang[13] = 190.0/360.0*2*PI;
-			ang[14] = 340.0/360.0*2*PI;*/	
+			ang[14] = 330.0/360.0*2*PI;		
 		}
 		else if (unitN == 14)
 		{
@@ -267,37 +232,7 @@ void ObjectContain::Start ()
 			ang[17] = 270.0/360.0*2*PI;
 			ang[18] = 30.0/360.0*2*PI;
 			ang[19] = 290.0/360.0*2*PI;
-			ang[20] = 230.0/360.0*2*PI;
-			
-			/*loc[0] = 51;
-			loc[1] = 72; 
-			loc[2] = 91;
-			loc[3] = 117;
-			loc[4] = 156;
-			loc[5] = 163;
-			loc[6] = 199;
-
-			ang[0] = 0.0/360.0*2*PI;
-			ang[1] = 60.0/360.0*2*PI;
-			ang[2] = 110.0/360.0*2*PI;
-			ang[3] = 30.0/360.0*2*PI;
-			ang[4] = 170.0/360.0*2*PI;
-			ang[5] = 340.0/360.0*2*PI;
-			ang[6] = 70.0/360.0*2*PI;
-			ang[7] = 120.0/360.0*2*PI;
-			ang[8] = 190.0/360.0*2*PI;
-			ang[9] = 20.0/360.0*2*PI;;
-			ang[10] = 100.0/360.0*2*PI;
-			ang[11] = 300.0/360.0*2*PI;	
-			ang[12] = 120.0/360.0*2*PI;
-			ang[13] = 180.0/360.0*2*PI;
-			ang[14] = 270.0/360.0*2*PI;
-			ang[15] = 0/360.0*2*PI;
-			ang[16] = 260.0/360.0*2*PI;
-			ang[17] = 340.0/360.0*2*PI;
-			ang[18] = 180.0/360.0*2*PI;
-			ang[19] = 225.0/360.0*2*PI;
-			ang[20] = 295.0/360.0*2*PI;*/
+			ang[20] = 230.0/360.0*2*PI;			
 		}
 		else if (unitN == 20)
 		{
@@ -402,8 +337,16 @@ void ObjectContain::Start ()
 		trackMap[i] = 0;
 		tempMap[i] = 25;
 	}
+	
+	if (obsMod == "sumo")
+	{
+		MapUpdateSumo (-100);
+	}
+	else
+	{
+		MapUpdate ();
+	}
 
-	MapUpdate ();
 	lastTime = Simulator::Now ();
 	
 	if (obsMod == "car")
@@ -412,7 +355,7 @@ void ObjectContain::Start ()
 	}
 	if (obsMod == "multi")
 	{
-		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, true);
+		Simulator::Schedule (Seconds(firstTime), &ObjectContain::NewMulti, this, true);
 	}
 }
 
@@ -582,7 +525,13 @@ void ObjectContain::NewObject (bool reGen)
 }
 
 void ObjectContain::NewMulti (bool reGen)
-{	
+{
+	if (firstNew)
+	{
+		lastTime = Simulator::Now ();
+		firstNew = false;
+	}
+	
 	// (0731)
 	// Generation Loc is fixed. Should Angle also fixed?
 	uint32_t r = rand() % (int) ((unitN/2) - 1);
@@ -701,7 +650,11 @@ void ObjectContain::NewMulti (bool reGen)
 		}
 	}
 
-	MapUpdate ();	
+	MapUpdate ();
+	
+	//std::cout << "New Multi at " << Simulator::Now ().GetSeconds () <<  std::endl;
+	//PrintState<double> (trackMap, senN);
+		
 	if (reGen)
 		Simulator::Schedule (Seconds(1/60.0), &ObjectContain::NewMulti, this, reGen);
 }
@@ -864,17 +817,21 @@ void ObjectContain::Moving (void)
 		for (uint32_t i=0; i<objectMax; i++)
 			if (object[i].occupy)
 				object[i].timeD = timeD;
-		if (obsMod == "car" || obsMod == "multi")
+		
+		if (obsMod == "multi")
+		{
 			MovFuncCar ();
-		else
-			MovFunc ();
-		MapUpdate ();
+			MapUpdate ();
+		}
+		else if (obsMod == "sumo")
+		{
+			MapUpdateSumo (timeD);
+		}
 
 		// Time Update
 		lastTime = Simulator::Now();
 
-		// Observation
-		
+		// Observation	
 		if (trace)
 		{
 			printf("[Moving Trace]::serId:%d\n", serId);
@@ -1154,7 +1111,8 @@ double ObjectContain::Angle (OBJECT *obj)
 	return newAngle;
 }
 
-double ObjectContain::GetRandGauss (void)
+double 
+ObjectContain::GetRandGauss (void)
 {
 	double u = ((double)(rand() / (double)RAND_MAX)) * 1.0;
 	double v = ((double)(rand() / (double)RAND_MAX)) * 1.0;
@@ -1163,5 +1121,62 @@ double ObjectContain::GetRandGauss (void)
 	return r;
 }
 
+/* Case Study Functions */
+void
+ObjectContain::MapUpdateSumo (double term)
+{
+	int* vx ;
+	int* vy ;
+	int frame = 0;
+	int interval = 10;
+	
+	if(term  ==-100)
+	{ // Initialization if -100
+		startTime = rand()%(300000-interval*3000);
+		vx = memory_X[startTime];
+		vy = memory_Y[startTime];
+		MapCreateSumo(vx, vy);
+	}	
+	else
+	{
+		term += stackedT;
+		frame = (int)(term/(0.033/interval));
+		stackedT = term -frame*(0.033/interval);
+		startTime += frame;
+		vx = memory_X[startTime];
+		vy = memory_Y[startTime];
+		MapCreateSumo(vx, vy);
+	}
+}
+
+void
+ObjectContain::MapCreateSumo (int* x, int* y)
+{
+	int x_t = 0;
+	double y_t = 0;
+	int target = 0;
+
+	memcpy (trackMap, zero, sizeof(double)*senN);
+	int ii = 0;
+
+	while (x[ii]!=0)
+	{
+		x_t  = (double)x[ii];	
+		y_t  = (double)y[ii];	
+
+		x_t /= 1650/12;
+		y_t /= 1550/12;
+		if (x_t>11)
+			x_t = 11;
+		if (y_t>11)
+			y_t = 11;
+		x_t = (int)x_t;
+		y_t = (int)y_t;
+		y_t = 11-y_t; 
+		target = 12*y_t + x_t;
+		trackMap[target] +=1;
+		ii++;
+	}
+}
 
 }

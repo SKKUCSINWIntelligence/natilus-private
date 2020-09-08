@@ -38,8 +38,16 @@ public:
 	double vel;
 	uint32_t objectMax;
 	std::string obsMod;
+	
+	// Case Study
+	int** memory_X;
+	int** memory_Y;
+	int startTime = 0;
+	double stackedT = 0;
 
 	// Time
+	bool firstNew = true;
+	double firstTime = 0;
 	Time lastTime;
 
 	// Object
@@ -71,7 +79,10 @@ public:
 	void MovFuncCar (void);
 	double Angle (OBJECT *obj);
 	double GetRandGauss (void);
-
+	
+	// Case Study Function
+	void MapUpdateSumo (double);
+	void MapCreateSumo (int*, int*);
 
 };
 

@@ -6,7 +6,7 @@
 #include "ns3/header.h"
 #include <iostream>
 
-#define SH_SIZE 516
+#define SH_SIZE 524
 
 namespace ns3{
 
@@ -23,14 +23,16 @@ class SensorHeader : public Header
 		virtual void Serialize (Buffer::Iterator start) const;
 		virtual uint32_t Deserialize (Buffer::Iterator start);
 
-		void Set (uint32_t, uint32_t, uint64_t, uint8_t*, uint32_t);
+		void Set (uint64_t, uint32_t, uint32_t, uint64_t, uint8_t*, uint32_t);
 	
+		uint64_t GetSeqNum (void);
 		uint32_t GetSensorId (void);
 		uint32_t GetSensorVl (void);
 		uint64_t GetFps (void);
 		uint8_t* GetCarInfo (void);
 
 	private:
+		uint64_t			m_seqNum;
 		uint32_t			m_sensorId;
 		uint32_t			m_sensorVl;
 		uint64_t			m_fps;

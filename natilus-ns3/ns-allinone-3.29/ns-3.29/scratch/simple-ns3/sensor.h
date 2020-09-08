@@ -40,6 +40,7 @@ public:
 	uint32_t senId;
 	uint32_t sampleSize;
 	uint32_t sampleValue;
+	uint32_t sampleNum;
 	uint32_t sampleRate;
 	uint16_t *carInfo;
 	Time		 eventTime;
@@ -56,6 +57,7 @@ private:
 	void ScheduleTransmit (double fps);
 
 	void GetSample (void);
+	void PrintInfo (void);
 
 	Ptr<Socket>     m_socket;     //!< Associated socket
 	Address m_peerAddress;
