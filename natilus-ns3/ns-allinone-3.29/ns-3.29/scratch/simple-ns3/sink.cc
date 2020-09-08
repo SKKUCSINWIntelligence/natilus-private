@@ -58,6 +58,8 @@ SimpleSink::~SimpleSink()
 	delete state;
 	delete[] addressList;
 	delete[] recvBytes;
+	delete[] seqNum;
+	delete[] pktNum;
 }
 
 void 
@@ -70,12 +72,19 @@ SimpleSink::Set (void)
 
 	/* malloc recv list */
 	recvBytes = new uint64_t[ssN];
+	/* malloc sensor seq num */
+	seqNum = new uint64_t[ssN];
+	pktNum = new uint32_t[ssN];
+
 	for (uint32_t i=0; i<ssN; i++)
 	{
 		recvBytes[i] = 0;
+		seqNum[i] = 0;
+		pktNum[i] = 0;
 		/* set uniform action */
 		state->action[i] = avgRate; 
 	}
+
 }
 uint64_t 
 SimpleSink::GetTotalRx () const
@@ -153,6 +162,7 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 		SensorHeader spHeader; 
 		pkt->RemoveHeader (spHeader);
 		
+		uint64_t seq = spHeader.GetSeqNum ();
 		uint32_t sensorId = spHeader.GetSensorId ();
 		uint32_t sensorVl = spHeader.GetSensorVl ();
 		uint64_t fps = spHeader.GetFps ();
@@ -161,6 +171,7 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 		//std::cout << from << " " << addressList[sensorId] <<  std::endl;
 		//std::cout <<	InetSocketAddress::ConvertFrom (from).GetIpv4 () << " " << InetSocketAddress::ConvertFrom (addressList[sensorId]).GetIpv4 () << std::endl; 
 		//std::cout << "[[Sink Info]] at " << Simulator::Now().GetSeconds() <<  std::endl;
+		//std::cout << "Sequence Number: " << seq << std::endl;
 		//std::cout << "SensorId: " << sensorId << std::endl;
 		/*std::cout << "SensorVl: " << sensorVl << std::endl;
 		std::cout << "Fps     : " << fps << std::endl;*/
@@ -172,63 +183,87 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 				std::cout << "1";
 		}*/
 		
-		/* Save Address */
-		addressList[sensorId] = from;
-		
-		// Save Recv Bytes
-		recvBytes[sensorId] += pkt->GetSize ();
-
-		// State Fps
-		state->sampleRate[sensorId] = fps;
-		
-		// State Car Number
-		double pastValue = state->sampleValue[sensorId];
-		if (obsMod == "multi")
+		if (seq == 0)
+		{		
+			/* Save Address */
+			addressList[sensorId] = from;
+			//std::cout << from << std::endl;
+		}
+		else
 		{
-			// Save Car's cell
-			for (uint32_t i=0; i<oc->objectMax; i++)
+			// Save Recv Bytes
+			recvBytes[sensorId] += pkt->GetSize ();
+		
+			// Check Sequence Number
+			if (seq != seqNum[sensorId])
 			{
-				if (state->sampleCar[i] == (int) sensorId)
-					state->sampleCar[i] = -1;
-				if (carCell[i] == 1)
-					state->sampleCar[i] = (int)sensorId;
+				if (seq < seqNum[sensorId])
+				{
+					printf("Sequence Number Error!!!");
+				}
+				seqNum[sensorId] = seq;
+				pktNum[sensorId] = 1;
 			}
+			else
+			{
+				pktNum[sensorId] += 1;
+			}
+		
+			// If Enough Packet Recv than Update the map
+			if (pktNum[sensorId] >= sampleNum)
+			{
+				// State Fps
+				state->sampleRate[sensorId] = fps;
+		
+				// State Car Number
+				double pastValue = state->sampleValue[sensorId];
+				if (obsMod == "multi")
+				{
+					// Save Car's cell
+					for (uint32_t i=0; i<oc->objectMax; i++)
+					{
+						if (state->sampleCar[i] == (int) sensorId)
+							state->sampleCar[i] = -1;
+						if (carCell[i] == 1)
+							state->sampleCar[i] = (int)sensorId;
+					}
 
-			// Clear the map
-			for (uint32_t i=0; i<ssN; i++)
-			{
-				state->sampleValue[i] = 0;
-			}
+					// Clear the map
+					for (uint32_t i=0; i<ssN; i++)
+					{
+						state->sampleValue[i] = 0;
+					}
 			
-			// Fill the map
-			for (uint32_t i=0; i<oc->objectMax; i++)
-			{
-				int cell = state->sampleCar[i];
-				if (cell >= 0)
-					state->sampleValue[cell] += 1;
+					// Fill the map
+					for (uint32_t i=0; i<oc->objectMax; i++)
+					{
+						int cell = state->sampleCar[i];
+						if (cell >= 0)
+							state->sampleValue[cell] += 1;
+					}
+				}
+				else if (obsMod == "sumo")
+				{
+					state->sampleValue[sensorId] = (double) sensorVl;
+				}
+		
+				// State Change Time
+				double curValue = state->sampleValue[sensorId];
+				if (pastValue != curValue)
+					state->stateChangeTime[sensorId] = Simulator::Now ();
+				// State Last Update Time
+				state->lastUpdateTime[sensorId] = Simulator::Now ();
 			}
-		}
-		else if (obsMod == "sumo")
-		{
-			state->sampleValue[sensorId] = (double) sensorVl;
-		}
 		
-		// State Change Time
-		double curValue = state->sampleValue[sensorId];
-		if (pastValue != curValue)
-			state->stateChangeTime[sensorId] = Simulator::Now ();
-		// State Last Update Time
-		state->lastUpdateTime[sensorId] = Simulator::Now ();
-
-		if (firstEval)
-		{
-			firstEval = false;
-			double commTime = 1.0/30.0;
-			Simulator::Schedule (Seconds (commTime), &SimpleSink::Comm, this);
-			double evalTime = 1.0/(double)(rand()%30+1+120);
-			Simulator::Schedule (Seconds (evalTime), &SimpleSink::Eval, this);
-		}
-		
+			if (firstEval)
+			{
+				firstEval = false;
+				double commTime = 1.0/30.0;
+				Simulator::Schedule (Seconds (commTime), &SimpleSink::Comm, this);
+				double evalTime = 1.0/(double)(rand()%30+1+120);
+				Simulator::Schedule (Seconds (evalTime), &SimpleSink::Eval, this);
+			}
+		}	
 	}
 }
 
@@ -308,6 +343,7 @@ void
 SimpleSink::Comm (void)
 {
 	PrintInfo ();
+	std::cout << "Reward: " << reward /cnt << std::endl << std::endl;
 	evalCnt ++;
 
 	if (cnt == 0)

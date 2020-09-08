@@ -53,7 +53,10 @@ public:
 	uint32_t			ssN;
 	Address*			addressList;
 	uint32_t			avgRate;
-
+	uint32_t			sampleNum;
+	uint64_t*			seqNum;
+	uint32_t*			pktNum;
+	
 	/* Sink Setting */
 	uint64_t*			recvBytes;
 	double				endTime;

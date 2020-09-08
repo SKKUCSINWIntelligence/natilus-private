@@ -52,6 +52,7 @@ private:
   virtual void StartApplication (void);    // Called at time specified by Start
   virtual void StopApplication (void);     // Called at time specified by Stop
 	
+	void SendFirst (void);
 	void SendData (void);
 	void HandleRead (Ptr<Socket> socket);
 	void ScheduleTransmit (double fps);
@@ -63,6 +64,7 @@ private:
 	Address m_peerAddress;
 	uint16_t m_peerPort;
 	EventId m_sendEvent;
+	uint64_t m_seqNum;
 
 	TracedCallback<Ptr<const Packet> > m_txTrace;
 

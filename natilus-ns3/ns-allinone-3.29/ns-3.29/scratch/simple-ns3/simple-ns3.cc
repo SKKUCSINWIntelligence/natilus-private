@@ -72,6 +72,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("obsMod", "Obs Mode", obsMod);
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
 	cmd.AddValue ("ssN", "Sesnsor #", ssN);
+	cmd.AddValue ("frame", "Frame Size", frameSize);
 	cmd.AddValue ("bwLimit", "BW Limit %", bwLimit);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info", stateInfo);
@@ -293,6 +294,7 @@ main (int argc, char *argv[])
 		simpleSink->ssN = ssN;
 		simpleSink->maxStep = maxStep;
 		simpleSink->avgRate = sensorAvgRate;
+		simpleSink->sampleNum = sampleNum;
 
 		if (upMod == "rlidagan")
 		{
@@ -300,7 +302,7 @@ main (int argc, char *argv[])
 		}
 
 		simpleSink->Set ();
-		sinkApp.Start (Seconds (appStart - 1.0)); // 0sec
+		sinkApp.Start (Seconds (appStart - 1.0)); // 0.0 sec
 		sinkApp.Stop (Seconds (appEnd));
 
 		// App Sensor
@@ -331,7 +333,7 @@ main (int argc, char *argv[])
 			simpleSensor->oc = oc;
 			
 			simpleSensor->Set ();
-			sensorApp[i].Start (Seconds(appStart)); // 1sec
+			sensorApp[i].Start (Seconds(appStart - 0.5)); // 0.5 sec
 			sensorApp[i].Stop (Seconds(appEnd));
 		}
 	
@@ -359,10 +361,10 @@ main (int argc, char *argv[])
 		cout << "ini SampleRate: " << sensorAvgRate << "(fps)" << endl;
 		
 		printf("\n[Sink Info]\n");
-		cout << "Total Thr: " << (double) simpleSink->GetTotalRx () * 8 / 1000000 / (simpleSink->endTime - 0.0) << "Mbps" << endl;
+		cout << "Total Thr: " << (double) simpleSink->GetTotalRx () * 8 / 1000000 / (simpleSink->endTime - 1.0) << "Mbps" << endl;
 		for (uint32_t i=0; i<ssN; i++)
 		{
-			cout << i << " Sensor Thr: " << (double) simpleSink->recvBytes[i] * 8 / 1000000 / (simpleSink->endTime - 0.0) << "Mbps" << endl;
+			cout << i << " Sensor Thr: " << (double) simpleSink->recvBytes[i] * 8 / 1000000 / (simpleSink->endTime - 1.0) << "Mbps" << endl;
 		}
 	
 		printf("\n[Simulation Info]\n");
