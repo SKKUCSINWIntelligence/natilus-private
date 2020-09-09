@@ -43,7 +43,7 @@ main (int argc, char *argv[])
 	uint32_t sensorAvgRate = 60;	// unit: #/s
 	uint32_t bwLimit = 100;				// unit: %
 	uint32_t frameSize = 30;			// unit: KB (IP Camera)
-	uint32_t sampleSize = 1500;		// unit: Bytes per one packet
+	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
 																// Number of Packets to send
 
@@ -175,6 +175,8 @@ main (int argc, char *argv[])
 		cout << "Frame Size: " << frameSize << " KB (" << frameSize*1024 << " bytes)" <<  endl;
 		cout << "Sampel Num: " << sampleNum << endl;
 		cout << "Needs Thr : " << needsThr << " Mbps" << endl << endl;
+		cout << "[[Action Setting" << endl;
+		cout << "Needs Thr : " << (double) 10 * 8 * 30 * ssN / 1000000 << " Mbps" << endl <<  endl;  
 		cout << "[[Wifi Setting]]" << endl;
 		cout << "Wifi DataMode: " << dataMode << endl << endl;
 

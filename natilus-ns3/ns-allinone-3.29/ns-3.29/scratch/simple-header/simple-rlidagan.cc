@@ -110,10 +110,20 @@ main (int argc, char *argv[])
 	// 25% 
 	if (ssN==6)
 	{ // 28
-		if(objLimit == 25)
+		if (objLimit == 20)
+			objectMax = 30;
+		else if (objLimit == 25)
 			objectMax = 32;
+		else if (objLimit == 30)
+			objectMax = 40;
 		else if (objLimit == 40)
-			objectMax = 32;
+			objectMax = 55;
+		else if (objLimit == 50)
+			objectMax = 85;
+		else if (objLimit == 60)
+			objectMax = 140;
+		else if (objLimit == 70)
+			objectMax = 250;
 	}
 	else if (ssN==8)
 	{ // 32
@@ -171,7 +181,7 @@ main (int argc, char *argv[])
 	uint32_t serviceN = 1; // Service #
 	
 	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
-	uint32_t sampleSize = 1500; // Bytes per Sample
+	uint32_t sampleSize = 30 * 1024; //1500; // Bytes per Sample
 	uint32_t actionPacketSize = 100; // Bytes per Action
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
 
