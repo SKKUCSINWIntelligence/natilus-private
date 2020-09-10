@@ -217,6 +217,7 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 			// If Enough Packet Recv than Update the map
 			if (pktNum[sensorId] == sampleNum)
 			{
+				//std::cout << "Sensor " << sensorId << " Seq Num is " << seqNum[sensorId] << std::endl;
 				// State Fps
 				state->sampleRate[sensorId] = fps;
 		
