@@ -121,7 +121,8 @@ SimpleSensor::StartApplication (void)
 	m_socket->SetRecvCallback (MakeCallback (&SimpleSensor::HandleRead, this));
 	m_socket->SetAllowBroadcast (true);
 	SendFirst ();
-	ScheduleTransmit (0.5);
+	double offset = (double)(rand()%1000)/100000;
+	ScheduleTransmit (0.5+offset);
 }
 
 void 
@@ -164,6 +165,7 @@ SimpleSensor::SendFirst (void)
 		//std::cout << "Send at " << Simulator::Now().GetSeconds () << std::endl;
 }
 
+
 void
 SimpleSensor::SendData (void)
 {
@@ -185,8 +187,6 @@ SimpleSensor::SendData (void)
 				carCell[i] = 1;
 			else
 				carCell[i] = 0;
-			//if (carCell[i] == 0)
-			//	std::cout << "0";
 		}
 
 		SensorHeader spHeader;
@@ -204,6 +204,58 @@ SimpleSensor::SendData (void)
 		PrintInfo ();
 
 	ScheduleTransmit ((double)(1.0/sampleRate));
+}
+
+/*void
+SimpleSensor::SendData (void)
+{
+	GetSample ();
+	NS_LOG_FUNCTION (this);
+
+	NS_ASSERT (m_sendEvent.IsExpired ()); 
+	
+	// (0908) Send Multiple n Pacets
+
+	uint32_t sendSize = sampleSize - SH_SIZE; 
+	Ptr<Packet> pkt = Create<Packet> (sendSize);
+	uint8_t *carCell = new uint8_t[oc->objectMax];
+	for (uint32_t i=0; i<oc->objectMax; i++)
+	{
+		if (carInfo[i] == (int)senId)
+			carCell[i] = 1;
+		else
+			carCell[i] = 0;
+	}
+
+	SensorHeader spHeader;
+	spHeader.Set (m_seqNum, senId, sampleValue, sampleRate, carCell, oc->objectMax);
+	pkt->AddHeader (spHeader);
+		
+	m_socket->Send (pkt);
+	
+		if (log == "woo")
+		PrintInfo ();
+	
+	Simulator::Schedule (Seconds (0.0001), &SimpleSensor::SendN, this,  pkt, 2);
+	ScheduleTransmit ((double)(1.0/sampleRate));
+}*/
+
+void 
+SimpleSensor::SendN (Ptr<Packet> pkt, uint32_t n)
+{
+	m_socket->Send (pkt);
+	n += 1;
+
+	if (n >= sampleNum+1)
+	{
+		// Increase Sequce Number
+		m_seqNum += 1;
+		eventTime = Simulator::Now ();
+	}
+	else
+	{
+		Simulator::Schedule (Seconds (0.0001), &SimpleSensor::SendN, this, pkt, n);
+	}
 }
 
 void 

@@ -54,6 +54,7 @@ private:
 	
 	void SendFirst (void);
 	void SendData (void);
+	void SendN (Ptr<Packet>, uint32_t);
 	void HandleRead (Ptr<Socket> socket);
 	void ScheduleTransmit (double fps);
 

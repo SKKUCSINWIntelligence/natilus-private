@@ -209,7 +209,7 @@ main (int argc, char *argv[])
 	}
 	
 	// Test Mode Setting
-	double totalTest = 100;
+	double totalTest = 10;
 	double cntTest = 0;
 	double tempDiffTest = 0;
 	double tempAccTest = 0;

@@ -64,7 +64,7 @@ main (int argc, char *argv[])
 	
 	/* Application Setting */
 	double appStart = 1.0;
-	double appEnd = 3.0;
+	double appEnd = 100.0;
 
 	/* Command Setting */
 	CommandLine cmd;
@@ -74,7 +74,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("ssN", "Sesnsor #", ssN);
 	cmd.AddValue ("frame", "Frame Size", frameSize);
 	cmd.AddValue ("bwLimit", "BW Limit %", bwLimit);
-	cmd.AddValue ("objMax", "Object Max", objectMax);
+	cmd.AddValue ("objLimit", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info", stateInfo);
 	cmd.Parse (argc, argv);
 	
@@ -95,6 +95,8 @@ main (int argc, char *argv[])
 
 	if (ssN==6)
 	{
+		if (objectLimit == 20)
+			objectMax = 30;
 		if(objectLimit == 25)
 			objectMax = 32;
 		else if (objectLimit == 40)
@@ -368,7 +370,11 @@ main (int argc, char *argv[])
 		{
 			cout << i << " Sensor Thr: " << (double) simpleSink->recvBytes[i] * 8 / 1000000 / (simpleSink->endTime - 1.0) << "Mbps" << endl;
 		}
-	
+		
+		printf("\n[Loss Info]\n");
+		std::cout << "Loss Pakcet: " << simpleSink->lossPkt << std::endl;
+		std::cout << "Loss Frame: " << simpleSink->lossFrm << std::endl;
+
 		printf("\n[Simulation Info]\n");
 		std::cout << "Simulation Multi Cnt: " << simpleSink->multiCnt/simpleSink->cntAvg << std::endl;
 		std::cout << "Simulation Multi Max: " << simpleSink->multiMax << std::endl;

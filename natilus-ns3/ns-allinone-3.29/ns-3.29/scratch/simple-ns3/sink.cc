@@ -201,6 +201,11 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 				{
 					printf("Sequence Number Error!!!");
 				}
+				if (pktNum[sensorId] < sampleNum)
+				{
+					lossFrm += 1;
+					lossPkt = lossPkt + (sampleNum - pktNum[sensorId]);
+				}
 				seqNum[sensorId] = seq;
 				pktNum[sensorId] = 1;
 			}
@@ -210,7 +215,7 @@ SimpleSink::HandleRead (Ptr<Socket> socket)
 			}
 		
 			// If Enough Packet Recv than Update the map
-			if (pktNum[sensorId] >= sampleNum)
+			if (pktNum[sensorId] == sampleNum)
 			{
 				// State Fps
 				state->sampleRate[sensorId] = fps;

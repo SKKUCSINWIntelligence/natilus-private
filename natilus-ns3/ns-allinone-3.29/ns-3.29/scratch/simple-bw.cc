@@ -17,18 +17,21 @@ using std::endl;
 int
 main (int argc, char *argv[])
 {
-	LogComponentEnable ("simple-bw", LOG_LEVEL_INFO);
-	
-	/* Wifi Setting */
-	uint32_t dataSpeed = 9;
-	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
-	
+	//LogComponentEnable ("simple-bw", LOG_LEVEL_INFO);
+	//LogComponentEnable ("UdpClient", LOG_LEVEL_INFO);
+	//LogComponentEnable ("UdpServer", LOG_LEVEL_INFO);
+
 	/* Application Setting */
 	double appStart = 0.0;
-	double appEnd = 2.0;
+	double appEnd = 3.0;
 
-	for (uint32_t i=0; i<1; i++)
+	for (uint32_t i=0; i<9; i++)
 	{
+		/* Wifi Setting */
+		uint32_t dataSpeed = i;
+		std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
+		std::cout << "[[DATA MODE: " << dataMode << "]]" << std::endl;
+
 		// Node
 		NS_LOG_INFO ("Create Node");
 		NodeContainer sensorNode;
@@ -107,28 +110,32 @@ main (int argc, char *argv[])
 		uint16_t port = 4000;
 		UdpServerHelper server (port);
 		ApplicationContainer apps = server.Install (serverNode.Get (0));
-		apps.Start (Seconds (appStart+1.0));
+		apps.Start (Seconds (appStart));
 		apps.Stop (Seconds (appEnd));
 		Ptr<Application> app = apps.Get(0);
 		Ptr<UdpServer> udps = DynamicCast<UdpServer> (app);
 
 		// Create Client
 		NS_LOG_INFO ("Create Client");	
-		uint32_t MaxPacketSize = 1024;
-		Time interPacketInterval = Seconds (0.05);
-		uint32_t maxPacketCount = 10;
+		uint32_t MaxPacketSize = 1472;
+		Time interPacketInterval = Seconds (0.000001);
+		uint32_t maxPacketCount = 10000000;
 		UdpClientHelper client (ip_rToS.GetAddress (0), port);
 		client.SetAttribute ("MaxPackets", UintegerValue (maxPacketCount));
 		client.SetAttribute ("Interval", TimeValue (interPacketInterval));
 		client.SetAttribute ("PacketSize", UintegerValue (MaxPacketSize));
 		apps = client.Install (sensorNode.Get (0));
-		apps.Start (Seconds (appStart));
+		apps.Start (Seconds (appStart+1.0));
 		apps.Stop (Seconds (appEnd));
 	
 		NS_LOG_INFO ("Run Simulation.");
+		Simulator::Stop (Seconds (appEnd));
 		Simulator::Run ();
-		std::cout << "Throughput: " << udps->GetReceived() * MaxPacketSize * 8 / 1000000 / (appEnd - appStart - 1.0) << " Mbps" << std::endl;
+		std::cout << "Num Packet Recv: " << udps->GetReceived () << std::endl;
+		std::cout << "Num Packet Lost: " << udps->GetLost () << std::endl; 
+		std::cout << "Throughput: " << (double) udps->GetReceived() * MaxPacketSize * 8 / 1000000 / (appEnd - appStart - 1.0) << " Mbps" << std::endl;
 		Simulator::Destroy ();
 		NS_LOG_INFO ("Done.");
+		std::cout << std::endl;
 	}
 }
