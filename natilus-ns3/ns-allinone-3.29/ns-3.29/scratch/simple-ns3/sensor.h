@@ -44,7 +44,9 @@ public:
 	uint32_t sampleRate;
 	uint16_t *carInfo;
 	Time		 eventTime;
-
+	
+	Ptr<Socket> c_socket;
+	Address c_local;
 protected:
   virtual void DoDispose (void);
 

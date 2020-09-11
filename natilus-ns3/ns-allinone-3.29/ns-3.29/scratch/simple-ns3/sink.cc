@@ -54,7 +54,8 @@ SimpleSink::SimpleSink ()
 SimpleSink::~SimpleSink()
 {
   NS_LOG_FUNCTION (this);
-
+	
+	m_socket = 0;
 	delete state;
 	delete[] addressList;
 	delete[] recvBytes;
@@ -67,6 +68,7 @@ SimpleSink::Set (void)
 {
 	/* malloc addr list */
 	addressList = new Address[ssN];
+	addressP2P = new Address[ssN];
 	for (uint32_t i=0; i<1000; i++)
 		state->sampleCar[i] = -1;
 
@@ -75,17 +77,16 @@ SimpleSink::Set (void)
 	/* malloc sensor seq num */
 	seqNum = new uint64_t[ssN];
 	pktNum = new uint32_t[ssN];
-
 	for (uint32_t i=0; i<ssN; i++)
 	{
 		recvBytes[i] = 0;
 		seqNum[i] = 0;
 		pktNum[i] = 0;
 		/* set uniform action */
-		state->action[i] = avgRate; 
+		state->action[i] = avgRate;
 	}
-
 }
+
 uint64_t 
 SimpleSink::GetTotalRx () const
 {
@@ -130,6 +131,33 @@ SimpleSink::StartApplication ()    // Called at time specified by Start
 		} 
   }
 	
+	for (uint32_t i=0; i<ssN; i++)
+	{
+		TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+		c_socket.push_back(Socket::CreateSocket (GetNode (), tid));
+		
+		if (Ipv4Address::IsMatchingType (addressP2P[i]) == true)
+		{
+			if (c_socket[i]->Bind () == -1)
+			{
+				NS_FATAL_ERROR ("Failed to bind socket");
+			}
+			c_socket[i]->Connect (InetSocketAddress (Ipv4Address::ConvertFrom(addressP2P[i]), i+1));
+		}
+		else if (InetSocketAddress::IsMatchingType (addressP2P[i]) == true)
+		{
+			if (c_socket[i]->Bind () == -1)
+			{
+				NS_FATAL_ERROR ("Failed to bind socket");
+			}
+			c_socket[i]->Connect (addressP2P[i]);
+		}
+		else
+		{
+			NS_ASSERT_MSG (false, "Incompatible address type: " << addressP2P[i]);
+		}
+	}
+
 	m_socket->SetRecvCallback (MakeCallback (&SimpleSink::HandleRead, this)); 
 }
 
@@ -404,12 +432,13 @@ SimpleSink::SendData (void)
 		spHeader.Set ((uint64_t)state->action[i]);
 		pkt->AddHeader (spHeader);
 		
-		m_socket->SendTo (pkt, 0, addressList[i]);
-		//std::cout << addressList[i] << std::endl;	
+		c_socket[i]->Send (pkt);
+		//m_socket->SendTo (pkt, 0, addressList[i]);
+		//std::cout << addressP2P[i] << std::endl;	
 		//std::cout << "At time " << Simulator::Now ().GetSeconds () << 
 		//	"s server sent " << pkt->GetSize () << 
-		//	" bytes to " << InetSocketAddress::ConvertFrom (addressList[i]).GetIpv4 () << 
-		//	" port " <<  InetSocketAddress::ConvertFrom (addressList[i]).GetPort () << std::endl;
+		//	" bytes to " << InetSocketAddress::ConvertFrom (addressP2P[i]).GetIpv4 () << 
+		//	" port " <<  InetSocketAddress::ConvertFrom (addressP2P[i]).GetPort () << std::endl;
   }
 }
 

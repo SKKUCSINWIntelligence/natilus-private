@@ -1,6 +1,7 @@
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/wifi-module.h"
+#include "ns3/point-to-point-module.h"
 #include "ns3/internet-module.h"
 #include "ns3/mobility-module.h"
 
@@ -41,7 +42,7 @@ main (int argc, char *argv[])
 	
 	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
-	uint32_t bwLimit = 100;				// unit: %
+	uint32_t bwLimit = 50;				// unit: %
 	uint32_t frameSize = 30;			// unit: KB (IP Camera)
 	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
@@ -59,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 9;
+	uint32_t dataSpeed = 3;
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -177,7 +178,7 @@ main (int argc, char *argv[])
 		cout << "Frame Size: " << frameSize << " KB (" << frameSize*1024 << " bytes)" <<  endl;
 		cout << "Sampel Num: " << sampleNum << endl;
 		cout << "Needs Thr : " << needsThr << " Mbps" << endl << endl;
-		cout << "[[Action Setting" << endl;
+		cout << "[[Action Setting]]" << endl;
 		cout << "Needs Thr : " << (double) 10 * 8 * 30 * ssN / 1000000 << " Mbps" << endl <<  endl;  
 		cout << "[[Wifi Setting]]" << endl;
 		cout << "Wifi DataMode: " << dataMode << endl << endl;
@@ -216,10 +217,12 @@ main (int argc, char *argv[])
 		YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
 		YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
 		phy.SetChannel (channel.Create ());
+		phy.Set ("ChannelWidth", UintegerValue (160));
 		phy.Set ("Antennas", UintegerValue (4));
 		phy.Set ("ShortGuardEnabled", BooleanValue (true));
 		phy.Set ("MaxSupportedTxSpatialStreams", UintegerValue (4));
 		phy.Set ("MaxSupportedRxSpatialStreams", UintegerValue (4));
+		//phy.Set ("ChannelNumber", UintegerValue (3));
 
 		WifiHelper wifi;
 		wifi.SetStandard (WIFI_PHY_STANDARD_80211ac);
@@ -248,16 +251,32 @@ main (int argc, char *argv[])
 		mobility.SetPositionAllocator ("ns3::GridPositionAllocator",
 																	 "MinX", DoubleValue (0.0),
 																	 "MinY", DoubleValue (0.0),
-																	 "DeltaX", DoubleValue (0.0),
-																	 "DeltaY", DoubleValue (0.0),
-																	 "GridWidth", UintegerValue (1),
+																	 "DeltaX", DoubleValue (1.0),
+																	 "DeltaY", DoubleValue (1.0),
+																	 "GridWidth", UintegerValue (std::sqrt(ssN)),
 																	 "LayoutType", StringValue ("RowFirst"));
 
 		mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
 		mobility.Install (sensorNode);
 		mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel"); 
 		mobility.Install (serverNode);
-
+			
+		// P2P Control
+		NS_LOG_INFO ("Create P2P");
+		PointToPointHelper p2p;
+		p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
+		p2p.SetChannelAttribute ("Delay", StringValue ("0ms"));
+		
+		std::vector<NetDeviceContainer> p2pDevice (ssN);
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			NodeContainer ss;
+			ss.Add (sensorNode.Get(i));
+			ss.Add (serverNode.Get(0));
+			NetDeviceContainer device = p2p.Install(ss);
+			p2pDevice[i] = device;
+		}
+		
 		// Internet
 		NS_LOG_INFO ("Create Internet Stack");
 		InternetStackHelper stack;
@@ -271,10 +290,16 @@ main (int argc, char *argv[])
 		ip_nToR = address.Assign (staDevice);
 		Ipv4InterfaceContainer ip_rToS;
 		ip_rToS = address.Assign (apDevice);
-
-		//address.SetBase ("10.2.1.0", "255.255.255.0");
-		//Ipv4InterfaceContainer ip_rToS;
-		//ip_rToS = address.Assign (apDevice);
+		
+		std::vector<Ipv4InterfaceContainer> p2pIp (ssN);
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			std::string addr = "10." + std::to_string(2+i) + ".1.0";	
+			Ipv4Address ipv4 (addr.c_str());
+			address.SetBase (ipv4, "255.255.255.0");
+			Ipv4InterfaceContainer ip = address.Assign (p2pDevice[i]);
+			p2pIp[i] = ip;
+		}
 
 		// Routing
 		NS_LOG_INFO ("Create Routes");
@@ -282,7 +307,7 @@ main (int argc, char *argv[])
 
 		// App Server
 		NS_LOG_INFO ("Create Server");
-		uint16_t port = 9;
+		uint16_t port = 4000;
 		//UdpEchoServerHelper sinkHelper (port);
 		SimpleSinkHelper sinkHelper (port);
 		ApplicationContainer sinkApp = sinkHelper.Install (serverNode.Get (0));
@@ -299,7 +324,7 @@ main (int argc, char *argv[])
 		simpleSink->maxStep = maxStep;
 		simpleSink->avgRate = sensorAvgRate;
 		simpleSink->sampleNum = sampleNum;
-
+		
 		if (upMod == "rlidagan")
 		{
 			simpleSink->zmqsocket = &zmqsocket;
@@ -315,13 +340,15 @@ main (int argc, char *argv[])
 		SensorHelper sensorHelper (ip_rToS.GetAddress (0), port);
 		std::vector<ApplicationContainer> sensorApp (ssN);
 		Address *sensorAddressList = new Address[ssN];
+		Address *sensorP2PList = new Address[ssN];
 		//sensorHelper.SetAttribute ("MaxPackets", UintegerValue (10));
 		//sensorHelper.SetAttribute ("Interval", TimeValue(Seconds(0.05)));
 		//sensorHelper.SetAttribute ("PacketSize", UintegerValue (500));
 		
 		for (uint32_t i=0; i<ssN; i++)
 		{
-			sensorAddressList[i] = InetSocketAddress (ip_nToR.GetAddress (i,0), port);
+			sensorAddressList[i] = InetSocketAddress (ip_nToR.GetAddress (i,0), port);	
+			sensorP2PList[i] = InetSocketAddress (p2pIp[i].GetAddress(0, 0), i+1);
 			sensorApp[i] = sensorHelper.Install (sensorNode.Get(i));
 			Ptr<Application> app = sensorApp[i].Get(0);
 			Ptr<SimpleSensor> simpleSensor = DynamicCast<SimpleSensor> (app);
@@ -342,6 +369,7 @@ main (int argc, char *argv[])
 		}
 	
 		simpleSink->addressList = sensorAddressList;
+		simpleSink->addressP2P = sensorP2PList;
 		//phy.EnablePcap ("simple-ns3", apDevice.Get(0));
 		
 		// Start Object 
@@ -382,6 +410,7 @@ main (int argc, char *argv[])
 		
 		//delete oc;	
 		delete[] sensorAddressList;
+		delete[] sensorP2PList;
 	}while(rlMod);
 	
 	if (obsMod == "sumo")

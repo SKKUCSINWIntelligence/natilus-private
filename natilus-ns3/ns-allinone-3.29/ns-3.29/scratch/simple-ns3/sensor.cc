@@ -1,5 +1,6 @@
 #include "ns3/log.h"
 #include "ns3/address.h"
+#include "ns3/address-utils.h"
 #include "ns3/node.h"
 #include "ns3/nstime.h"
 #include "ns3/socket.h"
@@ -43,6 +44,7 @@ SimpleSensor::SimpleSensor ()
 {
 	NS_LOG_FUNCTION (this);
 	m_socket = 0;
+	c_socket = 0;
 	m_seqNum = 1;
 	m_sendEvent = EventId ();
 }
@@ -51,6 +53,7 @@ SimpleSensor::~SimpleSensor()
 {
   NS_LOG_FUNCTION (this);
 	m_socket = 0;
+	c_socket = 0;
 	delete[] carInfo;
 }
 
@@ -118,7 +121,31 @@ SimpleSensor::StartApplication (void)
 		}
 	}
 	
-	m_socket->SetRecvCallback (MakeCallback (&SimpleSensor::HandleRead, this));
+	if (c_socket == 0)
+  {
+		TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+    c_socket = Socket::CreateSocket (GetNode (), tid);
+		InetSocketAddress local = InetSocketAddress (Ipv4Address::GetAny (), senId+1);
+
+		if (c_socket->Bind (local) == -1)
+		{
+			NS_FATAL_ERROR ("Failed to bind socket");
+    }
+		if (addressUtils::IsMulticast (c_local))
+		{
+			Ptr<UdpSocket> udpSocket = DynamicCast<UdpSocket> (c_socket);
+			if (udpSocket)
+			{
+				udpSocket->MulticastJoinGroup (0, c_local);
+			}
+			else
+			{
+				NS_FATAL_ERROR ("Error: Failed to join multicast group");
+			}
+		} 
+  }
+
+	c_socket->SetRecvCallback (MakeCallback (&SimpleSensor::HandleRead, this));
 	m_socket->SetAllowBroadcast (true);
 	SendFirst ();
 	double offset = (double)(rand()%1000)/100000;

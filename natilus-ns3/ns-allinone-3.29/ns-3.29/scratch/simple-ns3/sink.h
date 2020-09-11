@@ -52,6 +52,7 @@ public:
 	/* Sensor Setting */
 	uint32_t			ssN;
 	Address*			addressList;
+	Address*			addressP2P;
 	uint32_t			avgRate;
 	uint32_t			sampleNum;
 
@@ -81,6 +82,8 @@ public:
 	double				multiCnt = 0;
 	double				multiMax = 0;
 	
+	std::vector<Ptr<Socket>> c_socket;
+
 protected:
   virtual void DoDispose (void);
 
