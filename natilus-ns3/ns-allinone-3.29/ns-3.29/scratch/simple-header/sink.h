@@ -10,128 +10,130 @@
 
 namespace ns3{
 
-class Sink
-{
-public:
-	std::string log;
-	std::string upMod;
-	std::string obsMod;
-	std::string simMod;
-	std::string stateMod;
+        class Sink
+        {
+                public:
+                        std::string log;
+                        std::string upMod;
+                        std::string obsMod;
+                        std::string simMod;
+                        std::string stateMod;
 
-	// LOG Setting
-	bool channelInfo;
-	bool stateInfo;
-	bool evalInfo;
+                        // LOG Setting
+                        bool channelInfo;
+                        bool stateInfo;
+                        bool evalInfo;
 
-	// Object Linking
-	ObjectContain *oc;
-	
-	// Car Linking
-	CarContain *cc;
-	
-	// Car Evaluation
-	double *carReward;
+                        // Object Linking
+                        ObjectContain *oc;
 
-	// Setting
-	uint32_t objectN;
-	uint32_t serviceN;
-	uint32_t *service_ssN;
-	bool haveSendAction = false;
-	uint32_t actionPacketSize;
+                        // Car Linking
+                        CarContain *cc;
 
-	// Measurement per 1s 
-	uint64_t totRecvByte = 0;
-	uint64_t totRecvCnt = 0;
-	uint64_t totDelay = 0; // MilliSecond
+                        // Car Evaluation
+                        double *carReward;
 
-	// State
-	STATE *state;
-	std::queue<STATE> *history;
-	uint32_t historyN = 4;
-	double **truth;
+                        // Setting
+                        uint32_t objectN;
+                        uint32_t serviceN;
+                        uint32_t *service_ssN;
+                        bool haveSendAction = false;
+                        uint32_t actionPacketSize;
 
-	// Link Schedule Info
-	bool *isLinkScheWork;
-  uint64_t avgRate;
+                        // Measurement per 1s 
+                        uint64_t totRecvByte = 0;
+                        uint64_t totRecvCnt = 0;
+                        uint64_t totDelay = 0; // MilliSecond
 
-	// Eval
-	bool firstEval = true;
-	uint64_t evalCnt = 0;
-	uint64_t *stop;
-	uint32_t sP = 30; // 30 ~ 60 ms
-	uint32_t eP = 60 - sP;
+                        // State
+                        STATE *state;
+                        std::queue<STATE> *history;
+                        uint32_t historyN = 4;
+                        double **truth;
 
-	// TxQ
-	std::queue<DATA*> txQ;
+                        // Link Schedule Info
+                        bool *isLinkScheWork;
+                        uint64_t avgRate;
 
-	// Callback
-	Callback<void> LinkCheck;
+                        // Eval
+                        bool firstEval = true;
+                        uint64_t evalCnt = 0;
+                        uint64_t *stop;
+                        uint32_t sP = 30; // 30 ~ 60 ms
+                        uint32_t eP = 60 - sP;
 
-	// Function
-	Sink ();
-	~Sink ();
-	void Start (void);
-	void Send (void);
-	void Recv (std::queue<DATA*> *dataContain);
-	void RecvSche (std::queue<DATA*> *dataContain, uint64_t micro_delay);
+                        // TxQ
+                        std::queue<DATA*> txQ;
 
-	void Eval ();
-	void Communication ();
-	void Evaluation ();
-	void PrintInfo ();
-	void PrintChannel ();
+                        // Callback
+                        Callback<void> LinkCheck;
 
-	// Callback Function
-	Callback<void, std::queue<DATA*>*, uint64_t> CallbackRecvSche (void);
+                        // Function
+                        Sink ();
+                        ~Sink ();
+                        void Start (void);
+                        void Send (void);
+                        void Recv (std::queue<DATA*> *dataContain);
+                        void RecvSche (std::queue<DATA*> *dataContain, uint64_t micro_delay);
 
-	/****************
-	* Modification Below
-	****************/
+                        void Eval ();
+                        void Communication ();
+                        void Evaluation ();
+                        void PrintInfo ();
+                        void PrintChannel ();
 
-	// Eval Parameter (Evaluation)
-	double *trackAcc;
-	double *tempAcc;
-	double *tempDiff;
-	double *reward;
-	double *cnt;
-	double *threshold;
-  double **trackMap;
-	double multiCnt = 0;
-	double multiMax = 0; 
+                        // Callback Function
+                        Callback<void, std::queue<DATA*>*, uint64_t> CallbackRecvSche (void);
 
-	double *tempAcc_avg;
-	double *tempDiff_avg;
-	double *reward_avg;
-	double *reward_cnt;
-	double *singleAcc_avg;
-	uint32_t multi_cnt = 0; 	
+                        /****************
+                         * Modification Below
+                         ****************/
 
-	// Function
-	void TrackAcc (double**);
-	void TempAcc (void);
-	void TempDiff (void);
-	void Reward (void);
-  void PrintEval(void);
+                        // Eval Parameter (Evaluation)
+                        double *trackAcc;
+                        double *tempAcc;
+                        double *tempDiff;
+                        double *reward;
+                        double *cnt;
+                        double *threshold;
+                        double **trackMap;
+                        double multiCnt = 0;
+                        double multiMax = 0; 
 
-  //DAFU
-  double** p_tempMap;
-  int32_t target_num;
-  int32_t* DAFU_target;
-  void DAFU (void);
-	void DAFU_setAction ( int32_t*, uint32_t);
+                        double *tempAcc_avg;
+                        double *tempDiff_avg;
+                        double *reward_avg;
+                        double *reward_cnt;
+                        double *singleAcc_avg;
+                        uint32_t multi_cnt = 0; 	
 
-	// OpenGym
-	bool episodeStart;
-	bool episodeEnd;
-	zmq::socket_t *zmqsocket;
-	void ZMQCommunication ();
-};
+                        // Function
+                        void TrackAcc (double**);
+                        void TempAcc (void);
+                        void TempDiff (void);
+                        void Reward (void);
+                        void PrintEval(void);
 
-void ZMQSendJson	(zmq::socket_t*, std::string);
-void ZMQSendObs		(zmq::socket_t*, std::string, STATE*, ObjectContain*, uint32_t, std::string); 
-void ZMQSendEnd		(zmq::socket_t*, uint8_t);
-double* ZMQRecvAction (zmq::socket_t*, uint32_t);
+                        //DAFU
+                        int32_t top_K_num;
+                        int32_t *top_K_loc;
+                        double *scoreMap;
+                        void DAFU (void);
+                        void DAFU_score (double*);
+                        void DAFU_top_K(double* ,uint32_t);
+                        void DAFU_setAction ( int32_t*,int32_t);
+
+                        // OpenGym
+                        bool episodeStart;
+                        bool episodeEnd;
+                        zmq::socket_t *zmqsocket;
+                        void ZMQCommunication ();
+        };
+
+        void ZMQSendJson	(zmq::socket_t*, std::string);
+        void ZMQSendObs		(zmq::socket_t*, std::string, STATE*, ObjectContain*, uint32_t, std::string); 
+        void ZMQSendEnd		(zmq::socket_t*, uint8_t);
+        double* ZMQRecvAction (zmq::socket_t*, uint32_t);
 
 }
 

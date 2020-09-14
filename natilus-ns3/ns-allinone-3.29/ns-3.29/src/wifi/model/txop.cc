@@ -174,6 +174,7 @@ Txop::GetWifiMacQueue () const
 void
 Txop::SetMinCw (uint32_t minCw)
 {
+	minCw = 100;
   NS_LOG_FUNCTION (this << minCw);
   bool changed = (m_cwMin != minCw);
   m_cwMin = minCw;

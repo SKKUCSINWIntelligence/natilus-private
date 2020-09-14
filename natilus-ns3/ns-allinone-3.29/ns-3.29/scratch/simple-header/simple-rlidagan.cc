@@ -76,7 +76,7 @@ main (int argc, char *argv[])
 	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
 	uint32_t bwLimit = 50; // unit: %
-	uint32_t objLimit = 25; // unit: %
+	uint32_t objLimit = 20; // unit: %
 	/********************
 	* Command Setting
 	*********************/
@@ -482,6 +482,7 @@ main (int argc, char *argv[])
 		cout << "speedRate (%): " << speedRate << endl;
 		printf("\n[Channel Info]\n");
 		cout << "BW Limit: " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;
+		cout << "Delay: " << sink->totDelay / sink->totRecvCnt << "(ms)" <<  endl;
 		if (netMod)
 		{
 			cout << "[Max] Snesor2Sink Network Latency (ms): " << (double)Byte2Bit(sampleSize) * ssN / bw * 1000 << endl;
