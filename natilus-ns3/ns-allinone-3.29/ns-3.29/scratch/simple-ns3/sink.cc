@@ -376,8 +376,8 @@ SimpleSink::Eval (void)
 void 
 SimpleSink::Comm (void)
 {
-	PrintInfo ();
-	std::cout << "Reward: " << reward /cnt << std::endl << std::endl;
+	//PrintInfo ();
+	//std::cout << "Reward: " << reward /cnt << std::endl << std::endl;
 	evalCnt ++;
 
 	if (cnt == 0)
@@ -390,7 +390,7 @@ SimpleSink::Comm (void)
 		ZMQComm ();
 		SendData ();
 	}
-	else if (upMod == "uniform")
+	else if (upMod == "xuniform")
 	{
 		SendData ();
 	}

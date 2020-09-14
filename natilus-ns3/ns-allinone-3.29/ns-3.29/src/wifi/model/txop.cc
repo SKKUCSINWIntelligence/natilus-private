@@ -181,6 +181,7 @@ Txop::SetMinCw (uint32_t minCw)
     {
       ResetCw ();
     }
+	//std::cout << m_cwMin << std::endl;
 }
 
 void

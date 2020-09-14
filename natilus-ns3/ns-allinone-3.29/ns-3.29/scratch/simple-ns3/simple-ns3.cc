@@ -49,7 +49,7 @@ main (int argc, char *argv[])
 																// Number of Packets to send
 
 	/* Object Setting */
-	uint32_t ssN = 6;
+	uint32_t ssN = 10;
 	uint32_t objectN = 0;
 	uint32_t objectMax = 80;
 	uint32_t objectLimit = 40;
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 3;
+	uint32_t dataSpeed = 9; // Size 6: 2,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -120,7 +120,9 @@ main (int argc, char *argv[])
 	}
 	else if (ssN==10)
 	{
-		if (objectLimit == 25)
+		if (objectLimit == 20)
+			objectMax = 80;
+		else if (objectLimit == 25)
 			objectMax = 108;
 		else if (objectLimit == 40)
 			objectMax = 80;
@@ -142,7 +144,9 @@ main (int argc, char *argv[])
 	}
 	else if (ssN==16)
 	{
-		if (objectLimit == 25)
+		if (objectLimit == 20)
+			objectMax = 260;
+		else if (objectLimit == 25)
 			objectMax = 540;
 		else if (objectLimit == 40)
 			objectMax = 260;
@@ -213,7 +217,7 @@ main (int argc, char *argv[])
 		serverNode.Create (1);
 		
 		// Wifi
-		NS_LOG_INFO ("Create Wifi");
+		NS_LOG_INFO ("Create Wifi");	
 		YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
 		YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
 		phy.SetChannel (channel.Create ());
@@ -260,7 +264,10 @@ main (int argc, char *argv[])
 		mobility.Install (sensorNode);
 		mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel"); 
 		mobility.Install (serverNode);
-			
+		
+		// Config
+		//Config::Set("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Mac/$ns3::RegularWifiMac/Txop/MinCw", UintegerValue (64));
+	
 		// P2P Control
 		NS_LOG_INFO ("Create P2P");
 		PointToPointHelper p2p;

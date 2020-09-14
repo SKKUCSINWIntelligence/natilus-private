@@ -29,7 +29,7 @@ main (int argc, char *argv[])
 	{
 		/* Wifi Setting */
 		uint32_t dataSpeed = i;
-		std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
+		std::string dataMode = "HeMcs"+std::to_string(dataSpeed);
 		std::cout << "[[DATA MODE: " << dataMode << "]]" << std::endl;
 
 		// Node
@@ -44,14 +44,15 @@ main (int argc, char *argv[])
 		NS_LOG_INFO ("Create Wifi");
 		YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
 		YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
-		phy.SetChannel (channel.Create ());
+		phy.Set ("ChannelWidth", UintegerValue (160));
 		phy.Set ("Antennas", UintegerValue (4));
 		phy.Set ("ShortGuardEnabled", BooleanValue (true));
 		phy.Set ("MaxSupportedTxSpatialStreams", UintegerValue (4));
 		phy.Set ("MaxSupportedRxSpatialStreams", UintegerValue (4));
-
+		phy.SetChannel (channel.Create ());
+		
 		WifiHelper wifi;
-		wifi.SetStandard (WIFI_PHY_STANDARD_80211ac);
+		wifi.SetStandard (WIFI_PHY_STANDARD_80211ax_5GHZ);
 		wifi.SetRemoteStationManager ("ns3::ConstantRateWifiManager", 
 																	"DataMode", StringValue (dataMode),
 																	"ControlMode", StringValue ("VhtMcs0"));
