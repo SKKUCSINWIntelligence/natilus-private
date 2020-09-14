@@ -71,12 +71,16 @@ main (int argc, char *argv[])
 	bool channelInfo = false;
 	bool stateInfo = false;
 	bool evalInfo = false;
-	
+	bool dafuInfo = false;	
 	// Sensor #
 	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
 	uint32_t bwLimit = 50; // unit: %
 	uint32_t objLimit = 20; // unit: %
+
+	// DAFU
+	uint32_t topK = 10;
+
 	/********************
 	* Command Setting
 	*********************/
@@ -90,8 +94,10 @@ main (int argc, char *argv[])
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
+	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
 	cmd.AddValue ("objLimit", "Object Limit", objLimit);
+	cmd.AddValue ("topK", "DAFU Top K Value", topK);
 	cmd.Parse (argc, argv);
 
 	if (upMod =="rlidagan")
@@ -375,6 +381,7 @@ main (int argc, char *argv[])
 		sink->channelInfo = channelInfo;
 		sink->stateInfo = stateInfo;
 		sink->evalInfo = evalInfo;
+		sink->dafuInfo = dafuInfo;
 		sink->oc = oc;
 		sink->cc = cc;
 		sink->objectN = objectN;
@@ -385,8 +392,8 @@ main (int argc, char *argv[])
     sink->avgRate = sensorAvgRate * (double)bwLimit / 100;
 		sink->isLinkScheWork = &isLinkScheWork;
 		sink->LinkCheck = link->CallbackCheck ();
+		sink->topK = topK;
 		
-
 
 		// ZMQ 
 		if (upMod == "rlidagan")
@@ -412,15 +419,20 @@ main (int argc, char *argv[])
 		*********************/
 
 		std::cout << "###########################" << std::endl;
-		cout << "netMod: " << netMod << endl;
-		cout << "obsMod: " << obsMod << endl;
-		cout << "algorithm: " << upMod << endl;
+		printf("[[Mode Settings]]\n");
+		cout << "Network Mode : " << netMod << endl;
+		cout << "Obsev Mode   : " << obsMod << endl;
+		cout << "Algorithm    : " << upMod;
+		if (upMod == "DAFU")
+			cout << " (K " << topK << ")" << endl;
+		else
+			cout << endl;
 		cout << "speedRate (%): " << speedRate << endl;
-		cout << "objLimit (%): " << objLimit << endl;
-			cout << "objMax: " << objectMax << endl;
-		printf("\n[Channel Info]\n");
+		cout << "objLimit  (%): " << objLimit << " (Max " << objectMax << ")" << endl;
+	
+		printf("\n[[Channel Info]]\n");
 		cout << "Sensor Avg Rate: " << sensorAvgRate << std::endl;
-		cout << "BW Limit: " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;
+		cout << "BW Limit       : " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;
 		if (netMod)
 		{
 			cout << "[Max] Snesor2Sink Network Latency (ms): " << (double)Byte2Bit(sampleSize) * ssN / bw * 1000 << endl;
@@ -431,19 +443,19 @@ main (int argc, char *argv[])
 			cout << "No Network Latency !! " << endl;
 		}
 
-    printf("\n[Sensor Info]\n");
-    cout << "totSensor #: " << tot_service_ssN << " / Service #: "  << serviceN << endl;
-    cout << "ini SampleRate: " << ini_sampleRate << "(fps)" << endl;
-    printf("\n[Sink Info]\n");
-		
+    printf("\n[[Sensor Info]]\n");
+    cout << "Sensor #: " << tot_service_ssN << " / Service #: "  << serviceN << endl;
+    cout << "Init Rate: " << ini_sampleRate << "(fps)" << endl;
+    
+		/*printf("\n[[Sink Info]]\n");
 		if (!rlMod && !(testMod == "test"))
 		{
 			printf("\n No RL-Mode !! \n");
 			printf("Run Wait 1s\n");
 			sleep (1);
 		}
-		printf("\nStart !\n");
-
+		printf("\nStart !\n");*/
+		
 		// Object Start
 		for (uint32_t i=0; i<serviceN; i++)
 		{
@@ -475,8 +487,8 @@ main (int argc, char *argv[])
 		/********************
 		* End Info
 		*********************/
-		std::cout << "###########################" << std::endl;
-		cout << "netMod: " << netMod << endl;
+		std::cout << "\n###########################" << std::endl;
+		/*cout << "netMod: " << netMod << endl;
 		cout << "obsMod: " << obsMod << endl;
 		cout << "algorithm: " << upMod << endl;
 		cout << "speedRate (%): " << speedRate << endl;
@@ -494,17 +506,20 @@ main (int argc, char *argv[])
 		}
 		printf("\n[Sensor Info]\n");
 		cout << "totSensor #: " << ssN << " / Service #: "  << serviceN << endl;
-		cout << "ini SampleRate: " << ini_sampleRate << "(fps)" << endl;
-
+		cout << "ini SampleRate: " << ini_sampleRate << "(fps)" << endl;*/
+	
 		std::chrono::seconds sec = std::chrono::duration_cast<std::chrono::seconds> (end - start);
 		std::chrono::milliseconds min = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
 		std::cout << "Simulation Time Duration (Sec): " << sec.count() << std::endl;
 		std::cout << "Simulation Time Duration (Milli): " << min.count() << std::endl;
 		std::cout << "###########################" << std::endl;
+		
+		printf("\n[[Reward Info]]\n");
 		for (uint32_t i=0; i<serviceN; i++)
 		{
-			std::cout << "\nService num: " << i << std::endl;
 			std::cout << "TotalTimestep: " << sink->evalCnt << std::endl;
+			std::cout << "Reward Cnt   : " << sink->reward_cnt[i] << std::endl;
+		
 			if (obsMod == "temp")
 			{
 				std::cout << "Simulation Avg TempAcc: " << sink->tempAcc_avg[i]/sink->reward_cnt[i] << std::endl;
@@ -523,8 +538,7 @@ main (int argc, char *argv[])
 				std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/(sink->reward_cnt[i])) << std::endl;
 				std::cout << "Simulation Multi Max: " << (sink->multiMax) << std::endl;
 			}
-			std::cout << "Simulation Avg Reward: " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
-			std::cout << "Reward Cnt: " << sink->reward_cnt[i] << std::endl;
+			std::cout << "Simulation Avg Reward : " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
 		}
 
 		if (testMod == "test")

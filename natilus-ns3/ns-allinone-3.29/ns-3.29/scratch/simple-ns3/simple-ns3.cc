@@ -25,7 +25,7 @@ main (int argc, char *argv[])
 	std::string port = "5050";
 	
 	srand (time(NULL));
-	uint64_t maxStep = 100;
+	uint64_t maxStep = 10000;
 
 	/* Mode Setting */
 	bool rlMod = false;
@@ -43,7 +43,7 @@ main (int argc, char *argv[])
 	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
 	uint32_t bwLimit = 50;				// unit: %
-	uint32_t frameSize = 30;			// unit: KB (IP Camera)
+	uint32_t frameSize = 1;			// unit: KB (IP Camera)
 	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
 																// Number of Packets to send
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 9; // Size 6: 2,  
+	uint32_t dataSpeed = 9; // Size 6: 2, Size 8: 5,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -325,6 +325,7 @@ main (int argc, char *argv[])
 		simpleSink->upMod = upMod;
 		simpleSink->obsMod = obsMod;
 		simpleSink->stateMod = stateMod;
+		simpleSink->stateInfo = stateInfo;
 
 		simpleSink->oc = oc;
 		simpleSink->ssN = ssN;

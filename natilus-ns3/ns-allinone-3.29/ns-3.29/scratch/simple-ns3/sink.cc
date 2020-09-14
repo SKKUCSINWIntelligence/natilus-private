@@ -376,7 +376,8 @@ SimpleSink::Eval (void)
 void 
 SimpleSink::Comm (void)
 {
-	//PrintInfo ();
+	if (stateInfo)
+		PrintInfo ();
 	//std::cout << "Reward: " << reward /cnt << std::endl << std::endl;
 	evalCnt ++;
 

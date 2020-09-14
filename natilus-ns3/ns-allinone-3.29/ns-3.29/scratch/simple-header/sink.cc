@@ -25,7 +25,7 @@ namespace ns3{
 		delete[] reward_cnt;
 		delete[] singleAcc_avg;
 		delete[] threshold;
-		delete[] top_K_loc;
+		delete[] topLoc;
 		delete[] scoreMap;;
 
 		for(uint32_t i = 0; i<serviceN ; i++)
@@ -59,19 +59,19 @@ namespace ns3{
 
 
 		//DAFU top-K num
-		top_K_num = 12;
+		topK = 12;
 
 
 		for(uint32_t i = 0; i<serviceN ; i++)
 		{
-			top_K_loc = new int32_t[service_ssN[i]];
+			topLoc = new int32_t[service_ssN[i]];
 			scoreMap = new double[service_ssN[i]];
 			trackMap[i] = new double[service_ssN[i]];
 		}
 
 		for(uint32_t i = 0; i<service_ssN[i]; i++)
 		{
-			top_K_loc[i] = -1;
+			topLoc[i] = -1;
 			scoreMap[i] = 0;
 		}
 
@@ -384,12 +384,15 @@ namespace ns3{
 			if (evalCnt > *stop)
 			{
 				// Print Car Reward 
-				std::cout << "####Car Reward####" << std::endl;
-				for (uint32_t i=0; i<serviceN; i++)
+				if (obsMod == "car")
 				{
-					std::cout << "Service " << i << ": " << carReward[i] << ", " << cc[i].GetAccuracy() << "%" <<  std::endl;
+					std::cout << "####Car Reward####" << std::endl;
+					for (uint32_t i=0; i<serviceN; i++)
+					{
+						std::cout << "Service " << i << ": " << carReward[i] << ", " << cc[i].GetAccuracy() << "%" <<  std::endl;
+					}	
+					std::cout << "\n\n##################\n" << "Episod Stopn\n" << "##################" << std::endl;
 				}
-				std::cout << "\n\n##################\n" << "Episod Stopn\n" << "##################" << std::endl;
 				Simulator::Stop ();
 			}
 			evalCnt++;
@@ -826,25 +829,35 @@ namespace ns3{
 
 	void Sink::DAFU(void)
 	{
-		uint32_t len = 10;
-		DAFU_score(state[0].sampleValue);
-		DAFU_top_K(scoreMap ,len);
-		DAFU_setAction(top_K_loc,len);
+		uint32_t len = topK;
+		DAFUSetScore(state[0].sampleValue);
+		DAFUTopK(scoreMap ,len);
+		DAFUSetAction(topLoc,len);
 
 	}
 
-	void Sink::DAFU_score(double *map)
+	void Sink::DAFUSetScore(double *map)
 	{
 
 		for(uint32_t i = 0; i<service_ssN[0]; i++)
 		{
 			scoreMap[i] = map[i];
-
 		}
 
+		if (dafuInfo)
+		{
+			printf("------- DAFU Info-------- ");
+			std::cout << "at " << Simulator::Now().GetSeconds() << std::endl;	
+			printf("[[Truth Value]]\n");
+			PrintState<double> (oc[0].trackMap, service_ssN[0]);
+			printf("[[Sample Value]]\n");
+			PrintState<double> (state[0].sampleValue, service_ssN[0]);
+			printf("[[Score Value]]\n");
+			PrintState<double> (scoreMap, service_ssN[0]);
+		}
 	}
 
-	void Sink::DAFU_top_K(double * map, uint32_t len)
+	void Sink::DAFUTopK(double * map, uint32_t len)
 	{
 		double min = 0;
 		int32_t min_loc = 0;
@@ -859,13 +872,13 @@ namespace ns3{
 				temp = map[j];
 				if(temp>min && temp!=0)
 				{
-					top_K_loc[min_loc] = j;
+					topLoc[min_loc] = j;
 					min = temp;
 					for(uint32_t k = 0; k<len; k++)
 					{
 						temp2 = score_min;
-						if(top_K_loc[k] != -1)
-							temp2 = map[top_K_loc[k]];
+						if(topLoc[k] != -1)
+							temp2 = map[topLoc[k]];
 						if(min>temp2)
 						{
 							min = temp2;
@@ -878,20 +891,20 @@ namespace ns3{
 		}
 		/* 
 			 PrintState<double>(state[0].sampleValue, service_ssN[0]);
-			 for(int32_t k =0 ; k<top_K_num; k++)
+			 for(int32_t k =0 ; k<topK; k++)
 			 {
-			 std::cout<<top_K_loc[k]<<" ";
+			 std::cout<<topLoc[k]<<" ";
 			 }
 			 std::cout<<std::endl;
 			 */ 
 	}
 
-	void Sink::DAFU_setAction(int32_t* scoreMap,int32_t len)
+	void Sink::DAFUSetAction(int32_t* scoreMap,int32_t len)
 	{
 		uint32_t nodeNum = service_ssN[0];
 		uint32_t nodeLen = sqrt(nodeNum);
 		int32_t* target = new int32_t[service_ssN[0]];
-		int32_t window = 2;
+		int32_t window = winSize;
 		int32_t jump = 0;
 		for(uint32_t i =0; i<nodeNum; i++)
 		{
@@ -957,7 +970,7 @@ namespace ns3{
 			 */
 
 		for(int32_t i = 0; i<len; i++)
-			top_K_loc[i] = -1;
+			topLoc[i] = -1;
 
 		delete[] target;
 	}
