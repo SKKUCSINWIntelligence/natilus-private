@@ -9,7 +9,7 @@ class Transformer(nn.Module):
 
         self.n_sensors = n_sensors
         self.side = n_sensors ** 0.5
-        self.d_info = d_info 
+        self.d_info = d_info
         self.n_head = n_head
         self.n_history = n_history 
 
@@ -34,9 +34,9 @@ class Transformer(nn.Module):
         """
         '''Self-Attention'''
         """
-
         out = self.sattn(out)
         out = out.view(-1, self.n_sensors*self.d_info)
+        
         # [batch, sensor X info] 
         return out
 
@@ -65,16 +65,18 @@ class Embedding(nn.Module):
         out = self.linear1(x)
         out = self.activation(out)
         out = self.linear2(out)  
-
-        out = out.view(-1, self.n_sensors, self.d_info*self.n_history)
         
+        out = out.view(-1, self.n_sensors, self.d_info*self.n_history)
+        #out = self.activation(out)
+
         """
         History Embedding
         """
         out = self.linear3(out)
         out = self.activation(out)
         out = self.linear4(out)
-        
+        #out = self.activation(out)
+
         return out
 
 class TransformerEncoderLayer(nn.Module):
@@ -115,7 +117,11 @@ class MultiheadAttention(nn.Module):
         attn = F.softmax(attn, dim=-1)
 
         out = torch.matmul(attn, v)
-
+        
+        #print("1.", residual)
+        #print("2.", out)
+        
+        #out = out + residual
         return out
 
 class FeedForward(nn.Module):

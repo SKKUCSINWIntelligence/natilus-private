@@ -106,6 +106,10 @@ class NatilusEnv(gym.Env):
             action = self.clipFunc(action)
             action = self.softmax(action)
         
+        elif self.actMod == 3:
+            #action = self.clipFunc(action)
+            action = self.softmax(action)
+        
         self.server._action (action)
         done = self.server._end()
         reward = self.server._reward() 
