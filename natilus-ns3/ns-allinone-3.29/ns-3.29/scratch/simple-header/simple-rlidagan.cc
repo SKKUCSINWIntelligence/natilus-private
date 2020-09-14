@@ -417,6 +417,7 @@ main (int argc, char *argv[])
 		cout << "algorithm: " << upMod << endl;
 		cout << "speedRate (%): " << speedRate << endl;
 		cout << "objLimit (%): " << objLimit << endl;
+			cout << "objMax: " << objectMax << endl;
 		printf("\n[Channel Info]\n");
 		cout << "Sensor Avg Rate: " << sensorAvgRate << std::endl;
 		cout << "BW Limit: " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;
