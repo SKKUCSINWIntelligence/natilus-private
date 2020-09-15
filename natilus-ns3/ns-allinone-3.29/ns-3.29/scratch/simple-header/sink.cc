@@ -163,91 +163,100 @@ namespace ns3{
 			uint64_t now = Simulator::Now().GetMilliSeconds ();
 			DATA *data = dataContain->front ();
 			dataContain->pop ();
+			recvCnt += 1;
 
-			// Get Data Info
-			uint32_t serId = data->serId;
-			uint32_t cellId = data->cellId;
-
-			// Measurement
-			uint64_t delay = now - (data->genTime).GetMilliSeconds ();
-			totRecvByte += data->dataSize;
-			totRecvCnt += 1;
-			totDelay += delay;
-			double pastValue = state[serId].sampleValue[cellId];
-
-			// Insert Info
-			state[serId].sampleRate[cellId] = data->sampleRate;
-			// If is track, first clear the map
-			if (obsMod == "track")
+			uint32_t ran = rand() % 100;
+			if (firstEval)
+				ran = 0;
+			if(ran < (100-errorRate))
 			{
-				if (data->sampleValue == 1)
+				// Get Data Info
+				uint32_t serId = data->serId;
+				uint32_t cellId = data->cellId;
+
+				// Measurement
+				uint64_t delay = now - (data->genTime).GetMilliSeconds ();
+				totRecvByte += data->dataSize;
+				totRecvCnt += 1;
+				totDelay += delay;
+				double pastValue = state[serId].sampleValue[cellId];
+
+				// Insert Info
+				state[serId].sampleRate[cellId] = data->sampleRate;
+				// If is track, first clear the map
+				if (obsMod == "track")
 				{
+					if (data->sampleValue == 1)
+					{
+						for (uint32_t i=0; i<service_ssN[0]; i++)
+						{
+							state[serId].sampleValue[i] = 0;
+						}
+					}
+				}
+
+				if (obsMod == "multi")
+				{
+					// Save car <-> cell
+					for (uint32_t i=0; i<oc[serId].objectMax; i++)
+					{	
+						if (state[serId].sampleCar[i] == (int)cellId)
+							state[serId].sampleCar[i] = -1;
+						if (data->carCell[i] == true)
+							state[serId].sampleCar[i] = (int)cellId;
+					}				
+
+					// Clear the map
 					for (uint32_t i=0; i<service_ssN[0]; i++)
 					{
 						state[serId].sampleValue[i] = 0;
 					}
+
+					// Fill in the map
+					for (uint32_t i=0; i<oc[serId].objectMax; i++)
+					{
+						int cell = state[serId].sampleCar[i];
+						if (cell >= 0)
+							state[serId].sampleValue[cell] += 1;
+					}
 				}
-			}
-
-			if (obsMod == "multi")
-			{
-				// Save car <-> cell
-				for (uint32_t i=0; i<oc[serId].objectMax; i++)
-				{	
-					if (state[serId].sampleCar[i] == (int)cellId)
-						state[serId].sampleCar[i] = -1;
-					if (data->carCell[i] == true)
-						state[serId].sampleCar[i] = (int)cellId;
-				}				
-
-				// Clear the map
-				for (uint32_t i=0; i<service_ssN[0]; i++)
+				else if (obsMod == "carx")
 				{
-					state[serId].sampleValue[i] = 0;
-				}
+					// Save car <-> cell
+					for (uint32_t i=0; i<oc[serId].objectMax; i++)
+						if (data->carCell[i] == true)
+							state[serId].sampleCar[i] = (int)cellId;
 
-				// Fill in the map
-				for (uint32_t i=0; i<oc[serId].objectMax; i++)
-				{
-					int cell = state[serId].sampleCar[i];
-					if (cell >= 0)
-						state[serId].sampleValue[cell] += 1;
-				}
-			}
-			else if (obsMod == "carx")
-			{
-				// Save car <-> cell
-				for (uint32_t i=0; i<oc[serId].objectMax; i++)
-					if (data->carCell[i] == true)
-						state[serId].sampleCar[i] = (int)cellId;
+					// Clear the map
+					for (uint32_t i=0; i<service_ssN[0]; i++)
+						state[serId].sampleValue[i] = 0;
 
-				// Clear the map
-				for (uint32_t i=0; i<service_ssN[0]; i++)
-					state[serId].sampleValue[i] = 0;
-
-				// Fill in the map
-				for (uint32_t i=0; i<oc[serId].objectMax; i++)
-				{
-					int cell = state[serId].sampleCar[i];
-					if (cell >= 0)
-						state[serId].sampleValue[cell] += 1;
+					// Fill in the map
+					for (uint32_t i=0; i<oc[serId].objectMax; i++)
+					{
+						int cell = state[serId].sampleCar[i];
+						if (cell >= 0)
+							state[serId].sampleValue[cell] += 1;
+					}
 				}
+				else
+					state[serId].sampleValue[cellId] = data->sampleValue;
+
+				double curValue = state[serId].sampleValue[cellId];
+				if (pastValue != curValue)
+					state[serId].stateChangeTime[cellId] = Simulator::Now();
+				state[serId].upInter[cellId] = delay;
+				state[serId].lastUpdateTime[cellId] = Simulator::Now (); 
 			}
 			else
-				state[serId].sampleValue[cellId] = data->sampleValue;
-
-			double curValue = state[serId].sampleValue[cellId];
-			if (pastValue != curValue)
-				state[serId].stateChangeTime[cellId] = Simulator::Now();
-			state[serId].upInter[cellId] = delay;
-			state[serId].lastUpdateTime[cellId] = Simulator::Now (); 
-
+			{
+				dropCnt += 1;
+			}
 			if (obsMod == "multi" || obsMod == "car")
 				delete[] data->carCell;
 			delete data;
-		}	
+		}
 		delete dataContain;
-
 		if (firstEval)
 		{
 			// When the first packet is recv, Start
@@ -260,7 +269,7 @@ namespace ns3{
 
 			if (channelInfo)
 				PrintChannel ();
-		}
+		}	
 	}
 
 	void Sink::RecvSche (std::queue<DATA*> *dataContain, uint64_t micro_delay)
@@ -889,14 +898,15 @@ namespace ns3{
 			}
 
 		}
-		/* 
-			 PrintState<double>(state[0].sampleValue, service_ssN[0]);
-			 for(int32_t k =0 ; k<topK; k++)
-			 {
-			 std::cout<<topLoc[k]<<" ";
-			 }
-			 std::cout<<std::endl;
-			 */ 
+
+		if (dafuInfo)
+		{
+			for(int32_t k =0 ; k<topK; k++)
+			{
+				std::cout<<topLoc[k]<<" ";
+			}
+			std::cout<<std::endl; 
+		} 
 	}
 
 	void Sink::DAFUSetAction(int32_t* scoreMap,int32_t len)
@@ -937,7 +947,7 @@ namespace ns3{
 
 		uint32_t targetNum = 0;
 		double FPS_for_target = 0;
-		double FPS_for_target_min = 10;
+		double FPS_for_target_min = 5;
 
 		for(uint32_t i = 0; i<nodeNum; i++)
 		{
@@ -945,7 +955,6 @@ namespace ns3{
 				targetNum +=1;
 		}
 
-		//std::cout<<"\ntargetNum : "<<targetNum <<std::endl;
 		if(targetNum >0)
 			FPS_for_target = (avgRate*service_ssN[0]-(nodeNum-targetNum)*FPS_for_target_min)/targetNum;
 		else
@@ -962,13 +971,11 @@ namespace ns3{
 				state[0].action[i] = (uint32_t)FPS_for_target_min;
 		}
 
-		/*
-			 printf("[action]::Observed\n");
-			 PrintState<double>(oc[0].trackMap, service_ssN[0]);
-			 PrintState<double>(state[0].sampleValue, service_ssN[0]);
-			 PrintState<uint32_t> (state[0].action,nodeNum);
-			 */
-
+		if (dafuInfo)
+		{
+			printf("\n[[Action Set]]\n");
+			PrintState<uint32_t> (state[0].action, service_ssN[0]);
+		}
 		for(int32_t i = 0; i<len; i++)
 			topLoc[i] = -1;
 

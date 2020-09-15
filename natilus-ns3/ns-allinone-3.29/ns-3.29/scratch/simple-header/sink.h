@@ -62,7 +62,11 @@ namespace ns3{
 			uint64_t *stop;
 			uint32_t sP = 30; // 30 ~ 60 ms
 			uint32_t eP = 60 - sP;
-
+			
+			// Error Rate
+			uint32_t errorRate = 5; // %
+			uint32_t dropCnt = 0;
+			uint32_t recvCnt = 0;
 			// TxQ
 			std::queue<DATA*> txQ;
 

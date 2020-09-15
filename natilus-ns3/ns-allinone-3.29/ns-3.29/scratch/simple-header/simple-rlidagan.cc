@@ -57,7 +57,7 @@ main (int argc, char *argv[])
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
-	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan
+	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
 	std::string testMod = "xtest"; // 1. test
@@ -71,7 +71,8 @@ main (int argc, char *argv[])
 	bool channelInfo = false;
 	bool stateInfo = false;
 	bool evalInfo = false;
-	bool dafuInfo = false;	
+	bool dafuInfo = false;
+	uint32_t errorRate = 5; // unit: %
 	// Sensor #
 	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
@@ -98,6 +99,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
 	cmd.AddValue ("objLimit", "Object Limit", objLimit);
 	cmd.AddValue ("topK", "DAFU Top K Value", topK);
+	cmd.AddValue ("error", "Error Rate", errorRate);
 	cmd.Parse (argc, argv);
 
 	if (upMod =="rlidagan")
@@ -393,7 +395,7 @@ main (int argc, char *argv[])
 		sink->isLinkScheWork = &isLinkScheWork;
 		sink->LinkCheck = link->CallbackCheck ();
 		sink->topK = topK;
-		
+		sink->errorRate = errorRate;
 
 		// ZMQ 
 		if (upMod == "rlidagan")
@@ -514,6 +516,9 @@ main (int argc, char *argv[])
 		std::cout << "Simulation Time Duration (Milli): " << min.count() << std::endl;
 		std::cout << "###########################" << std::endl;
 		
+		printf("\n[[Drop Info]]\n");
+		std::cout << "Set Drop : " << errorRate << "(%)" << std::endl;
+		std::cout << "Drop Rate: " << (double)sink->dropCnt / (double)sink->recvCnt * 100 << "(%)" << std::endl;
 		printf("\n[[Reward Info]]\n");
 		for (uint32_t i=0; i<serviceN; i++)
 		{
