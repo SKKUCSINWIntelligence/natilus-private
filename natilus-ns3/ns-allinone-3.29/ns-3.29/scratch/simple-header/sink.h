@@ -37,6 +37,7 @@ namespace ns3{
 			// Setting
 			uint32_t objectN;
 			uint32_t serviceN;
+			uint32_t ssN;
 			uint32_t *service_ssN;
 			bool haveSendAction = false;
 			uint32_t actionPacketSize;
@@ -62,11 +63,22 @@ namespace ns3{
 			uint64_t *stop;
 			uint32_t sP = 30; // 30 ~ 60 ms
 			uint32_t eP = 60 - sP;
-			
+			double eL = 0;
+			double eC = 0;
+			double eS = 0;
+			double eMa = 0;
+			double eMb = 0;
+			double eVa = 0;
+			double eVb = 0;
+			double cMa = 0;
+			double cMb = 0;
+			double cVa = 0;
+			double cVb = 0;
 			// Error Rate
 			uint32_t errorRate = 5; // %
 			uint32_t dropCnt = 0;
 			uint32_t recvCnt = 0;
+
 			// TxQ
 			std::queue<DATA*> txQ;
 
@@ -120,10 +132,12 @@ namespace ns3{
 			void PrintEval(void);
 
 			//DAFU
+			std::string scoreFtn;
 			int32_t topK;
+			int32_t winSize = 2; // size 2: 9 cells
+			
 			int32_t *topLoc;
 			double *scoreMap;
-			int32_t winSize = 2; // size 2: 9 cells
 			void DAFU (void);
 			void DAFUSetScore (double*);
 			void DAFUTopK(double* ,uint32_t);

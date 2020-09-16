@@ -57,11 +57,6 @@ namespace ns3{
 		trackMap = new double*[serviceN];
 		threshold = new double[serviceN];
 
-
-		//DAFU top-K num
-		topK = 12;
-
-
 		for(uint32_t i = 0; i<serviceN ; i++)
 		{
 			topLoc = new int32_t[service_ssN[i]];
@@ -715,7 +710,9 @@ namespace ns3{
 			double Vx=0; //truth variance
 			double Vy=0; //observed variance
 			double Cxy=0; //correlation of truth, observed
-			double C =  1e-50;
+			double C1 = 0.01; //1e-50;
+			double C2 = 0.03;
+			double C3 = C2/2;
 
 			double l = 0;
 			double c = 0;
@@ -756,38 +753,96 @@ namespace ns3{
 			Vy /= sssN;
 			Cxy /= (sssN-1);
 
-			l = (2*Mx*My+C) / (Mx*Mx+My*My+C);
-			c = (2*sqrt(Vx)*sqrt(Vy)+C) / (Vx+Vy+C);
-			s = (Cxy+C) / (sqrt(Vx*Vy)+C);
+			l = (2*Mx*My+C1) / (Mx*Mx+My*My+C1);
+			c = (2*sqrt(Vx)*sqrt(Vy)+C2) / (Vx+Vy+C2);
+			s = (Cxy+C3) / (sqrt(Vx*Vy)+C3);
 
 			reward[0] += l*c*s;
 			reward_avg[0] += l*c*s;
 		}
 		else if (obsMod == "multi")
 		{
+			double *truth = new double[ssN*ssN];
+			double *obsrv = new double[ssN*ssN];
+			for (uint32_t i=0; i<ssN*ssN; i++)
+			{
+				truth[i] = 0;
+				obsrv[i] = 0;
+			}
+
+			//double sumOc = 0;
+			//double sumTrack = 0;
+			//double maxA = 0;
+			//double maxB = 0;
+			//for (uint32_t i=0; i<service_ssN[0]; i++)
+			//{
+				//if (oc[0].trackMap[i] > maxA)
+				//	maxA = oc[0].trackMap[i];
+				//if (state[0].sampleValue[i] > maxB)
+				//		maxB = state[0].sampleValue[i];
+				//sumOc += oc[0].trackMap[i];
+				//sumTrack += state[0].sampleValue[i];
+				//if (oc[0].trackMap[i] > 0)
+				//	sumOc += 1;
+				//if (state[0].sampleValue[i] > 0)
+				//	sumTrack += 1;
+			//}
+			for (uint32_t i=0; i<service_ssN[0]; i++)
+			{
+				/*if (sumOc == 0)
+					oc[0].trackMap[i] = 0;
+				else
+					oc[0].trackMap[i] /= sumOc;
+				if (sumOc == 0)
+					state[0].sampleValue[i] = 0;
+				else
+					state[0].sampleValue[i] /= sumOc;
+				if (maxA > 0)
+					oc[0].trackMap[i] /= maxA;
+				if (maxB > 0)
+					state[0].sampleValue[i] /= maxB;*/
+
+				/*if (oc[0].trackMap[i] >= 15)
+					truth[i] = oc[0].trackMap[i] / 3;
+				else if (oc[0].trackMap[i] >= 10)
+					truth[i] = oc[0].trackMap[i] / 2;
+				else
+					truth[i] = oc[0].trackMap[i];
+
+				if (state[0].sampleValue[i] >= 15)
+					obsrv[i] = state[0].sampleValue[i] / 3;
+				else if (state[0].sampleValue[i] >= 10)
+					obsrv[i] = state[0].sampleValue[i] / 2;
+				else 
+					obsrv[i] = state[0].sampleValue[i];*/
+				truth[i] = oc[0].trackMap[i];
+				obsrv[i] = state[0].sampleValue[i];
+			}
+			//PrintInfo ();
 			double Mx=0; //truth average
 			double My=0; //observed average
 			double Vx=0; //truth variance
 			double Vy=0; //observed variance
 			double Cxy=0; //correlation of truth, observed
-			double C =  1e-50;
+			double C1 = 0.001; //1e-50;
+			double C2 = 0.003;
+			double C3 = C2/2;
 
 			double l = 0;
 			double c = 0;
 			double s = 0;
 
-			uint32_t ssN = sqrt(service_ssN[0]); 
 			uint32_t sssN = ssN * ssN;
 			double tmpMultiCnt = 0;
 
 			//modification needed
-			for(uint32_t j = 0; j<service_ssN[0]; j++)
+			for(uint32_t i = 0; i<service_ssN[0]; i++)
 			{
-				Mx += oc[0].trackMap[j];
-				My += state[0].sampleValue[j];
-
+				Mx += truth[i];
+				My += obsrv[i];
+				
 				// Count Multi Objects
-				if (oc[0].trackMap[j] != 0)
+				if (truth[i] != 0)
 				{
 					tmpMultiCnt += 1;
 				}
@@ -801,25 +856,51 @@ namespace ns3{
 			Mx /= sssN;
 			My /= sssN;
 
-			for(uint32_t j = 0; j<service_ssN[0]; j++)
+			for(uint32_t i = 0; i<service_ssN[0]; i++)
 			{
-				Vx += (oc[0].trackMap[j]-Mx)*(oc[0].trackMap[j]-Mx);
-				Vy += (state[0].sampleValue[j]-My)*(state[0].sampleValue[j]-My);
-				Cxy += (oc[0].trackMap[j]-Mx)*(state[0].sampleValue[j]-My);
+				Vx += (truth[i]-Mx)*(truth[i]-Mx);
+				Vy += (obsrv[i]-My)*(obsrv[i]-My);
+				Cxy += (truth[i]-Mx)*(obsrv[i]-My);
 			}
 
 			Vx /= sssN;
 			Vy /= sssN;
 			Cxy /= (sssN-1);
 
-			l = (2*Mx*My+C) / (Mx*Mx+My*My+C);
-			c = (2*sqrt(Vx)*sqrt(Vy)+C) / (Vx+Vy+C);
-			s = (Cxy+C) / (sqrt(Vx*Vy)+C);
+			l = (2*Mx*My+C1) / (Mx*Mx+My*My+C1);				// Average
+			c = (2*sqrt(Vx)*sqrt(Vy)+C2) / (Vx+Vy+C2);	// Deviation
+			s = (Cxy+C3) / (sqrt(Vx)*sqrt(Vy)+C3);						// Corelation
+	
+			eMa += Mx;
+			eMb += My;
+			eVa += Vx;
+			eVb += Vy;
+			if (Mx-My >= 0)
+				cMa = cMa + (Mx-My);
+			else
+				cMb = cMb + (My-Mx);
 
+			if (Vx-Vy >= 0)
+				cVa = cVa + (Vx-Vy);
+			else
+				cVb = cVb + (Vy-Vx);
+			
+
+			eL += l;
+			eC += c;
+			eS += s;
+			
 			reward[0] += l*c*s;
 			reward_avg[0] += l*c*s;
-
 			//std::cout << "Reward: " << l*c*s << std::endl;
+			/*for (uint32_t i=0; i<service_ssN[0]; i++)
+			{
+				oc[0].trackMap[i] *= maxA;
+				state[0].sampleValue[i] *= maxB;
+			}*/
+
+			delete[] truth;
+			delete[] obsrv;
 		}
 	}
 
@@ -838,19 +919,109 @@ namespace ns3{
 
 	void Sink::DAFU(void)
 	{
-		uint32_t len = topK;
+		//uint32_t len = topK;
 		DAFUSetScore(state[0].sampleValue);
-		DAFUTopK(scoreMap ,len);
-		DAFUSetAction(topLoc,len);
+		DAFUTopK(scoreMap, topK);
+		DAFUSetAction(topLoc, topK);
 
 	}
 
 	void Sink::DAFUSetScore(double *map)
 	{
-
-		for(uint32_t i = 0; i<service_ssN[0]; i++)
+		if (scoreFtn == "map")
 		{
-			scoreMap[i] = map[i];
+			for(uint32_t i=0; i<service_ssN[0]; i++)
+			{
+				scoreMap[i] = map[i];
+			}
+		}
+		else if (scoreFtn == "around")
+		{
+			topK = 0;
+			for (uint32_t i=0; i<service_ssN[0]; i++)
+			{
+				scoreMap[i] = 0;
+
+				int xId = i % ssN;
+				int yId = i / ssN;
+				
+				int xxId = xId-1; 
+				int yyId = yId;
+
+				int sN = (int)ssN;
+
+				if (xxId >= 0)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1;
+				}
+				xxId = xId-1;
+				yyId = yId+1;
+				if (xxId >= 0 && yyId < sN)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				xxId = xId;
+				yyId = yId+1;
+				if (yyId < sN)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				xxId = xId+1;
+				yyId = yId+1;
+				if (xxId < sN && yyId < sN)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				xxId = xId+1;
+				yyId = yId;
+				if (xxId <sN)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				xxId = xId+1;
+				yyId = yId-1;
+				if (xxId < sN && yyId >= 0)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				xxId = xId;
+				yyId = yId-1;
+				if (yyId >= 0)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				xxId = xId-1;
+				yyId = yId-1;
+				if (xxId >= 0 && yyId >= 0)
+				{
+					if (map[i] > map[yyId*ssN+xxId])
+						scoreMap[i] += 1; 
+				}
+				
+				if (map[i] > 0)
+				{
+					if (xId == 0 && yId == 0)
+						scoreMap[i] += 5;
+					else if (xId == 0 && yId == (sN-1))
+						scoreMap[i] += 5;
+					else if (xId == (sN-1) && yId == 0)
+						scoreMap[i] += 5;
+					else if (xId == (sN-1) && yId == (sN-1))
+						scoreMap[i] += 5;
+					else if (xId == 0 || yId == 0 || xId == (sN-1) || yId == (sN-1))
+						scoreMap[i] += 3;
+				}
+
+				if (scoreMap[i] >= 8)
+					topK += 1;
+			}
 		}
 
 		if (dafuInfo)
@@ -872,8 +1043,8 @@ namespace ns3{
 		int32_t min_loc = 0;
 		double temp = 0;  
 		double temp2 = 0;
-		double score_min = 0.001 ;
-
+		double score_min = 0.001;
+		
 		for(uint32_t i = 0; i<serviceN; i++)
 		{
 			for(uint32_t j = 0; j<service_ssN[i]; j++)
@@ -896,9 +1067,8 @@ namespace ns3{
 					}
 				}
 			}
-
 		}
-
+		
 		if (dafuInfo)
 		{
 			for(int32_t k =0 ; k<topK; k++)
@@ -919,7 +1089,6 @@ namespace ns3{
 		for(uint32_t i =0; i<nodeNum; i++)
 		{
 			target[i] = 1;
-
 		}
 
 		for(int32_t i = 0; i<len; i++)
@@ -947,7 +1116,7 @@ namespace ns3{
 
 		uint32_t targetNum = 0;
 		double FPS_for_target = 0;
-		double FPS_for_target_min = 5;
+		double FPS_for_target_min = 10;
 
 		for(uint32_t i = 0; i<nodeNum; i++)
 		{
@@ -976,7 +1145,7 @@ namespace ns3{
 			printf("\n[[Action Set]]\n");
 			PrintState<uint32_t> (state[0].action, service_ssN[0]);
 		}
-		for(int32_t i = 0; i<len; i++)
+		for(uint32_t i = 0; i<ssN; i++)
 			topLoc[i] = -1;
 
 		delete[] target;

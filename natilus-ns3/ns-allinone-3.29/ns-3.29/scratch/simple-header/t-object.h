@@ -47,6 +47,10 @@ public:
 	double cFE = 0.0924; // Cal / g C
 	double c02 = 0.24; // Cal / g C
 	double weight = 200; // g
+		
+	// Counting
+	int objectM = 0;
+	int objectG = 0;
 
 	// Map (Observation)
 	double *trackMap;

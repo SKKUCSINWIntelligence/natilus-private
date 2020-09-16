@@ -57,7 +57,7 @@ main (int argc, char *argv[])
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
-	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
+	std::string upMod = "DAFU"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
 	std::string testMod = "xtest"; // 1. test
@@ -72,15 +72,17 @@ main (int argc, char *argv[])
 	bool stateInfo = false;
 	bool evalInfo = false;
 	bool dafuInfo = false;
-	uint32_t errorRate = 5; // unit: %
+	uint32_t errorRate = 0; // unit: %
 	// Sensor #
-	uint32_t ssN = 8;
+	uint32_t ssN = 10;
 	uint32_t objectMax = 80; 
 	uint32_t bwLimit = 50; // unit: %
 	uint32_t objLimit = 20; // unit: %
 
 	// DAFU
-	uint32_t topK = 10;
+	std::string scoreFtn = "around";
+	uint32_t topK = 2;
+	uint32_t winSize = 2;
 
 	/********************
 	* Command Setting
@@ -116,7 +118,7 @@ main (int argc, char *argv[])
 	* Fixed
 	*********************/
 	// 25% 
-	if (ssN==6)
+	/*if (ssN==6)
 	{ // 28
 		if (objLimit == 20)
 			objectMax = 30;
@@ -175,7 +177,7 @@ main (int argc, char *argv[])
 	else if (ssN==16)
 	{ // 160
 		if (objLimit == 20)
-			objectMax = 260;
+			objectMax = 220;
 		else if (objLimit == 25)
 			objectMax = 540;
 		else if (objLimit == 40)
@@ -184,7 +186,33 @@ main (int argc, char *argv[])
 	else if (ssN==20)
 		objectMax = 300;
 	else if (ssN==24)
-		objectMax = 440;
+		objectMax = 440;*/
+
+	if (ssN==6)
+	{ // 28
+		if (objLimit == 20)
+			objectMax = 40;
+	}
+	else if (ssN==8)
+	{ // 32
+		if (objLimit == 20)
+			objectMax = 54;
+	}
+	else if (ssN==10)
+	{ // 52
+		if (objLimit == 20)
+			objectMax = 80;
+	}
+	else if (ssN==12)
+	{ // 80
+		if (objLimit == 20)
+			objectMax = 110;
+	}
+	else if (ssN==16)
+	{ // 160
+		if (objLimit == 20)
+			objectMax = 200;
+	}
 
 
 	std::cout << "Objet Max: " << objectMax << std::endl;	
@@ -391,11 +419,16 @@ main (int argc, char *argv[])
 		sink->service_ssN = service_ssN;
 		sink->actionPacketSize = actionPacketSize;
 		sink->stop = &maxStep;
-    sink->avgRate = sensorAvgRate * (double)bwLimit / 100;
+    sink->avgRate = sensorAvgRate * (double)bwLimit / 100 * 15/14;
+		std::cout << "avgRate: " << sink->avgRate << std::endl;
 		sink->isLinkScheWork = &isLinkScheWork;
-		sink->LinkCheck = link->CallbackCheck ();
-		sink->topK = topK;
+		sink->LinkCheck = link->CallbackCheck ();	
 		sink->errorRate = errorRate;
+		// DAFU Settings
+		sink->scoreFtn = scoreFtn;
+		sink->topK = topK;
+		sink->winSize = winSize;
+		sink->ssN = std::sqrt(ssN);
 
 		// ZMQ 
 		if (upMod == "rlidagan")
@@ -516,6 +549,21 @@ main (int argc, char *argv[])
 		std::cout << "Simulation Time Duration (Milli): " << min.count() << std::endl;
 		std::cout << "###########################" << std::endl;
 		
+		/*
+		 * std::cout << "Mx: " << sink->eMa / sink->reward_cnt[0] << std::endl;
+		std::cout << "My: " << sink->eMb / sink->reward_cnt[0] << std::endl;
+		std::cout << "Vx: " << sink->eVa/ sink->reward_cnt[0] << std::endl;
+		std::cout << "Vy: " << sink->eVb / sink->reward_cnt[0] << std::endl;
+		std::cout << "cM: " << sink->cMa/ sink->reward_cnt[0] << std::endl;
+		std::cout << "cM: " << sink->cMb/ sink->reward_cnt[0] << std::endl;	
+		std::cout << "cV: " << sink->cVa / sink->reward_cnt[0] << std::endl;
+		std::cout << "cV: " << sink->cVb / sink->reward_cnt[0] << std::endl;
+
+		std::cout << "L: " << sink->eL / sink->reward_cnt[0] << std::endl;
+		std::cout << "C: " << sink->eC / sink->reward_cnt[0]<< std::endl;
+		std::cout << "S: " << sink->eS / sink->reward_cnt[0] << std::endl;
+		std::cout << "Object: " << (double) oc[0].objectM / oc[0].objectG << std::endl;	
+		*/
 		printf("\n[[Drop Info]]\n");
 		std::cout << "Set Drop : " << errorRate << "(%)" << std::endl;
 		std::cout << "Drop Rate: " << (double)sink->dropCnt / (double)sink->recvCnt * 100 << "(%)" << std::endl;
@@ -548,6 +596,8 @@ main (int argc, char *argv[])
 
 		if (testMod == "test")
 		{
+			printf("\n[[Test Info]]\n");
+
 			cntTest += 1;
 			
 			if (obsMod == "temp")
