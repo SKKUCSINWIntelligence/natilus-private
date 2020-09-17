@@ -187,7 +187,11 @@ main (int argc, char *argv[])
 		objectMax = 300;
 	else if (ssN==24)
 		objectMax = 440;*/
-
+	
+	if (ssN==4)
+	{
+		objectMax = 30;
+	}
 	if (ssN==6)
 	{ // 28
 		if (objLimit == 20)
@@ -249,7 +253,7 @@ main (int argc, char *argv[])
 	}
 	
 	// Test Mode Setting
-	double totalTest = 10;
+	double totalTest = 20;
 	double cntTest = 0;
 	double tempDiffTest = 0;
 	double tempAccTest = 0;
@@ -408,6 +412,7 @@ main (int argc, char *argv[])
 		sink->obsMod = obsMod;
 		sink->simMod = simMod;
 		sink->stateMod = stateMod;
+		sink->testMod = testMod;
 		sink->channelInfo = channelInfo;
 		sink->stateInfo = stateInfo;
 		sink->evalInfo = evalInfo;

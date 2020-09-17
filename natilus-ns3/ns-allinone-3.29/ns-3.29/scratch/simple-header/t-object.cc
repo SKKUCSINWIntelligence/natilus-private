@@ -99,7 +99,15 @@ void ObjectContain::Start ()
 		{
 			tag[i] = 0;
 		}
-
+		
+		if (unitN == 4)
+		{
+			loc[0] = 10;
+			
+			ang[0] = 180.0/360.0*2*PI;
+			ang[1] = 225.0/360.0*2*PI;
+			ang[2] = 270.0/360.0*2*PI;
+		}
 		if (unitN == 6)
 		{
 			loc[0] = 7;

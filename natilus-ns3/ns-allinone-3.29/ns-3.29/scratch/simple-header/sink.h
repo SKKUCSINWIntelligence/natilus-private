@@ -18,6 +18,7 @@ namespace ns3{
 			std::string obsMod;
 			std::string simMod;
 			std::string stateMod;
+			std::string testMod;
 
 			// LOG Setting
 			bool channelInfo;

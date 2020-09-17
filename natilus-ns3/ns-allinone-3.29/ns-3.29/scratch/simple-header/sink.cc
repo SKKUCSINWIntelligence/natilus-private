@@ -713,7 +713,6 @@ namespace ns3{
 			double C1 = 0.01; //1e-50;
 			double C2 = 0.03;
 			double C3 = C2/2;
-
 			double l = 0;
 			double c = 0;
 			double s = 0;
@@ -827,7 +826,12 @@ namespace ns3{
 			double C1 = 0.001; //1e-50;
 			double C2 = 0.003;
 			double C3 = C2/2;
-
+			if (testMod == "test")
+			{
+				C1 = 0.3;
+				C2 = 0.3;
+				C3 = C2/2;
+			}
 			double l = 0;
 			double c = 0;
 			double s = 0;
