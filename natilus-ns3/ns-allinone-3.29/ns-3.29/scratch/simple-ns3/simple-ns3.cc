@@ -93,8 +93,12 @@ main (int argc, char *argv[])
 		memory_Y = ReadFile(yPath, history);
 		std::cout<<"File Read Complete!\n";
 	}
-
-	if (ssN==6)
+		
+	if (ssN==4)
+	{
+		objectMax = 30;
+	}
+	else if (ssN==6)
 	{
 		if (objectLimit == 20)
 			objectMax = 30;
