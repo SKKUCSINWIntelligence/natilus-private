@@ -42,7 +42,7 @@ main (int argc, char *argv[])
 	
 	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
-	uint32_t bwLimit = 50;				// unit: %
+	uint32_t bwLimit = 75;				// unit: %
 	uint32_t frameSize = 30;			// unit: KB (IP Camera)
 	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 3; // Size 6: 2, Size 8: 5,  
+	uint32_t dataSpeed = 1; // Size 6: 2, Size 8: 5,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -93,7 +93,7 @@ main (int argc, char *argv[])
 		memory_Y = ReadFile(yPath, history);
 		std::cout<<"File Read Complete!\n";
 	}
-	
+
 	if (ssN==4)
 	{
 		objectMax = 30;
@@ -105,8 +105,16 @@ main (int argc, char *argv[])
 	}
 	else if (ssN==8)
 	{ // 32
-		if (objectLimit == 20)
+		if (objectLimit == 10)
+			objectMax = 38;
+		else if (objectLimit == 20)
 			objectMax = 54;
+		else if (objectLimit == 30)
+			objectMax = 75;
+		else if (objectLimit == 40)
+			objectMax = 100;
+		else if (objectLimit == 50)
+			objectMax = 135;
 	}
 	else if (ssN==10)
 	{ // 52
@@ -116,7 +124,7 @@ main (int argc, char *argv[])
 	else if (ssN==12)
 	{ // 80
 		if (objectLimit == 20)
-			objectMax = 110;
+			objectMax = 100;
 	}
 	else if (ssN==16)
 	{ // 160
@@ -152,7 +160,7 @@ main (int argc, char *argv[])
 		cout << "Object Speed: " << objectSpeed << endl << endl;
 		cout << "[[Sample Setting]]" << endl;
 		cout << "Frame Size: " << frameSize << " KB (" << frameSize*1024 << " bytes)" <<  endl;
-		cout << "Sampel Num: " << sampleNum << endl;
+		cout << "Sample Num: " << sampleNum << endl;
 		cout << "Needs Thr : " << needsThr << " Mbps" << endl << endl;
 		cout << "[[Action Setting]]" << endl;
 		cout << "Needs Thr : " << (double) 10 * 8 * 30 * ssN / 1000000 << " Mbps" << endl <<  endl;  
