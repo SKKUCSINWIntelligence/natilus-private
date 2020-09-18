@@ -192,7 +192,7 @@ main (int argc, char *argv[])
 	{
 		objectMax = 30;
 	}
-	if (ssN==6)
+	else if (ssN==6)
 	{ // 28
 		if (objLimit == 20)
 			objectMax = 40;

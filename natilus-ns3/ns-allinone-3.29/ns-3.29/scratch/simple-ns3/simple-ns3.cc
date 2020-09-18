@@ -25,7 +25,7 @@ main (int argc, char *argv[])
 	std::string port = "5050";
 	
 	srand (time(NULL));
-	uint64_t maxStep = 10000;
+	uint64_t maxStep = 10;
 
 	/* Mode Setting */
 	bool rlMod = false;
@@ -93,67 +93,35 @@ main (int argc, char *argv[])
 		memory_Y = ReadFile(yPath, history);
 		std::cout<<"File Read Complete!\n";
 	}
-		
+	
 	if (ssN==4)
 	{
 		objectMax = 30;
 	}
 	else if (ssN==6)
-	{
-		if (objectLimit == 20)
-			objectMax = 30;
-		if(objectLimit == 25)
-			objectMax = 32;
-		else if (objectLimit == 40)
-			objectMax = 32;
+	{ // 28
+		if (objLimit == 20)
+			objectMax = 40;
 	}
 	else if (ssN==8)
-	{
-		if (objectLimit == 15)
-			objectMax = 36;
-		else if (objectLimit == 20)
-			objectMax = 48;
-		else if (objectLimit == 25)
-			objectMax = 60;
-		else if (objectLimit == 30)
-			objectMax = 72;
-		else if (objectLimit == 35)
-			objectMax = 100;
-		else if (objectLimit == 40)
-			objectMax = 48;
+	{ // 32
+		if (objLimit == 20)
+			objectMax = 54;
 	}
 	else if (ssN==10)
-	{
-		if (objectLimit == 20)
-			objectMax = 80;
-		else if (objectLimit == 25)
-			objectMax = 108;
-		else if (objectLimit == 40)
+	{ // 52
+		if (objLimit == 20)
 			objectMax = 80;
 	}
 	else if (ssN==12)
-	{
-		if (objectLimit == 15)
-			objectMax = 80;
-		else if (objectLimit == 20)
-			objectMax = 120;
-		else if (objectLimit == 25)
-			objectMax = 180;
-		else if (objectLimit == 30)
-			objectMax = 280;
-		else if (objectLimit == 35)
-			objectMax = 400;
-		else if (objectLimit == 40)
-			objectMax = 128;
+	{ // 80
+		if (objLimit == 20)
+			objectMax = 110;
 	}
 	else if (ssN==16)
-	{
-		if (objectLimit == 20)
-			objectMax = 260;
-		else if (objectLimit == 25)
-			objectMax = 540;
-		else if (objectLimit == 40)
-			objectMax = 260;
+	{ // 160
+		if (objLimit == 20)
+			objectMax = 200;
 	}
 
 	ssN = ssN*ssN;
@@ -420,7 +388,7 @@ main (int argc, char *argv[])
 		std::cout << "Simulation Multi Max: " << simpleSink->multiMax << std::endl;
 		std::cout << "Simulation Avg Reward: " << simpleSink->rewardAvg/simpleSink->cntAvg  << std::endl;
 		
-		//delete oc;	
+		delete oc;	
 		delete[] sensorAddressList;
 		delete[] sensorP2PList;
 	}while(rlMod);

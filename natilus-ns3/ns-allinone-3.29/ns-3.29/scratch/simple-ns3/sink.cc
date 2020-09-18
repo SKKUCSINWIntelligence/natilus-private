@@ -57,7 +57,6 @@ SimpleSink::~SimpleSink()
 	
 	m_socket = 0;
 	delete state;
-	delete[] addressList;
 	delete[] recvBytes;
 	delete[] seqNum;
 	delete[] pktNum;
