@@ -25,7 +25,7 @@ main (int argc, char *argv[])
 	std::string port = "5050";
 	
 	srand (time(NULL));
-	uint64_t maxStep = 1000;
+	uint64_t maxStep = 100;
 
 	/* Mode Setting */
 	bool rlMod = false;
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 1; // Size 6: 2, Size 8: 5,  
+	uint32_t dataSpeed = 3; // Size 6: 2, Size 8: 5,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -201,11 +201,11 @@ main (int argc, char *argv[])
 		YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
 		YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
 		phy.SetChannel (channel.Create ());
-		phy.Set ("ChannelWidth", UintegerValue (160));
-		phy.Set ("Antennas", UintegerValue (4));
-		phy.Set ("ShortGuardEnabled", BooleanValue (true));
-		phy.Set ("MaxSupportedTxSpatialStreams", UintegerValue (4));
-		phy.Set ("MaxSupportedRxSpatialStreams", UintegerValue (4));
+		//phy.Set ("ChannelWidth", UintegerValue (160));
+		phy.Set ("Antennas", UintegerValue (2));
+		//phy.Set ("ShortGuardEnabled", BooleanValue (true));
+		phy.Set ("MaxSupportedTxSpatialStreams", UintegerValue (2));
+		phy.Set ("MaxSupportedRxSpatialStreams", UintegerValue (2));
 		//phy.Set ("ChannelNumber", UintegerValue (3));
 
 		WifiHelper wifi;
@@ -348,7 +348,7 @@ main (int argc, char *argv[])
 			simpleSensor->senId = i;
 			simpleSensor->sampleSize = sampleSize;
 			simpleSensor->sampleNum = sampleNum;
-			simpleSensor->sampleRate = sensorAvgRate;
+			simpleSensor->sampleRate = sensorAvgRate * 15/14;
 			simpleSensor->oc = oc;
 			
 			simpleSensor->Set ();
