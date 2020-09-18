@@ -25,7 +25,7 @@ main (int argc, char *argv[])
 	std::string port = "5050";
 	
 	srand (time(NULL));
-	uint64_t maxStep = 10;
+	uint64_t maxStep = 1000;
 
 	/* Mode Setting */
 	bool rlMod = false;
@@ -43,7 +43,7 @@ main (int argc, char *argv[])
 	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
 	uint32_t bwLimit = 50;				// unit: %
-	uint32_t frameSize = 1;			// unit: KB (IP Camera)
+	uint32_t frameSize = 30;			// unit: KB (IP Camera)
 	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
 																// Number of Packets to send
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 9; // Size 6: 2, Size 8: 5,  
+	uint32_t dataSpeed = 3; // Size 6: 2, Size 8: 5,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -100,27 +100,27 @@ main (int argc, char *argv[])
 	}
 	else if (ssN==6)
 	{ // 28
-		if (objLimit == 20)
+		if (objectLimit == 20)
 			objectMax = 40;
 	}
 	else if (ssN==8)
 	{ // 32
-		if (objLimit == 20)
+		if (objectLimit == 20)
 			objectMax = 54;
 	}
 	else if (ssN==10)
 	{ // 52
-		if (objLimit == 20)
+		if (objectLimit == 20)
 			objectMax = 80;
 	}
 	else if (ssN==12)
 	{ // 80
-		if (objLimit == 20)
+		if (objectLimit == 20)
 			objectMax = 110;
 	}
 	else if (ssN==16)
 	{ // 160
-		if (objLimit == 20)
+		if (objectLimit == 20)
 			objectMax = 200;
 	}
 
