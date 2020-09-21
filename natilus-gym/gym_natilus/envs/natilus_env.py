@@ -380,9 +380,13 @@ class NatilusEnv(gym.Env):
         _actions = []
         
         thresh = 0.5  
+        
         for a in action: 
             if a <= thresh:
-                _actions.append(-2)
+                if self.sensor_xnum == 16:
+                    _actions.append(0)
+                else:
+                    _actions.append(-2)
             else:
                 _actions.append(a*2)
         return _actions
