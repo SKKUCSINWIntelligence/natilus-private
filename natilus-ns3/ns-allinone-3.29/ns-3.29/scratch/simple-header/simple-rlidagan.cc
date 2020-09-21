@@ -225,7 +225,11 @@ main (int argc, char *argv[])
 		if (objLimit == 20)
 			objectMax = 200;
 	}
-
+	else if (ssN==20)
+	{
+		if (objLimit == 20)
+			objectMax = 330;
+	}
 
 	std::cout << "Objet Max: " << objectMax << std::endl;	
 			
