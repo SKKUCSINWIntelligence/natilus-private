@@ -22,7 +22,7 @@ class NatilusEnv(gym.Env):
         print("Sensor XNum:", self.sensor_xnum)
 
         self.obsMod = int(input("Obs Mode (1. track, 2. temp 3. multi): "))
-        self.actMod = int(input("Action Mode (1. LA3 2. GAN): "))
+        self.actMod = int(input("Action Mode (1. LA3 2. GAN 3. Sota): "))
         self.rlMod = int(input("RL Mode (1. General, 2. Transformer): "))
         self.infoNum = int(input("Info Num: "))
         self.history_num = int(input("History Num: "))
@@ -75,8 +75,10 @@ class NatilusEnv(gym.Env):
         elif self.obsMod == 3:
             self.observation_space = spaces.Box (low=0, high=1, shape=(self.observe_num * self.history_num, self.infoNum), dtype=np.float32)
          
-        #self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
-        self.action_space = spaces.Box (low=-1, high=1, shape=(self.action_point,), dtype=np.float32) 
+        if self.actMod == 1:
+            self.action_space = spaces.Box (low=-1, high=1, shape=(self.action_point,), dtype=np.float32) 
+        elif self.actMod == 3:
+            self.action_space = spaces.Box (low=-1, high=1, shape=(self.sensor_num,), dtype=np.float32)
         
         self.history = []
         self.past = np.zeros((self.infoNum, self.sensor_xnum, self.sensor_xnum), dtype="f")  
@@ -383,7 +385,7 @@ class NatilusEnv(gym.Env):
         
         for a in action: 
             if a <= thresh:
-                if self.sensor_xnum == 16:
+                if self.sensor_xnum == 16 or self.sensor_xnum == 10:
                     _actions.append(0)
                 else:
                     _actions.append(-2)
