@@ -287,7 +287,8 @@ main (int argc, char *argv[])
 
 	// Bandwidth
   //uint64_t totRate = ssN * sensorAvgRate;
-	uint64_t bw = Byte2Bit (sampleSize) * ssN * sensorAvgRate; // bps
+	uint64_t bw =  Byte2Bit (sampleSize) * (uint64_t) ssN * (uint64_t)sensorAvgRate; // bps
+	std::cout << "bw: " << bw << std::endl;
 	bw = (double) serviceN * bw * bwLimit / 100;
 
 	/********************

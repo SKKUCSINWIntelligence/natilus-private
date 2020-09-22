@@ -17,7 +17,7 @@ uint32_t MByte2Bit (uint32_t mbyte)
 	return KByte2Bit (mbyte*1024);
 }
 
-double Bit2Mbps (uint32_t bit)
+double Bit2Mbps (uint64_t bit)
 {
 	return (double) bit / 1000000;
 }

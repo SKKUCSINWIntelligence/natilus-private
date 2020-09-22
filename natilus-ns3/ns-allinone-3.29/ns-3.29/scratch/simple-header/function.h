@@ -39,7 +39,7 @@ typedef struct Data
 uint32_t Byte2Bit (uint32_t byte);
 uint32_t KByte2Bit (uint32_t kbyte);
 uint32_t MByte2Bit (uint32_t mbyte);
-double Bit2Mbps (uint32_t bit);
+double Bit2Mbps (uint64_t bit);
 
 
 /************
