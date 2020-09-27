@@ -22,7 +22,7 @@ class NatilusEnv(gym.Env):
         print("Sensor XNum:", self.sensor_xnum)
 
         self.obsMod = int(input("Obs Mode (1. track, 2. temp 3. multi): "))
-        self.actMod = int(input("Action Mode (1. LA3 2. GAN 3. Sota): "))
+        self.actMod = int(input("Action Mode (1. LA3 2. GAN 3. Sota/Naive): "))
         self.rlMod = int(input("RL Mode (1. General, 2. Transformer): "))
         self.infoNum = int(input("Info Num: "))
         self.history_num = int(input("History Num: "))
@@ -55,9 +55,9 @@ class NatilusEnv(gym.Env):
             self.point = [0, 5, 10, 0, 5, 10, 0, 5, 10]
             self.ypoint = [0, 0, 0, 5, 5, 5, 10, 10, 10]
         
-        if self.sensor_xnum == 6:
+        if self.sensor_xnum == 5 or self.sensor_xnum == 6:
             self.action_point = 9
-        elif self.sensor_xnum == 16 or self.sensor_xnum == 12:
+        elif self.sensor_xnum == 12 or self.sensor_xnum == 16:
             self.action_point = 25
         else:
             self.action_point = 16
@@ -109,6 +109,7 @@ class NatilusEnv(gym.Env):
             action = self.softmax(action)
         
         elif self.actMod == 3:
+            """ Naive/Sota Model """
             #action = self.clipFunc(action)
             action = self.softmax(action)
         
@@ -396,9 +397,15 @@ class NatilusEnv(gym.Env):
     def LA3(self, action):
         _actions = []
         length = 1
-        if self.sensor_xnum == 6:
+        if self.sensor_xnum == 5: 
+            xcell = [0.83, 2.49, 4.15, 0.83, 2.49, 4.15, 0.83, 2.49, 4.15]
+            ycell = [0.83, 0.83, 0.83, 2.49, 2.49, 2.49, 4.15, 4.15, 4.15]
+        elif self.sensor_xnum == 6:
             xcell = [1, 3, 5, 1, 3, 5, 1, 3, 5]
             ycell = [1, 1, 1, 3, 3, 3, 5, 5, 5]
+        elif self.sensor_xnum == 7:
+            xcell = [0.875, 2.625, 4.375, 6.125, 0.875, 2.625, 4.375, 6.125, 0.875, 2.625, 4.375, 6.125, 0.875, 2.625, 4.375, 6.125]
+            ycell = [0.875, 0.875, 0.875, 0.875, 2.625, 2.625, 2.625, 2.625, 4.375, 4.375, 4.375, 4.375, 6.125, 6.125, 6.125, 6.125]
         elif self.sensor_xnum == 8:
             xcell = [1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7, 1, 3, 5, 7]
             ycell = [1, 1, 1, 1, 3, 3, 3, 3, 5, 5, 5, 5, 7, 7, 7, 7]
@@ -437,20 +444,3 @@ class NatilusEnv(gym.Env):
                     score += action[k] / dist
                 _actions.append(score)
         return _actions
-
-        """
-        if self.rlMod == 2:
-            tmp_obs = []
-            p = 0
-            q = 0
-            for i in range(point_num*point_num):
-                if i % point_num == 0 and i != 0:
-                    p = p + self.sensor_xnum * cell_num
-                    q = 0
-                for j in range(cell_num):
-                    for k in range(cell_num):
-                        #print(p+q*cell_num+self.sensor_xnum*j+k)
-                        tmp_obs.append(copy.deepcopy(obs[p+q*cell_num+self.sensor_xnum*j+k]))
-                q += 1
-            obs = np.array(tmp_obs)
-        """

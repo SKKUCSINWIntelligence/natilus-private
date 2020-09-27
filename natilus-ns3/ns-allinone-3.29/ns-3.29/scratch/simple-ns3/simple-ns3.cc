@@ -42,7 +42,7 @@ main (int argc, char *argv[])
 	
 	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
-	uint32_t bwLimit = 75;				// unit: %
+	uint32_t bwLimit = 50;				// unit: %
 	uint32_t frameSize = 30;			// unit: KB (IP Camera)
 	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 3; // Size 6: 2, Size 8: 5,  
+	uint32_t dataSpeed = 1; // Size 4: 3, Size 6: 2, Size 8: 5,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -98,10 +98,20 @@ main (int argc, char *argv[])
 	{
 		objectMax = 30;
 	}
+	else if (ssN==5)
+	{
+		if (objectLimit == 20)
+			objectMax = 31;
+	}
 	else if (ssN==6)
 	{ // 28
 		if (objectLimit == 20)
 			objectMax = 40;
+	}
+	else if (ssN==7)
+	{
+		if (objectLimit == 20)
+			objectMax = 48;
 	}
 	else if (ssN==8)
 	{ // 32

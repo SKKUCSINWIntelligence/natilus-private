@@ -108,7 +108,15 @@ void ObjectContain::Start ()
 			ang[1] = 225.0/360.0*2*PI;
 			ang[2] = 270.0/360.0*2*PI;
 		}
-		if (unitN == 6)
+		else if (unitN == 5)
+		{
+			loc[0] = 18;
+
+			ang[0] = 180.0/360.0*2*PI;
+			ang[1] = 225.0/360.0*2*PI;
+			ang[2] = 270.0/360.0*2*PI;
+		}
+		else if (unitN == 6)
 		{
 			loc[0] = 7;
 			loc[1] = 28;
@@ -119,6 +127,18 @@ void ObjectContain::Start ()
 			ang[3] = 330.0/360.0*2*PI;
 			ang[4] = 225.0/360.0*2*PI;
 			ang[5] = 270.0/360.0*2*PI;
+		}
+		else if (unitN == 7)
+		{
+			loc[0] = 14;
+			loc[1] = 40;
+
+			ang[0] = 0;
+			ang[1] = 45/360*2*PI;
+			ang[2] = 340/360*2*PI;
+			ang[3] = 180/360*2*PI;
+			ang[4] = 225/360*2*PI;
+			ang[5] = 270/360*2*PI;
 		}
 		else if (unitN == 8)
 		{

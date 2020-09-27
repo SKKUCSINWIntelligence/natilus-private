@@ -192,10 +192,20 @@ main (int argc, char *argv[])
 	{
 		objectMax = 30;
 	}
+	else if (ssN==5)
+	{
+		if (objLimit == 20)
+			objectMax = 31;
+	}
 	else if (ssN==6)
 	{ // 28
 		if (objLimit == 20)
 			objectMax = 40;
+	}
+	else if (ssN==7)
+	{
+		if (objLimit == 20)
+			objectMax = 48;
 	}
 	else if (ssN==8)
 	{ // 32
@@ -393,7 +403,7 @@ main (int argc, char *argv[])
 				service->serId = i;
 				service->cellId = j;
 				service->sampleSize = sampleSize;
-				service->sampleRate = ini_sampleRate;
+				service->sampleRate = ini_sampleRate; //* 15/14;
 				service->sampleValue = -100;
 
 				// SetCallback Sensor-Service
