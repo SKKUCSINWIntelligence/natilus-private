@@ -39,20 +39,23 @@ main (int argc, char *argv[])
 	/* Log Setting */
 	bool trace = false;
 	bool stateInfo = false;
+	bool dafuInfo = false;
+
+	/* DAFU Setting */
+	std::string dafuFtn = "around";
 	
 	/* Sample Setting */
 	uint32_t sensorAvgRate = 60;	// unit: #/s
-	uint32_t bwLimit = 50;				// unit: %
+	uint32_t bwLimit = 75;				// unit: %
 	uint32_t frameSize = 30;			// unit: KB (IP Camera)
 	uint32_t sampleSize = 1472;		// unit: Bytes per one packet
 	uint32_t sampleNum = (uint32_t) std::ceil ((double) frameSize * 1024 / sampleSize); 
 																// Number of Packets to send
-
 	/* Object Setting */
-	uint32_t ssN = 10;
+	uint32_t ssN = 8;
 	uint32_t objectN = 0;
 	uint32_t objectMax = 80;
-	uint32_t objectLimit = 40;
+	uint32_t objectLimit = 20;
 	double cellUnit = 2; // unit: m
 	
 	double maxSpeed = cellUnit*sensorAvgRate; // m/s
@@ -60,7 +63,7 @@ main (int argc, char *argv[])
 	double objectSpeed = maxSpeed*speedRate / 100;
 		
 	/* Wifi Setting */
-	uint32_t dataSpeed = 1; // Size 4: 3, Size 6: 2, Size 8: 5,  
+	uint32_t dataSpeed = 8; // Size 4: 3, Size 6: 2, Size 8: 5,  
 	std::string dataMode = "VhtMcs"+std::to_string(dataSpeed);
 	
 	/* Application Setting */
@@ -77,6 +80,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("bwLimit", "BW Limit %", bwLimit);
 	cmd.AddValue ("objLimit", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info", stateInfo);
+	cmd.AddValue ("dInfo", "DAFU Info", dafuInfo);
 	cmd.Parse (argc, argv);
 	
 	/* Read Sumo File */
@@ -212,10 +216,10 @@ main (int argc, char *argv[])
 		YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
 		phy.SetChannel (channel.Create ());
 		//phy.Set ("ChannelWidth", UintegerValue (160));
-		phy.Set ("Antennas", UintegerValue (2));
+		phy.Set ("Antennas", UintegerValue (4));
 		//phy.Set ("ShortGuardEnabled", BooleanValue (true));
-		phy.Set ("MaxSupportedTxSpatialStreams", UintegerValue (2));
-		phy.Set ("MaxSupportedRxSpatialStreams", UintegerValue (2));
+		phy.Set ("MaxSupportedTxSpatialStreams", UintegerValue (4));
+		phy.Set ("MaxSupportedRxSpatialStreams", UintegerValue (4));
 		//phy.Set ("ChannelNumber", UintegerValue (3));
 
 		WifiHelper wifi;
@@ -316,6 +320,7 @@ main (int argc, char *argv[])
 		simpleSink->obsMod = obsMod;
 		simpleSink->stateMod = stateMod;
 		simpleSink->stateInfo = stateInfo;
+		simpleSink->dafuInfo = dafuInfo;
 
 		simpleSink->oc = oc;
 		simpleSink->ssN = ssN;
@@ -323,6 +328,8 @@ main (int argc, char *argv[])
 		simpleSink->avgRate = sensorAvgRate;
 		simpleSink->sampleNum = sampleNum;
 		
+		simpleSink->dafuFtn = dafuFtn;
+
 		if (upMod == "rlidagan")
 		{
 			simpleSink->zmqsocket = &zmqsocket;

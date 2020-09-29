@@ -60,6 +60,8 @@ SimpleSink::~SimpleSink()
 	delete[] recvBytes;
 	delete[] seqNum;
 	delete[] pktNum;
+	delete[] scoreMap;
+	delete[] topLoc;
 }
 
 void 
@@ -76,11 +78,17 @@ SimpleSink::Set (void)
 	/* malloc sensor seq num */
 	seqNum = new uint64_t[ssN];
 	pktNum = new uint32_t[ssN];
+	/* malloc for DAFU */
+	scoreMap = new double[ssN];
+	topLoc = new int32_t[ssN];
+
 	for (uint32_t i=0; i<ssN; i++)
 	{
 		recvBytes[i] = 0;
 		seqNum[i] = 0;
 		pktNum[i] = 0;
+		scoreMap[i] = 0;
+		topLoc[i] = -1;
 		/* set uniform action */
 		state->action[i] = avgRate;
 	}
@@ -390,6 +398,11 @@ SimpleSink::Comm (void)
 		ZMQComm ();
 		SendData ();
 	}
+	else if (upMod == "DAFU")
+	{
+		DAFU ();
+		SendData ();
+	}
 	else if (upMod == "xuniform")
 	{
 		SendData ();
@@ -523,6 +536,237 @@ SimpleSink::PrintInfo (void)
   printf("[sampleValue]::Truth\n");
   PrintState<double> (oc->trackMap, ssN);
   printf("--------------------------\n");
+}
+
+void SimpleSink::DAFU(void)
+{
+	DAFUSetScore(state->sampleValue);
+	DAFUTopK(scoreMap, topK);
+	DAFUSetAction(topLoc, topK);
+}
+
+void SimpleSink::DAFUSetScore(double *map)
+{
+	if (dafuFtn == "map")
+	{
+		for(uint32_t i=0; i<ssN; i++)
+		{
+			scoreMap[i] = map[i];
+		}
+	}
+	else if (dafuFtn == "around")
+	{
+		topK = 0;
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			scoreMap[i] = 0;
+
+			int xId = i % ssN;
+			int yId = i / ssN;
+				
+			int xxId = xId-1; 
+			int yyId = yId;
+
+			int sN = (int)ssN;
+
+			if (xxId >= 0)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1;
+			}
+			xxId = xId-1;
+			yyId = yId+1;
+			if (xxId >= 0 && yyId < sN)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId;
+			yyId = yId+1;
+			if (yyId < sN)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId+1;
+			yyId = yId+1;
+			if (xxId < sN && yyId < sN)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId+1;
+			yyId = yId;
+			if (xxId <sN)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId+1;
+			yyId = yId-1;
+			if (xxId < sN && yyId >= 0)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId;
+			yyId = yId-1;
+			if (yyId >= 0)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId-1;
+			yyId = yId-1;
+			if (xxId >= 0 && yyId >= 0)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+				
+			if (map[i] > 0)
+			{
+				if (xId == 0 && yId == 0)
+					scoreMap[i] += 5;
+				else if (xId == 0 && yId == (sN-1))
+					scoreMap[i] += 5;
+				else if (xId == (sN-1) && yId == 0)
+					scoreMap[i] += 5;
+				else if (xId == (sN-1) && yId == (sN-1))
+					scoreMap[i] += 5;
+				else if (xId == 0 || yId == 0 || xId == (sN-1) || yId == (sN-1))
+					scoreMap[i] += 3;
+			}
+
+			if (scoreMap[i] >= 8)
+				topK += 1;
+		}
+	}
+
+	if (dafuInfo)
+	{
+		printf("------- DAFU Info-------- ");
+		std::cout << "at " << Simulator::Now().GetSeconds() << std::endl;	
+		printf("[[Truth Value]]\n");
+		PrintState<double> (oc[0].trackMap, ssN);
+		printf("[[Sample Value]]\n");
+		PrintState<double> (state[0].sampleValue, ssN);
+		printf("[[Score Value]]\n");
+		PrintState<double> (scoreMap, ssN);
+	}
+}
+
+void 
+SimpleSink::DAFUTopK(double * map, uint32_t len)
+{
+	double min = 0;
+	int32_t min_loc = 0;
+	double temp = 0;  
+	double temp2 = 0;
+	double score_min = 0.001;
+		
+	for(uint32_t j = 0; j<ssN; j++)
+	{
+		temp = map[j];
+		if(temp>min && temp!=0)
+		{
+			topLoc[min_loc] = j;
+			min = temp;
+			for(uint32_t k = 0; k<len; k++)
+			{
+				temp2 = score_min;
+				if(topLoc[k] != -1)
+					temp2 = map[topLoc[k]];
+				if(min>temp2)
+				{
+					min = temp2;
+					min_loc = k;
+				}
+			}
+		}
+	}	
+	
+	if (dafuInfo)
+	{
+		for(int32_t k =0 ; k<topK; k++)
+		{
+			std::cout<<topLoc[k]<<" ";
+		}
+		std::cout<<std::endl; 
+	} 
+}
+
+void 
+SimpleSink::DAFUSetAction(int32_t* scoreMap,int32_t len)	
+{
+	uint32_t nodeNum = ssN;
+	uint32_t nodeLen = sqrt(nodeNum);
+	int32_t* target = new int32_t[ssN];
+	int32_t window = winSize;
+	int32_t jump = 0;
+	for(uint32_t i =0; i<nodeNum; i++)
+	{
+		target[i] = 1;
+	}
+
+	for(int32_t i = 0; i<len; i++)
+	{
+		if(scoreMap[i]>=0 && scoreMap[i]<(int32_t)nodeNum)
+		{
+			for(int32_t j = -window+1; j<window; j++)
+			{
+				for(int32_t k = -window+1; k<window; k++)
+				{
+					jump = (int32_t)nodeLen*k;
+					int16_t x = (int16_t)scoreMap[i]+j+jump;
+					if(x>-1 && x<(int16_t)nodeNum)
+					{
+						int16_t y = ((int16_t)scoreMap[i]+jump)%nodeLen;
+						if(y+j>-1 && y+j<(int16_t)nodeLen)
+						{
+							target[scoreMap[i]+j+jump] = 2;
+						}
+					}
+				}       
+			}
+		}
+	}
+
+	uint32_t targetNum = 0;
+	double FPS_for_target = 0;
+	double FPS_for_target_min = 10;
+
+	for(uint32_t i = 0; i<nodeNum; i++)
+	{
+		if(target[i]==2)
+			targetNum +=1;
+	}
+
+	if(targetNum >0)
+		FPS_for_target = (avgRate*ssN-(nodeNum-targetNum)*FPS_for_target_min)/targetNum;
+	else
+	{
+		FPS_for_target = avgRate*ssN/(double)nodeNum+1;
+		FPS_for_target_min = FPS_for_target-1;
+	}
+
+	for(uint32_t i = 0; i<nodeNum; i++)
+	{
+		if(target[i]==2)
+			state->action[i] = (uint32_t)FPS_for_target; //#### -> targetThr
+		else
+			state->action[i] = (uint32_t)FPS_for_target_min;
+	}
+
+	if (dafuInfo)
+	{
+		printf("\n[[Action Set]]\n");
+		PrintState<uint32_t> (state->action, ssN);
+	}
+	for(uint32_t i = 0; i<ssN; i++)
+		topLoc[i] = -1;
+
+	delete[] target;
 }
 
 void ZMQSendJson (zmq::socket_t* zmqsocket, std::string message)

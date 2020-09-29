@@ -40,7 +40,8 @@ public:
 	bool					channelInfo;
 	bool					stateInfo;
 	bool					evalInfo;
-	
+	bool					dafuInfo;
+
 	/* State */ 
 	STATE *state;
 
@@ -73,6 +74,13 @@ public:
 	zmq::socket_t		*zmqsocket;
 	bool					episodeStart = true;
 	bool					episodeEnd = false;
+	
+	/* DAFU Setting */
+	std::string dafuFtn; 
+	int32_t topK;
+	int32_t winSize = 2; // size 2 -> 9 cells
+	int32_t *topLoc;
+	double *scoreMap;
 
 	/* Eval Setting */
 	double				reward = 0;
@@ -99,6 +107,11 @@ private:
 	void SendData (void);
 
 	void PrintInfo (void);
+
+	void DAFU (void);
+	void DAFUSetScore (double*);
+	void DAFUTopK (double*, uint32_t);
+	void DAFUSetAction (int32_t*, int32_t);
 
 	// Variables
 	Ptr<Socket>     m_socket;       //!< Listening socket
