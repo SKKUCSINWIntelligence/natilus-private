@@ -74,9 +74,9 @@ main (int argc, char *argv[])
 	bool dafuInfo = false;
 	uint32_t errorRate = 0; // unit: %
 	// Sensor #
-	uint32_t ssN = 10;
+	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
-	uint32_t bwLimit = 50; // unit: %
+	uint32_t bwLimit = 75; // unit: %
 	uint32_t objLimit = 20; // unit: %
 
 	// DAFU
@@ -403,7 +403,7 @@ main (int argc, char *argv[])
 				service->serId = i;
 				service->cellId = j;
 				service->sampleSize = sampleSize;
-				service->sampleRate = ini_sampleRate; //* 15/14;
+				service->sampleRate = ini_sampleRate * 15/14;
 				service->sampleValue = -100;
 
 				// SetCallback Sensor-Service
