@@ -186,27 +186,34 @@ void Sink::Recv (std::queue<DATA*> *dataContain)
 
 			if (obsMod == "multi")
 			{
-				// Save car <-> cell
-				for (uint32_t i=0; i<oc[serId].objectMax; i++)
-				{	
-					if (state[serId].sampleCar[i] == (int)cellId)
-						state[serId].sampleCar[i] = -1;
-					if (data->carCell[i] == true)
-						state[serId].sampleCar[i] = (int)cellId;
-				}				
-
-				// Clear the map
-				for (uint32_t i=0; i<service_ssN[0]; i++)
+				if (envMod == "sumo")
 				{
-					state[serId].sampleValue[i] = 0;
+					state[serId].sampleValue[cellId] = data->sampleValue;         
 				}
-
-				// Fill in the map
-				for (uint32_t i=0; i<oc[serId].objectMax; i++)
+				else
 				{
-					int cell = state[serId].sampleCar[i];
-					if (cell >= 0)
-						state[serId].sampleValue[cell] += 1;
+					// Save car <-> cell
+					for (uint32_t i=0; i<oc[serId].objectMax; i++)
+					{	
+						if (state[serId].sampleCar[i] == (int)cellId)
+							state[serId].sampleCar[i] = -1;
+						if (data->carCell[i] == true)
+							state[serId].sampleCar[i] = (int)cellId;
+					}				
+
+					// Clear the map
+					for (uint32_t i=0; i<service_ssN[0]; i++)
+					{
+						state[serId].sampleValue[i] = 0;
+					}
+
+					// Fill in the map
+					for (uint32_t i=0; i<oc[serId].objectMax; i++)
+					{
+						int cell = state[serId].sampleCar[i];
+						if (cell >= 0)
+							state[serId].sampleValue[cell] += 1;
+					}
 				}
 			}
 			else if (obsMod == "carx")
@@ -1093,7 +1100,7 @@ Sink::ZMQCommunication ()
 			{
 				for (uint32_t i=0; i<ssN*ssN; i++)
 				{
-					state[j].action[i] = actionTmp[j*ssN*ssN+i] * (avgRate*ssN*ssN*serviceN);
+					state[j].action[i] = actionTmp[j*ssN*ssN+i] * (avgRate*ssN*ssN*serviceN - ssN*ssN*serviceN);
 					if(state[j].action[i]==0)
 						state[j].action[i] = 1;
 				}

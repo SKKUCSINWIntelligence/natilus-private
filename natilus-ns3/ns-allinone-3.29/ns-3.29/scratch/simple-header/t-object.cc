@@ -364,15 +364,15 @@ void ObjectContain::Start ()
 		trackMap[i] = 0;
 		tempMap[i] = 25;
 	}
-
-	MapUpdate ();
+	
+	if (envMod == "sumo")
+		MapUpdateSumo (-100);
+	else
+		MapUpdate ();
+	
 	lastTime = Simulator::Now ();
 	
-	if (obsMod == "car")
-	{
-		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, false);
-	}
-	if (obsMod == "multi")
+	if (obsMod == "multi" && envMod != "sumo")
 	{
 		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, true);
 	}
@@ -943,6 +943,83 @@ ObjectContain::MapUpdate (void)
 	//PrintState<double> (serId, "Tracking", trackMap, senN);
 }
 
+void ObjectContain::MapUpdateSumo(double term)
+{
+	int* vx ;
+  int* vy ;
+  int frame = 0;
+  int interval = sumo_interval;
+
+  if(term  ==-100)
+  {
+
+    //startTime = 150000;
+    startTime = rand()%(300000-interval*3000);
+    //startTime = rand()%(50000-interval*1500);
+    vx = memoryX[startTime];
+    vy = memoryY[startTime];
+    MapCreateSumo(vx, vy);
+    //initialize
+  }	
+  else
+  {
+    term += stackedT;
+    frame = (int)(term/(0.033/interval));
+    stackedT = term -frame*(0.033/interval);
+    startTime += frame;
+
+    vx = memoryX[startTime];
+    vy = memoryY[startTime];
+    MapCreateSumo(vx, vy);
+  }
+}
+
+void ObjectContain::MapCreateSumo(int* x, int* y)
+{
+
+  //std::cout<< x->at((x->size())-2) <<std::endl;
+  //std::cout<< y->size() <<std::endl;
+  int x_t = 0;
+  double y_t = 0;
+  int target = 0;
+  double node = sqrt(senN);
+
+  memcpy (trackMap, zero, sizeof(double)*senN);
+  int ii = 0;
+
+  while (x[ii]!=0)
+	{
+    x_t  = (double)x[ii];	
+    y_t  = (double)y[ii];	
+
+    x_t /= 1000/node;
+    y_t /= 1000/node;
+    if (x_t>(node-1))
+      x_t = (node-1);
+    if (y_t>(node-1))
+      y_t = (node-1);
+    x_t = (int)x_t;
+    y_t = (int)y_t;
+    y_t = (node-1)-y_t; 
+    target = (int)node*y_t + x_t;
+
+    trackMap[target] +=1;
+    ii++;
+  }
+
+
+  /*
+     std::cout<<"\n##############\n";
+     for(int i =0 ;i<144; i++)
+     {
+     std::cout<<trackMap[i]<<" " ;
+     if(i%12 ==11)
+     std::cout<<std::endl;
+     }
+     std::cout<<"\n\n";
+     */	 
+}
+
 void ObjectContain::Moving (void)
 {
 	double now = Simulator::Now().GetSeconds ();
@@ -950,14 +1027,19 @@ void ObjectContain::Moving (void)
 
 	if (timeD > 0)
 	{
-		for (uint32_t i=0; i<objectMax; i++)
-			if (object[i].occupy)
-				object[i].timeD = timeD;
-		if (obsMod == "car" || obsMod == "multi")
-			MovFuncCar ();
+		if (envMod == "sumo")
+			MapUpdateSumo (timeD);
 		else
-			MovFunc ();
-		MapUpdate ();
+		{
+			for (uint32_t i=0; i<objectMax; i++)
+				if (object[i].occupy)
+					object[i].timeD = timeD;
+			if (obsMod == "car" || obsMod == "multi")
+				MovFuncCar ();
+			else
+				MovFunc ();
+			MapUpdate ();
+		}
 
 		// Time Update
 		lastTime = Simulator::Now();

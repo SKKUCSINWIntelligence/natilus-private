@@ -38,6 +38,7 @@ public:
 	double vel;
 	uint32_t objectMax;
 	std::string obsMod;
+	std::string envMod;
 
 	// Time
 	Time lastTime;
@@ -60,6 +61,14 @@ public:
 	uint32_t *loc; // Location for Multi
 	double *ang; // Angle for Multi	
 	uint32_t *tag; // Tag for NewMulti
+	
+	// Sumo
+  int** memoryX;
+  int** memoryY;
+	int startTime = 0;
+  double stackedT = 0;
+  int sumo_interval = 4;
+
 
 	// Funtion
 	ObjectContain ();
@@ -69,6 +78,8 @@ public:
 	void NewObject (bool);
 	void NewMulti (bool);
 	void MapUpdate (void);
+  void MapUpdateSumo(double);
+  void MapCreateSumo(int*, int*);
 	
 	void Moving (void);
 	void MovFunc (void);

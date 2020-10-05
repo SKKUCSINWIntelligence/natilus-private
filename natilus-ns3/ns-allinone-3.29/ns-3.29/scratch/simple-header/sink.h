@@ -19,6 +19,7 @@ class Sink
 		std::string simMod;
 		std::string stateMod;
 		std::string testMod;
+		std::string envMod;
 
 		// LOG Setting
 		bool channelInfo;

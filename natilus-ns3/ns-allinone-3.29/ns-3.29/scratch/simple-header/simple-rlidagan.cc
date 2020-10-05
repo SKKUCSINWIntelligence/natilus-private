@@ -39,6 +39,8 @@ T add (T a, T b)
 }
 */
 
+int** ReadFile (std::string, int);
+
 int
 main (int argc, char *argv[])
 {
@@ -57,10 +59,11 @@ main (int argc, char *argv[])
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
-	std::string upMod = "DAFU"; //1. uniform 2. DAFU  3. rlidagan
+	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
 	std::string testMod = "xtest"; // 1. test
+	std::string envMod = "sumo";
 
 	/** LOG Setting **/
 	// ObjectContain
@@ -84,6 +87,16 @@ main (int argc, char *argv[])
 	uint32_t topK = 2;
 	uint32_t winSize = 2;
 
+	// SUMO
+	int** memoryX = NULL;
+	int** memoryY = NULL;
+
+	int history = 300000;
+  int interval = 10; //city :  city_nospot :   country : 30  highway : 4 
+	
+	std::string xPath = "sumo_data/x_country_v1.txt";
+	std::string yPath = "sumo_data/y_country_v1.txt";
+
 	/********************
 	* Command Setting
 	*********************/
@@ -94,6 +107,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
 	cmd.AddValue ("testMod", "Test Mode: test/else", testMod);
+	cmd.AddValue ("envMod", "Env Mode: sumo/else", envMod);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
 	cmd.AddValue ("eInfo", "Reward Info: true/false", evalInfo);
@@ -104,7 +118,8 @@ main (int argc, char *argv[])
 	cmd.AddValue ("topK", "DAFU Top K Value", topK);
 	cmd.AddValue ("error", "Error Rate", errorRate);
 	cmd.Parse (argc, argv);
-
+	
+	/* RL Setting */
 	if (upMod =="rlidagan")
 	{
 		trace = false;
@@ -113,6 +128,12 @@ main (int argc, char *argv[])
 		//stateInfo = true;
 		//evalInfo = false;
 		rlMod = true;
+	}
+	if (envMod == "sumo")
+	{
+		memoryX = ReadFile(xPath, history);
+		memoryY = ReadFile(yPath, history);
+		std::cout<<"File Read Complete!\n";	
 	}
 
 	/********************
@@ -341,6 +362,14 @@ main (int argc, char *argv[])
 		// Create Object
 		ObjectContain *oc = new ObjectContain[serviceN];
 		oc->obsMod = obsMod;
+		oc->envMod = envMod;
+		
+		if (envMod == "sumo")
+		{
+			oc->memoryX = memoryX;
+			oc->memoryY = memoryY;
+			oc->sumo_interval = interval;
+		}
 		if (obsMod=="car" || obsMod=="multi")
 			oc->objectMax = objectMax;
 		else
@@ -437,6 +466,8 @@ main (int argc, char *argv[])
 		sink->simMod = simMod;
 		sink->stateMod = stateMod;
 		sink->testMod = testMod;
+		sink->envMod = envMod;
+
 		sink->channelInfo = channelInfo;
 		sink->stateInfo = stateInfo;
 		sink->evalInfo = evalInfo;
@@ -484,7 +515,13 @@ main (int argc, char *argv[])
 		*********************/
 
 		std::cout << "###########################" << std::endl;
-		printf("[[Mode Settings]]\n");
+		if (envMod == "sumo")
+		{
+			printf("[[SUMO Setting]]\n");
+			cout << xPath << endl;
+			cout << yPath << endl;
+		}
+		printf("\n[[Mode Settings]]\n");
 		cout << "Network Mode : " << netMod << endl;
 		cout << "Obsev Mode   : " << obsMod << endl;
 		cout << "Algorithm    : " << upMod;
@@ -686,7 +723,68 @@ main (int argc, char *argv[])
 	
 	delete[] service_ssN;
 	delete[] service_ssN2;
-
+	
+	if (envMod == "sumo")
+	{
+		for (int i=0; i<history; i++)
+		{
+			delete[] memoryX[i];
+			delete[] memoryY[i];
+		}
+		delete[] memoryX;
+		delete[] memoryY;
+	}
 	return 0; 
 }
+
+int** ReadFile(std::string path, int history)
+{
+	int** memory = new int*[sizeof(int*)*history];
+
+	std::ifstream File(path.data());
+	int case_num = 0;
+	int case_max = 0;
+	int case_temp = 0;
+	char * tok ;
+	char * case_buffer = new char[1800];
+	int i = 0;
+	
+	if(File.is_open())
+	{
+		std::string case_line; 
+		int* v1;
+		while(i<history)
+		{
+      getline(File,case_line);        
+			case_num ++;
+			v1 = new int[300];
+      
+			int j = 0;
+			strcpy(case_buffer, case_line.c_str());
+			tok = strtok(case_buffer," ");
+			while(tok!=NULL)
+			{
+				v1[j] =atoi(tok);
+				case_temp ++;
+				tok = strtok(NULL, " ");
+				j++;
+			}
+			memory[i] = v1;
+			if(case_temp>case_max)
+				case_max = case_temp;
+			case_temp = 0;
+			i++;			
+		}
+		std::cout<< "MAX : "<< case_max <<std::endl;
+	}
+	
+	else
+		std::cout<<"[ERROR] :: There are no file exist!"<<std::endl;
+
+	File.close();
+	
+	delete[] case_buffer;
+	return memory;
+}
+
 
