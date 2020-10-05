@@ -94,10 +94,11 @@ main (int argc, char *argv[])
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
 	cmd.AddValue ("testMod", "Test Mode: test/else", testMod);
-	cmd.AddValue ("ssN", "Sensor #", ssN);
-	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
+	cmd.AddValue ("eInfo", "Reward Info: true/false", evalInfo);
+	cmd.AddValue ("ssN", "Sensor #", ssN);
+	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
 	cmd.AddValue ("objLimit", "Object Limit", objLimit);
 	cmd.AddValue ("topK", "DAFU Top K Value", topK);
@@ -110,7 +111,7 @@ main (int argc, char *argv[])
 		carInfo = false;
 		channelInfo = false;
 		//stateInfo = true;
-		evalInfo = false;
+		//evalInfo = false;
 		rlMod = true;
 	}
 
@@ -457,6 +458,7 @@ main (int argc, char *argv[])
 		sink->topK = topK;
 		sink->winSize = winSize;
 		sink->ssN = std::sqrt(ssN);
+		sink->sssN = ssN;
 
 		// ZMQ 
 		if (upMod == "rlidagan")
