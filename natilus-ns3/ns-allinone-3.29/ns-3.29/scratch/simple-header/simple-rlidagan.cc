@@ -83,8 +83,8 @@ main (int argc, char *argv[])
 	uint32_t objLimit = 20; // unit: %
 
 	// DAFU
-	std::string scoreFtn = "around";
-	uint32_t topK = 2;
+	std::string scoreFtn = "halftop";
+	uint32_t topK = 0;
 	uint32_t winSize = 2;
 
 	// SUMO

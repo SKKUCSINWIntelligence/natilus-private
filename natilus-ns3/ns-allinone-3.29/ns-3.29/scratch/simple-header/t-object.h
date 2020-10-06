@@ -86,8 +86,6 @@ public:
 	void MovFuncCar (void);
 	double Angle (OBJECT *obj);
 	double GetRandGauss (void);
-
-
 };
 
 }

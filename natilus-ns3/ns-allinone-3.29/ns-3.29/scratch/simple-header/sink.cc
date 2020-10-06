@@ -342,10 +342,12 @@ Sink::Communication ()
 		DAFU();
 		Send();
 	}
-
+	
+	/* Print Reward Info */
 	if (evalInfo)
 		PrintEval();
-
+	
+	/* Clear the Reward */
 	for (uint32_t i=0; i<serviceN; i++)
 	{
 		cnt[i] = 0;
@@ -813,34 +815,43 @@ Sink::Reward (void)
 	}
 }
 
+/*
+ * DAFU Function
+ */
 void 
 Sink::DAFU(void)
 {
-	//uint32_t len = topK;
-	DAFUSetScore(state[0].sampleValue);
-	DAFUTopK(scoreMap, topK);
-	DAFUSetAction(topLoc, topK);
+	DAFUSetScore();
+	DAFUTopK();
+	
+	if (scoreFtn == "optimal")
+		DAFUSetAction(topLoc, topK);
+	else if (scoreFtn == "halftop")
+		TOPKSetAction ();
 }
 
 /*
  * DAFU Score Function
  */
 void
-Sink::DAFUSetScore(double *map)
+Sink::DAFUSetScore(void)
 {
+
+	double *map = state[0].sampleValue;
 	/* Map DAFU */
 	if (scoreFtn == "map")
 	{
-		for(uint32_t i=0; i<service_ssN[0]; i++)
+		for(uint32_t i=0; i<sssN; i++)
 		{
-			scoreMap[i] = map[i];
+			scoreMap[i] = state[0].sampleValue[i];
 		}
 	}
 	/* Optimal DAFU */
-	else if (scoreFtn == "around")
+	else if (scoreFtn == "optimal")
 	{
 		topK = 0;
-		for (uint32_t i=0; i<service_ssN[0]; i++)
+
+		for (uint32_t i=0; i<sssN; i++)
 		{
 			scoreMap[i] = 0;
 
@@ -919,10 +930,92 @@ Sink::DAFUSetScore(double *map)
 				else if (xId == 0 || yId == 0 || xId == (sN-1) || yId == (sN-1))
 					scoreMap[i] += 3;
 			}
-
+					
 			if (scoreMap[i] >= 8)
-				topK += 1;
+				topK += 1;	
 		}
+	}
+	/* TOP K with half */
+	else if (scoreFtn == "halftop")
+	{
+		topK = 0;
+		
+		for (uint32_t i=0; i<sssN; i++)
+		{
+			scoreMap[i] = 0 ;
+
+			int xId = i % ssN;
+			int yId = i / ssN;
+			
+			int xxId = xId-1; 
+			int yyId = yId;
+			int sN = (int)ssN;
+
+			if (xxId >= 0)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1;
+			}
+			xxId = xId-1;
+			yyId = yId+1;
+			if (xxId >= 0 && yyId < sN)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1; 
+			}
+			xxId = xId;
+			yyId = yId+1;
+			if (yyId < sN)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1; 
+			}
+			xxId = xId+1;
+			yyId = yId+1;
+			if (xxId < sN && yyId < sN)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1; 
+			}
+			xxId = xId+1;
+			yyId = yId;
+			if (xxId <sN)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1; 
+			}
+			xxId = xId+1;
+			yyId = yId-1;
+			if (xxId < sN && yyId >= 0)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1; 
+			}
+			xxId = xId;
+			yyId = yId-1;
+			if (yyId >= 0)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+				scoreMap[i] += 1; 
+			}
+			xxId = xId-1;
+			yyId = yId-1;
+			if (xxId >= 0 && yyId >= 0)
+			{
+				if (map[yyId*ssN+xxId] != 0)
+					scoreMap[i] += 1; 
+			}
+			
+					
+			if (scoreMap[i] != 0)
+				topK += 1;	
+		}
+		for (uint32_t i=0; i<sssN; i++)
+		{
+			if (scoreMap[i] != 0)
+				scoreMap[i] = 10 - scoreMap[i];
+		}
+		topK = topK;
 	}
 }
 
@@ -930,33 +1023,30 @@ Sink::DAFUSetScore(double *map)
  * Choose Top K Among DAFU Score Function Map
  */
 void 
-Sink::DAFUTopK(double * map, uint32_t len)
+Sink::DAFUTopK(void)
 {
 	double min = 0;
-	int32_t min_loc = 0;
-	double temp = 0;  
-	double temp2 = 0;
-	double score_min = 0.001;
+	int32_t minLoc = 0;
+	double minScore = 0.001;
+	double flag1 = 0;  
+	double flag2 = 0;
 	
-	for(uint32_t i = 0; i<serviceN; i++)
+	for(uint32_t i=0; i<sssN; i++)
 	{
-		for(uint32_t j = 0; j<service_ssN[i]; j++)
+		flag1 = scoreMap[i];
+		if(flag1>min && flag1!=0)
 		{
-			temp = map[j];
-			if(temp>min && temp!=0)
+			topLoc[minLoc] = i;
+			min = flag1;
+			for(int32_t k = 0; k<topK; k++)
 			{
-				topLoc[min_loc] = j;
-				min = temp;
-				for(uint32_t k = 0; k<len; k++)
+				flag2 = minScore;
+				if(topLoc[k] != -1)
+					flag2 = scoreMap[topLoc[k]];
+				if(min>flag2)
 				{
-					temp2 = score_min;
-					if(topLoc[k] != -1)
-						temp2 = map[topLoc[k]];
-					if(min>temp2)
-					{
-						min = temp2;
-						min_loc = k;
-					}
+					min = flag2;
+					minLoc = k;
 				}
 			}
 		}
@@ -964,17 +1054,17 @@ Sink::DAFUTopK(double * map, uint32_t len)
 		
 	if (dafuInfo)
 	{
-		for(int32_t k =0 ; k<topK; k++)
+		for(int32_t k=0 ; k<topK; k++)
 			std::cout<<topLoc[k]<<" ";
 		std::cout<<std::endl; 
 	} 
 }
 
 /*
- * Setting Action Function
+ * DAFU Setting Action Function
  */
 void 
-Sink::DAFUSetAction(int32_t* scoreMap,int32_t len)
+Sink::DAFUSetAction(int32_t* scoreMap, int32_t len)
 {
 	uint32_t nodeNum = service_ssN[0];
 	uint32_t nodeLen = sqrt(nodeNum);
@@ -1039,11 +1129,49 @@ Sink::DAFUSetAction(int32_t* scoreMap,int32_t len)
 	if (dafuInfo)
 		PrintDAFU ();	
 
-	for(uint32_t i = 0; i<ssN; i++)
+	for(uint32_t i = 0; i<sssN; i++)
 		topLoc[i] = -1;
 	delete[] target;
 }
 
+void
+Sink::TOPKSetAction (void)
+{
+	/* Set targe Map */
+	uint32_t* target = new uint32_t[sssN];
+	for (uint32_t i=0; i<sssN; i++)
+	{
+		target[i] = 0;
+	}
+	for (int32_t i=0; i<topK; i++)
+	{
+		target[topLoc[i]] = 1;
+	}
+
+	/* Set Action with (Total FPS / topK) */
+	double targetMIN = 10;
+	double targetFPS = (double) (avgRate*sssN - topK*targetMIN) / (double) topK;
+	
+	if (topK == 0)
+		targetFPS = avgRate;
+
+	for (uint32_t i=0; i<sssN; i++)
+	{
+		if (topK == 0)
+			state[0].action[i] = avgRate;
+		else if (target[i] == 1)
+			state[0].action[i] = (uint32_t) targetFPS;
+		else if (target[i] == 0)
+			state[0].action[i] = (uint32_t) targetMIN;
+	}
+	
+	if (dafuInfo)
+		PrintDAFU ();
+
+	for (uint32_t i=0; i<sssN; i++)
+		topLoc[i] = -1; 
+	delete[] target;
+}
 
 void 
 Sink::ZMQCommunication ()

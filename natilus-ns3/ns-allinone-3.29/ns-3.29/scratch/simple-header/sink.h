@@ -144,9 +144,10 @@ class Sink
 		int32_t *topLoc;
 		double *scoreMap;
 		void DAFU (void);
-		void DAFUSetScore (double*);
-		void DAFUTopK(double* ,uint32_t);
-		void DAFUSetAction ( int32_t*,int32_t);
+		void DAFUSetScore (void);
+		void DAFUTopK(void);
+		void DAFUSetAction (int32_t*, int32_t);
+		void TOPKSetAction (void); 
 
 		// OpenGym
 		bool episodeStart;
