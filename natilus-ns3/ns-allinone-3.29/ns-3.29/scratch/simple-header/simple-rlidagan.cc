@@ -63,7 +63,7 @@ main (int argc, char *argv[])
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
 	std::string testMod = "xtest"; // 1. test
-	std::string envMod = "sumo";
+	std::string envMod = "xsumo";
 
 	/** LOG Setting **/
 	// ObjectContain
@@ -83,7 +83,7 @@ main (int argc, char *argv[])
 	uint32_t objLimit = 20; // unit: %
 
 	// DAFU
-	std::string scoreFtn = "halftop";
+	std::string scoreFtn = "halftop"; // 1. optimal 2. halftop
 	uint32_t topK = 0;
 	uint32_t winSize = 2;
 
@@ -94,8 +94,8 @@ main (int argc, char *argv[])
 	int history = 300000;
   int interval = 10; //city :  city_nospot :   country : 30  highway : 4 
 	
-	std::string xPath = "sumo_data/x_country_v1.txt";
-	std::string yPath = "sumo_data/y_country_v1.txt";
+	std::string xPath = "sumo_data/x_city_v2.txt";
+	std::string yPath = "sumo_data/y_city_v2.txt";
 
 	/********************
 	* Command Setting
@@ -111,6 +111,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
 	cmd.AddValue ("eInfo", "Reward Info: true/false", evalInfo);
+	cmd.AddValue ("scoreFtn", "Score Func: optimal/halftop", scoreFtn);
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
@@ -433,7 +434,7 @@ main (int argc, char *argv[])
 				service->serId = i;
 				service->cellId = j;
 				service->sampleSize = sampleSize;
-				service->sampleRate = ini_sampleRate * 15/14;
+				service->sampleRate = ini_sampleRate * 15/14 - 1;
 				service->sampleValue = -100;
 
 				// SetCallback Sensor-Service

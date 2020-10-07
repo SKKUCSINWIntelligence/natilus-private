@@ -26,7 +26,7 @@ Sink::~Sink ()
 	delete[] singleAcc_avg;
 	delete[] threshold;
 	delete[] topLoc;
-	delete[] scoreMap;;
+	delete[] scoreMap;
 
 	for(uint32_t i = 0; i<serviceN ; i++)
 	{
@@ -822,10 +822,9 @@ void
 Sink::DAFU(void)
 {
 	DAFUSetScore();
-	DAFUTopK();
-	
+	DAFUTopK();	
 	if (scoreFtn == "optimal")
-		DAFUSetAction(topLoc, topK);
+		DAFUSetAction();
 	else if (scoreFtn == "halftop")
 		TOPKSetAction ();
 }
@@ -938,11 +937,11 @@ Sink::DAFUSetScore(void)
 	/* TOP K with half */
 	else if (scoreFtn == "halftop")
 	{
-		topK = 0;
+		topK = sssN * 0.4;
 		
 		for (uint32_t i=0; i<sssN; i++)
 		{
-			scoreMap[i] = 0 ;
+			scoreMap[i] = 1;
 
 			int xId = i % ssN;
 			int yId = i / ssN;
@@ -1007,15 +1006,15 @@ Sink::DAFUSetScore(void)
 			}
 			
 					
-			if (scoreMap[i] != 0)
-				topK += 1;	
+			//if (scoreMap[i] != 0)
+			//	topK += 1;	
 		}
 		for (uint32_t i=0; i<sssN; i++)
 		{
-			if (scoreMap[i] != 0)
+			if (scoreMap[i] != 1)
 				scoreMap[i] = 10 - scoreMap[i];
 		}
-		topK = topK;
+		//topK = topK;
 	}
 }
 
@@ -1064,34 +1063,34 @@ Sink::DAFUTopK(void)
  * DAFU Setting Action Function
  */
 void 
-Sink::DAFUSetAction(int32_t* scoreMap, int32_t len)
+Sink::DAFUSetAction(void)
 {
-	uint32_t nodeNum = service_ssN[0];
-	uint32_t nodeLen = sqrt(nodeNum);
 	int32_t* target = new int32_t[service_ssN[0]];
 	int32_t window = winSize;
 	int32_t jump = 0;
-	for(uint32_t i =0; i<nodeNum; i++)
+
+	for(uint32_t i =0; i<sssN; i++)
 	{
 		target[i] = 1;
 	}
 
-	for(int32_t i = 0; i<len; i++)
+	for(int32_t i = 0; i<topK; i++)
 	{
-		if(scoreMap[i]>=0 && scoreMap[i]<(int32_t)nodeNum)
+		if(topLoc[i]>=0 && topLoc[i]<(int32_t)sssN)
 		{
 			for(int32_t j = -window+1; j<window; j++)
 			{
 				for(int32_t k = -window+1; k<window; k++)
 				{
-					jump = (int32_t)nodeLen*k;
-					int16_t x = (int16_t)scoreMap[i]+j+jump;
-					if(x>-1 && x<(int16_t)nodeNum)
+					jump = (int32_t)ssN*k;
+					int16_t x = (int16_t)topLoc[i]+j+jump;
+
+					if(x>-1 && x<(int16_t)sssN)
 					{
-						int16_t y = ((int16_t)scoreMap[i]+jump)%nodeLen;
-						if(y+j>-1 && y+j<(int16_t)nodeLen)
+						int16_t y = ((int16_t)topLoc[i]+jump)%ssN;
+						if(y+j>-1 && y+j<(int16_t)ssN)
 						{
-							target[scoreMap[i]+j+jump] = 2;
+							target[topLoc[i]+j+jump] = 2;
 						}
 					}
 				}       
@@ -1100,29 +1099,29 @@ Sink::DAFUSetAction(int32_t* scoreMap, int32_t len)
 	}
 
 	uint32_t targetNum = 0;
-	double FPS_for_target = 0;
-	double FPS_for_target_min = 10;
+	double targetFPS = 0;
+	double targetMIN = avgRate * 0.4;
 
-	for(uint32_t i = 0; i<nodeNum; i++)
+	for(uint32_t i = 0; i<sssN; i++)
 	{
 		if(target[i]==2)
 			targetNum +=1;
 	}
 
-	if(targetNum >0)
-		FPS_for_target = (avgRate*service_ssN[0]-(nodeNum-targetNum)*FPS_for_target_min)/targetNum;
+	if(targetNum > 0)
+		targetFPS = (avgRate*sssN - (sssN-targetNum)*targetMIN)/targetNum;
 	else
 	{
-		FPS_for_target = avgRate*service_ssN[0]/(double)nodeNum+1;
-		FPS_for_target_min = FPS_for_target-1;
+		targetFPS = avgRate*sssN/(double)sssN + 1;
+		targetMIN = targetFPS - 1;
 	}
 
-	for(uint32_t i = 0; i<nodeNum; i++)
+	for(uint32_t i = 0; i<sssN; i++)
 	{
 		if(target[i]==2)
-			state[0].action[i] = (uint32_t)FPS_for_target; //#### -> targetThr
+			state[0].action[i] = (uint32_t) targetFPS; //#### -> targetThr
 		else
-			state[0].action[i] = (uint32_t)FPS_for_target_min;
+			state[0].action[i] = (uint32_t) targetMIN;
 	}
 	
 
@@ -1150,7 +1149,7 @@ Sink::TOPKSetAction (void)
 
 	/* Set Action with (Total FPS / topK) */
 	double targetMIN = 10;
-	double targetFPS = (double) (avgRate*sssN - topK*targetMIN) / (double) topK;
+	double targetFPS = (double) (avgRate*sssN - (sssN-topK)*targetMIN) / (double) topK;
 	
 	if (topK == 0)
 		targetFPS = avgRate;
@@ -1485,7 +1484,35 @@ double*
 ZMQRecvAction (zmq::socket_t* zmqsocket, uint32_t ssN)
 {
 	double *actions = new double[ssN];
+	
+	zmq::message_t request (7);
+	memcpy(request.data (), "Action", 7);
+	zmqsocket->send (request);
+
+	zmq::message_t reply;
+	zmqsocket->recv (&reply);
+
+	std::string s = std::string(static_cast<char*> (reply.data ()), reply.size());
+	s = s.substr(1, s.size()-2);
+	s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
+	s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
+
 	for (uint32_t i=0; i<ssN; i++)
+	{
+		int find = s.find(".");
+		std::string slice = s.substr(0, find+1);
+		s = s.substr(find+1, s.size());
+		
+		find = s.find(".");
+		slice = slice + s.substr(0, find-1);
+		if (i != ssN - 1)
+			s = s.substr(find-1, s.size());
+		
+		double retval = atof (slice.c_str());
+		actions[i] = retval;
+	}
+
+	/*for (uint32_t i=0; i<ssN; i++)
 	{
 		zmq::message_t request (7);
 		memcpy(request.data (), "Action", 7);
@@ -1495,10 +1522,12 @@ ZMQRecvAction (zmq::socket_t* zmqsocket, uint32_t ssN)
 		zmqsocket->recv (&reply);
 
 		std::string action = std::string(static_cast<char*> (reply.data ()), reply.size());
+		std::cout << action << std::endl;
 		double retval = atof (action.c_str ());
 
 		actions[i] = retval;
-	}
+	}*/
+
 	return actions;
 }
 

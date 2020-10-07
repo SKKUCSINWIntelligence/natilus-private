@@ -146,7 +146,7 @@ class Sink
 		void DAFU (void);
 		void DAFUSetScore (void);
 		void DAFUTopK(void);
-		void DAFUSetAction (int32_t*, int32_t);
+		void DAFUSetAction (void);
 		void TOPKSetAction (void); 
 
 		// OpenGym
