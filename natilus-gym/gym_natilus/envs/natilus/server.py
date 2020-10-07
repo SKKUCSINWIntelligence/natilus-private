@@ -60,10 +60,15 @@ class Server():
         """
         Send Actions.
         """
+        recv = self._recv ()
+        snd = str(action).encode ()
+        self.m_socket.send (snd)
+        """
         for i in range(self.m_action_size):
             recv = self._recv()
-            snd = str(action[i]).encode()
+            snd = str(action[i]).encode() 
             self.m_socket.send(snd)       
+        """
         
     def _end(self):
         """
