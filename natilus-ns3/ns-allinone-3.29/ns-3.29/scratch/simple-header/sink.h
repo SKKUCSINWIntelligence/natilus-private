@@ -15,6 +15,7 @@ class Sink
 	public:
 		std::string log;
 		std::string upMod;
+		std::string actMod;
 		std::string obsMod;
 		std::string simMod;
 		std::string stateMod;
@@ -26,6 +27,11 @@ class Sink
 		bool stateInfo;
 		bool evalInfo;
 		bool dafuInfo;
+		
+		// Time Checking
+		std::chrono::system_clock::time_point start;
+		std::chrono::system_clock::time_point end;
+		std::chrono::milliseconds msZMQ; 		
 
 		// Object Linking
 		ObjectContain *oc;
@@ -159,7 +165,7 @@ class Sink
 void ZMQSendJson	(zmq::socket_t*, std::string);
 void ZMQSendObs		(zmq::socket_t*, std::string, STATE*, ObjectContain*, uint32_t, std::string); 
 void ZMQSendEnd		(zmq::socket_t*, uint8_t);
-double* ZMQRecvAction (zmq::socket_t*, uint32_t);
+double* ZMQRecvAction (zmq::socket_t*, std::string actMod,  uint32_t);
 
 }
 

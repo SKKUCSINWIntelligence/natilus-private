@@ -60,6 +60,7 @@ main (int argc, char *argv[])
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
 	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
+	std::string actMod = "xLA3"; // 1. LA3, 2. else
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
 	std::string testMod = "xtest"; // 1. test
@@ -103,6 +104,7 @@ main (int argc, char *argv[])
 	CommandLine cmd;
 	cmd.AddValue ("port", "RL Socket Port", port);
 	cmd.AddValue ("obsMod", "Obs Mod: track/car/temp/multi", obsMod);
+	cmd.AddValue ("actMod", "Act Mod: LA3/else", actMod);
 	cmd.AddValue ("netMod", "Network Mode: True/False", netMod);
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
@@ -463,6 +465,7 @@ main (int argc, char *argv[])
 		Sink *sink = new Sink;
 		sink->log = log;
 		sink->upMod = upMod;
+		sink->actMod = actMod;
 		sink->obsMod = obsMod;
 		sink->simMod = simMod;
 		sink->stateMod = stateMod;

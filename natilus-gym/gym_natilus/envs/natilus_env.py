@@ -102,11 +102,12 @@ class NatilusEnv(gym.Env):
             action = action.squeeze()
             action = np.reshape(action, (144))
   
-        elif self.actMod == 1:
-            """ LA3 Model """
-            action = self.LA3(action)
-            action = self.clipFunc(action)
-            action = self.softmax(action)
+        #elif self.actMod == 1:
+        #    """ LA3 Model """
+            #xaction = self.LA3(action)
+            #xaction = self.clipFunc(xaction)
+            #xaction = self.softmax(xaction)
+            #print(xaction)
         
         elif self.actMod == 3:
             """ Naive/Sota Model """

@@ -332,7 +332,11 @@ Sink::Communication ()
 	/* RL Mode */
 	if (upMod == "rlidagan")
 	{
+		//start = std::chrono::system_clock::now ();
 		ZMQCommunication ();
+		//end = std::chrono::system_clock::now ();
+		//msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end-start);
+		//std::cout << "ZMQ Duration (MS): " << msZMQ.count () << std::endl;
 		Send();
 	}
 
@@ -1196,16 +1200,21 @@ Sink::ZMQCommunication ()
 		for(uint32_t i = 0; i<serviceN; i++)
 		{
 			uint32_t ssN = sqrt(service_ssN[i]);
+			
+			start = std::chrono::system_clock::now ();
 			ZMQSendObs (zmqsocket, stateMod, &state[i], &oc[i], ssN, obsMod);
+			end = std::chrono::system_clock::now ();
+			msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
+			std::cout << "OBS Time: " << msZMQ.count() << std::endl;
 		}
 		// Get Action
 		double *actionTmp;
-		
-		if (obsMod == "car")
-			actionTmp = ZMQRecvAction (zmqsocket, serviceN*(ssN-2)*(ssN-2));
-		else
-			actionTmp = ZMQRecvAction (zmqsocket, serviceN*sssN);
-
+		start = std::chrono::system_clock::now ();
+		actionTmp = ZMQRecvAction (zmqsocket, actMod, serviceN*sssN);
+		end = std::chrono::system_clock::now ();
+		msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
+		std::cout << "ACT Time: " << msZMQ.count() << std::endl;
+	
 		for(uint32_t j = 0; j<serviceN; j++)
 		{
 			if (obsMod == "car")
@@ -1481,38 +1490,14 @@ ZMQSendEnd (zmq::socket_t* zmqsocket, uint8_t end)
 }
 
 double* 
-ZMQRecvAction (zmq::socket_t* zmqsocket, uint32_t ssN)
+ZMQRecvAction (zmq::socket_t* zmqsocket, std::string actMod, uint32_t ssN)
 {
 	double *actions = new double[ssN];
-	
-	zmq::message_t request (7);
-	memcpy(request.data (), "Action", 7);
-	zmqsocket->send (request);
-
-	zmq::message_t reply;
-	zmqsocket->recv (&reply);
-
-	std::string s = std::string(static_cast<char*> (reply.data ()), reply.size());
-	s = s.substr(1, s.size()-2);
-	s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
-	s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
-
 	for (uint32_t i=0; i<ssN; i++)
-	{
-		int find = s.find(".");
-		std::string slice = s.substr(0, find+1);
-		s = s.substr(find+1, s.size());
-		
-		find = s.find(".");
-		slice = slice + s.substr(0, find-1);
-		if (i != ssN - 1)
-			s = s.substr(find-1, s.size());
-		
-		double retval = atof (slice.c_str());
-		actions[i] = retval;
-	}
+		actions[i] = 0;
 
-	/*for (uint32_t i=0; i<ssN; i++)
+		/* For RED */
+	if (actMod == "LA3")
 	{
 		zmq::message_t request (7);
 		memcpy(request.data (), "Action", 7);
@@ -1521,12 +1506,158 @@ ZMQRecvAction (zmq::socket_t* zmqsocket, uint32_t ssN)
 		zmq::message_t reply;
 		zmqsocket->recv (&reply);
 
-		std::string action = std::string(static_cast<char*> (reply.data ()), reply.size());
-		std::cout << action << std::endl;
-		double retval = atof (action.c_str ());
+		std::string s = std::string(static_cast<char*> (reply.data ()), reply.size());
+		//std::cout << s << std::endl;
+	
+		/* Set Point Num */
+		uint32_t actionPoint = 0;
+		if (ssN == 25 || ssN == 36) // Size 5, 6
+			actionPoint = 9;
+		else if (ssN == 49 || ssN == 64 || ssN == 100) // Size 7, 8, 10
+			actionPoint = 16;
+		else if (ssN == 144 || ssN == 256) // Size 12, 16
+			actionPoint = 25;
+		else
+		{
+			std::cout << "ZMQ LA3 Action Size Error !!!" << std::endl;
+			exit (1);
+		}
+		double* actionLA = new double[actionPoint];
+		
+		s = s.substr(1, s.size()-2);
+		s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
+		s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
+		//std::cout << s << std::endl;
+		
+		/* LA3 */
+		double length = 1.0;
+		for (uint32_t i=0; i<actionPoint; i++)
+		{
+			int find = s.find(",");
+			std::string slice = s.substr(0, find);
+			s = s.substr (find+1, s.size());		
+			double retval = atof (slice.c_str ());
+			actionLA[i] = retval;
+		}
+		
+		uint32_t i = 0;
+		for (uint32_t x=0; x<sqrt(ssN); x++)
+		{
+			for (uint32_t y=0; y<sqrt(ssN); y++)
+			{
+				double _x = y*length + 1;
+				double _y = x*length + 1;
+				
+				for (uint32_t k=0; k<actionPoint; k++)
+				{
+					double _xp = (double)(k % (uint32_t)sqrt(actionPoint)) * (double)(sqrt(ssN)/sqrt(actionPoint)) + (double)(sqrt(ssN)/sqrt(actionPoint)/2.0);
+					double _yp = (double)(k / (uint32_t)sqrt(actionPoint)) * (double)(sqrt(ssN)/sqrt(actionPoint)) + (double)(sqrt(ssN)/sqrt(actionPoint)/2.0);
+					//std::cout << _xp << " " <<  _yp << std::endl;	
+					double dist = sqrt(((_x-_xp)*(_x-_xp)+(_y-_yp)*(_y-_yp)));
+					if (dist < 1.0)
+						dist = 1.0;
+					actions[i] = actions[i] + (actionLA[k] / dist);
+				}
+				i++;
+			}
+		}	
 
-		actions[i] = retval;
+		/* Clip Function */
+		double thresh = 0.5;
+		double eSum = 0;
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			if (actions[i] <= thresh)
+			{
+				if (ssN == 100 || ssN == 256)
+					actions[i] = 0;
+				else
+					actions[i] = -2;
+			}
+			else
+			{
+				actions[i] *= 2;
+			}
+			
+			eSum = eSum + pow(M_E, actions[i]);
+		}
+
+		/* Softmax Function */	
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			actions[i] = pow(M_E, actions[i]) / eSum;
+		}
+		
+		/*double sum = 0;
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			std::cout << actions[i] << " ";
+			if (i % (uint32_t)sqrt(ssN) == sqrt(ssN) -1)
+				std::cout << std::endl;
+			sum += actions[i];
+		}
+		std::cout << "\nSum: " << sum << std::endl;*/
+	}
+	else 
+	{
+		/* For Laive & SOTA */
+		zmq::message_t request (7);
+		memcpy(request.data (), "Action", 7);
+		zmqsocket->send (request);
+
+		zmq::message_t reply;
+		zmqsocket->recv (&reply);
+
+		std::string s = std::string(static_cast<char*> (reply.data ()), reply.size());
+		//std::cout << s << std::endl;
+
+		s = s.substr(1, s.size()-2);
+		s.erase(std::remove(s.begin(), s.end(), '\n'), s.end());
+		s.erase(std::remove(s.begin(), s.end(), ' '), s.end());
+		//std::cout << s << std::endl;
+
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			int find = s.find(",");
+			std::string slice = s.substr(0, find);
+			s = s.substr (find+1, s.size());		
+			double retval = atof (slice.c_str ());
+			actions[i] = retval;
+		}
+	}
+	/* Recv N th Action */
+	/*else
+	{
+		for (uint32_t i=0; i<ssN; i++)
+		{
+			zmq::message_t request (7);
+			memcpy(request.data (), "Action", 7);
+			zmqsocket->send (request);
+
+			zmq::message_t reply;
+			zmqsocket->recv (&reply);
+
+			std::string action = std::string(static_cast<char*> (reply.data ()), reply.size());
+			double retval = atof (action.c_str ());
+
+			actions[i] = retval;
+		}
 	}*/
+
+		/*for (uint32_t i=0; i<ssN; i++)
+		{
+			int find = s.find(".");
+			std::string slice = s.substr(0, find+1);
+			s = s.substr(find+1, s.size());
+			
+			find = s.find(".");
+			slice = slice + s.substr(0, find-1);
+			if (i != ssN - 1)
+				s = s.substr(find-1, s.size());
+			
+			double retval = atof (slice.c_str());
+			actions[i] = retval;
+		}	*/
 
 	return actions;
 }
