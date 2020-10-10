@@ -1201,19 +1201,19 @@ Sink::ZMQCommunication ()
 		{
 			uint32_t ssN = sqrt(service_ssN[i]);
 			
-			start = std::chrono::system_clock::now ();
+			//start = std::chrono::system_clock::now ();
 			ZMQSendObs (zmqsocket, stateMod, &state[i], &oc[i], ssN, obsMod);
-			end = std::chrono::system_clock::now ();
-			msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
-			std::cout << "OBS Time: " << msZMQ.count() << std::endl;
+			//end = std::chrono::system_clock::now ();
+			//msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
+			//std::cout << "OBS Time: " << msZMQ.count() << std::endl;
 		}
 		// Get Action
 		double *actionTmp;
-		start = std::chrono::system_clock::now ();
+		//start = std::chrono::system_clock::now ();
 		actionTmp = ZMQRecvAction (zmqsocket, actMod, serviceN*sssN);
-		end = std::chrono::system_clock::now ();
-		msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
-		std::cout << "ACT Time: " << msZMQ.count() << std::endl;
+		//end = std::chrono::system_clock::now ();
+		//msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
+		//std::cout << "ACT Time: " << msZMQ.count() << std::endl;
 	
 		for(uint32_t j = 0; j<serviceN; j++)
 		{
@@ -1597,6 +1597,8 @@ ZMQRecvAction (zmq::socket_t* zmqsocket, std::string actMod, uint32_t ssN)
 			sum += actions[i];
 		}
 		std::cout << "\nSum: " << sum << std::endl;*/
+
+		delete[] actionLA;
 	}
 	else 
 	{

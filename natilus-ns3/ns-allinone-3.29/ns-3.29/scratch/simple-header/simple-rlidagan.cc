@@ -60,7 +60,7 @@ main (int argc, char *argv[])
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
 	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
-	std::string actMod = "xLA3"; // 1. LA3, 2. else
+	std::string actMod = "LA3"; // 1. LA3, 2. else
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
 	std::string testMod = "xtest"; // 1. test
@@ -528,7 +528,9 @@ main (int argc, char *argv[])
 		printf("\n[[Mode Settings]]\n");
 		cout << "Network Mode : " << netMod << endl;
 		cout << "Obsev Mode   : " << obsMod << endl;
+		cout << "Act   Mode   : " << actMod << endl;
 		cout << "Algorithm    : " << upMod;
+		
 		if (upMod == "DAFU")
 			cout << " (K " << topK << ")" << endl;
 		else
