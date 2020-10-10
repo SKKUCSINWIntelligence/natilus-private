@@ -32,6 +32,7 @@ main (int argc, char *argv[])
 	std::string env = "wireless";
 	std::string obsMod = "multi"; // multi/sumo
 	std::string upMod = "uniform"; // uniform/DAFU/rlidagan
+	std::string actMod = "LA3"; // LA3/else
 	std::string simMod = "x";
 	std::string stateMod = "change";
 	std::string testMod = "false";
@@ -75,6 +76,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("port", "Socket Port", port);
 	cmd.AddValue ("obsMod", "Obs Mode", obsMod);
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
+	cmd.AddValue ("actMod", "Act Mode: LA3/else", actMod);
 	cmd.AddValue ("ssN", "Sesnsor #", ssN);
 	cmd.AddValue ("frame", "Frame Size", frameSize);
 	cmd.AddValue ("bwLimit", "BW Limit %", bwLimit);
@@ -318,6 +320,7 @@ main (int argc, char *argv[])
 		simpleSink->log = log;
 		simpleSink->upMod = upMod;
 		simpleSink->obsMod = obsMod;
+		simpleSink->actMod = actMod;
 		simpleSink->stateMod = stateMod;
 		simpleSink->stateInfo = stateInfo;
 		simpleSink->dafuInfo = dafuInfo;
