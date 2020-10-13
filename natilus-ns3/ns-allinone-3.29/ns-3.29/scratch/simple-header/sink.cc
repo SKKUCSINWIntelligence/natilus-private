@@ -369,7 +369,7 @@ Sink::Communication ()
 	}
 	
 	/* Schedule Next Action Cycle */
-	/* Schedule Next Action Cycle */25double commTime = 1.0/60.0;
+	/* Schedule Next Action Cycle */
 	double commTime = 1.0/30.0;
 	Simulator::Schedule (Seconds (commTime), &Sink::Communication, this);
 }
