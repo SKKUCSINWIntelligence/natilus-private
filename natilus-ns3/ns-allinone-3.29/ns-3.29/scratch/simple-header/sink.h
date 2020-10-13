@@ -32,6 +32,7 @@ class Sink
 		std::chrono::system_clock::time_point start;
 		std::chrono::system_clock::time_point end;
 		std::chrono::milliseconds msZMQ; 		
+		double totalZMQ = 0;
 
 		// Object Linking
 		ObjectContain *oc;
@@ -119,21 +120,21 @@ class Sink
 		 ****************/
 
 		// Eval Parameter (Evaluation)
-		double *trackAcc;
-		double *tempAcc;
-		double *tempDiff;
-		double *reward;
-		double *cnt;
-		double *threshold;
-		double **trackMap;
-		double multiCnt = 0;
-		double multiMax = 0; 
+		double	*trackAcc;
+		double	*tempAcc;
+		double	*tempDiff;
+		double	*reward;
+		double	*cnt;
+		double	*threshold;
+		double	**trackMap;
+		double	multiCnt = 0;
+		double	multiMax = 0; 
 
-		double *tempAcc_avg;
-		double *tempDiff_avg;
-		double *reward_avg;
-		double *reward_cnt;
-		double *singleAcc_avg;
+		double	*tempAcc_avg;
+		double	*tempDiff_avg;
+		double	*reward_avg;
+		double	*reward_cnt;
+		double	*singleAcc_avg;
 		uint32_t multi_cnt = 0; 	
 
 		// Function

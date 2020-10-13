@@ -99,11 +99,11 @@ void Link::SensorRecv (std::queue<DATA*> *dataContain)
 		
 		uint32_t serId = data->serId;
 		uint32_t cellId = data->cellId;
-		uint32_t senId = txTable[serId][cellId];
+		uint32_t senId = cellId; //txTable[serId][cellId];
 
 		Service *ser = &(sen[senId].ser[serId]);
 		(ser->totActRecvN)++;
-		(ser->totActDelay) += ( now - (data->genTime).GetMilliSeconds() );
+		(ser->totActDelay) += (now - (data->genTime).GetMilliSeconds());
 		ser->sampleRate = data->action;
 		ser->ReSchedule ();
 	

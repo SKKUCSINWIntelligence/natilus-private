@@ -53,24 +53,24 @@ void Sink::Start (void)
 	tempDiff_avg = new double[serviceN];
 	reward_avg = new double[serviceN];
 	reward_cnt = new double[serviceN];
-	singleAcc_avg = new double[serviceN];
-	trackMap = new double*[serviceN];
+	singleAcc_avg = new double[serviceN];	
 	threshold = new double[serviceN];
-
+	
+	trackMap = new double*[serviceN];
 	for(uint32_t i = 0; i<serviceN ; i++)
 	{
 		topLoc = new int32_t[service_ssN[i]];
 		scoreMap = new double[service_ssN[i]];
 		trackMap[i] = new double[service_ssN[i]];
 	}
-
+	
+	// Initailize
 	for(uint32_t i = 0; i<service_ssN[i]; i++)
 	{
 		topLoc[i] = -1;
 		scoreMap[i] = 0;
 	}
 
-	// Initailize
 	for (uint32_t i=0; i<serviceN; i++)
 	{
 		carReward[i] = 0;
@@ -369,6 +369,7 @@ Sink::Communication ()
 	}
 	
 	/* Schedule Next Action Cycle */
+	/* Schedule Next Action Cycle */25double commTime = 1.0/60.0;
 	double commTime = 1.0/30.0;
 	Simulator::Schedule (Seconds (commTime), &Sink::Communication, this);
 }
@@ -784,7 +785,7 @@ Sink::Reward (void)
 
 		l = (2*Mx*My+C1) / (Mx*Mx+My*My+C1);				// Average
 		c = (2*sqrt(Vx)*sqrt(Vy)+C2) / (Vx+Vy+C2);	// Deviation
-		s = (Cxy+C3) / (sqrt(Vx)*sqrt(Vy)+C3);						// Corelation
+		s = (Cxy+C3) / (sqrt(Vx)*sqrt(Vy)+C3);			// Corelation
 	
 		eMa += Mx;
 		eMb += My;
@@ -1213,6 +1214,7 @@ Sink::ZMQCommunication ()
 		actionTmp = ZMQRecvAction (zmqsocket, actMod, serviceN*sssN);
 		//end = std::chrono::system_clock::now ();
 		//msZMQ = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
+		//totalZMQ += msZMQ.count();
 		//std::cout << "ACT Time: " << msZMQ.count() << std::endl;
 	
 		for(uint32_t j = 0; j<serviceN; j++)
@@ -1248,7 +1250,6 @@ Sink::ZMQCommunication ()
 		//for(uint32_t i = 0; i<serviceN; i++)
 		//	PrintState<uint32_t> (state[i].action,ssN*ssN);
 				 
-
 		// If Cart Mode, End is different
 		if (simMod == "car") 
 		{

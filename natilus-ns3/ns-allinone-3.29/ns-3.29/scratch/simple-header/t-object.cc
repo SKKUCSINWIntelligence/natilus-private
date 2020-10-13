@@ -676,7 +676,7 @@ ObjectContain::NewMulti (bool reGen)
 	// Generation Loc is fixed. Should Angle also fixed?
 	
 	// Select a location
-	for (uint32_t k=0; k<2; k++)
+	for (uint32_t k=0; k<1; k++)
 	{
 		uint32_t r = rand() % (int) ((unitN/2) - 1); 
 		uint32_t c = loc[r];
@@ -796,7 +796,7 @@ ObjectContain::NewMulti (bool reGen)
 
 	MapUpdate ();
 	if (reGen)
-		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, reGen);
+		Simulator::Schedule (Seconds(1/60.0), &ObjectContain::NewMulti, this, reGen);
 }
 
 void 
@@ -957,7 +957,6 @@ void ObjectContain::MapUpdateSumo(double term)
 
   if(term  ==-100)
   {
-
     //startTime = 150000;
     startTime = rand()%(300000-interval*3000);
     //startTime = rand()%(50000-interval*1500);
@@ -1011,9 +1010,7 @@ void ObjectContain::MapCreateSumo(int* x, int* y)
     trackMap[target] +=1;
     ii++;
   }
-
-
-  /*
+		/*
      std::cout<<"\n##############\n";
      for(int i =0 ;i<144; i++)
      {

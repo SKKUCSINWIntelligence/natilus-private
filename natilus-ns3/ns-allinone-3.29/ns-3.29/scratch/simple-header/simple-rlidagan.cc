@@ -59,7 +59,7 @@ main (int argc, char *argv[])
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
-	std::string upMod = "uniform"; //1. uniform 2. DAFU  3. rlidagan
+	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan
 	std::string actMod = "LA3"; // 1. LA3, 2. else
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
@@ -117,7 +117,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
-	cmd.AddValue ("objLimit", "Object Limit", objLimit);
+	cmd.AddValue ("sp", "Object Limit", objLimit);
 	cmd.AddValue ("topK", "DAFU Top K Value", topK);
 	cmd.AddValue ("error", "Error Rate", errorRate);
 	cmd.Parse (argc, argv);
@@ -142,77 +142,6 @@ main (int argc, char *argv[])
 	/********************
 	* Fixed
 	*********************/
-	// 25% 
-	/*if (ssN==6)
-	{ // 28
-		if (objLimit == 20)
-			objectMax = 30;
-		else if (objLimit == 25)
-			objectMax = 32;
-		else if (objLimit == 30)
-			objectMax = 40;
-		else if (objLimit == 40)
-			objectMax = 55;
-		else if (objLimit == 50)
-			objectMax = 85;
-		else if (objLimit == 60)
-			objectMax = 140;
-		else if (objLimit == 70)
-			objectMax = 250;
-	}
-	else if (ssN==8)
-	{ // 32
-		if (objLimit == 15)
-			objectMax = 36;
-		else if (objLimit == 20)
-			objectMax = 48;
-		else if (objLimit == 25)
-			objectMax = 60;
-		else if (objLimit == 30)
-			objectMax = 72;
-		else if (objLimit == 35)
-			objectMax = 100;
-		else if (objLimit == 40)
-			objectMax = 48;
-	}
-	else if (ssN==10)
-	{ // 52
-		if (objLimit == 20)
-			objectMax = 80;
-		else if (objLimit == 25)
-			objectMax = 108;
-		else if (objLimit == 40)
-			objectMax = 80;
-	}
-	else if (ssN==12)
-	{ // 80
-		if (objLimit == 15)
-			objectMax = 80;
-		else if (objLimit == 20)
-			objectMax = 120;
-		else if (objLimit == 25)
-			objectMax = 180;
-		else if (objLimit == 30)
-			objectMax = 280;
-		else if (objLimit == 35)
-			objectMax = 400;
-		else if (objLimit == 40)
-			objectMax = 128;
-	}
-	else if (ssN==16)
-	{ // 160
-		if (objLimit == 20)
-			objectMax = 220;
-		else if (objLimit == 25)
-			objectMax = 540;
-		else if (objLimit == 40)
-			objectMax = 260;
-	}
-	else if (ssN==20)
-		objectMax = 300;
-	else if (ssN==24)
-		objectMax = 440;*/
-	
 	if (ssN==4)
 	{
 		objectMax = 30;
@@ -300,7 +229,7 @@ main (int argc, char *argv[])
 	}
 	
 	// Test Mode Setting
-	double totalTest = 20;
+	double totalTest = 10;
 	double cntTest = 0;
 	double tempDiffTest = 0;
 	double tempAccTest = 0;
@@ -309,10 +238,10 @@ main (int argc, char *argv[])
 	double rewardAvgTest = 0;
 	double multiCntTest = 0;
 	double multiMaxTest = 0;
+
 	/********************
 	* Automatic Calculation
 	*********************/
-
 	// Object & Map
 	double maxSpeed = cellUnit * sensorAvgRate; // m/s
 	double objectSpeed = maxSpeed * speedRate / 100;
@@ -338,23 +267,6 @@ main (int argc, char *argv[])
 	uint32_t *service_ssN2 = new uint32_t[serviceN];
 	service_ssN2[0] = std::sqrt(ssN);
 
-	if (serviceN > 1)
-	{
-		printf("This is Multi-service Scenario\n");
-		printf("Input Sensor # (#^2) per Service (Except Service #0)\n");
-		for (uint32_t i = 1; i<serviceN; i++)
-		{
-			do{
-				printf("Service #%d: ", i);
-				uint32_t ssN2= std::sqrt(ssN) ;
-                                //cin >> ssN2;
-				service_ssN[i] = ssN2*ssN2;
-				service_ssN2[i] = ssN2;
-			}while (service_ssN[0] < service_ssN[i]);
-			tot_service_ssN += service_ssN[i];
-		}
-	}
-
 	// Initial Sample Rate per Service
 	uint32_t ini_sampleRate = sensorAvgRate * (double)bwLimit / 100 * ssN / tot_service_ssN;
 	do
@@ -366,29 +278,26 @@ main (int argc, char *argv[])
 		ObjectContain *oc = new ObjectContain[serviceN];
 		oc->obsMod = obsMod;
 		oc->envMod = envMod;
-		
+		oc->objectMax = objectMax;
+
 		if (envMod == "sumo")
 		{
 			oc->memoryX = memoryX;
 			oc->memoryY = memoryY;
 			oc->sumo_interval = interval;
 		}
-		if (obsMod=="car" || obsMod=="multi")
-			oc->objectMax = objectMax;
-		else
-			oc->objectMax = objectN;
-
+		
 		for (uint32_t i=0; i<serviceN; i++)
 		{
 			ObjectContain *t_oc = &oc[i];
 			t_oc->log = log;
 			t_oc->trace = trace;
 			t_oc->serId = i;
-			t_oc->senN = service_ssN[i];
+			t_oc->senN = ssN;
 			t_oc->objectN = objectN;
 			t_oc->cellUnit = cellUnit;
-			t_oc->unitN = service_ssN2[i];
-			t_oc->bound = cellUnit * service_ssN2[i];
+			t_oc->unitN = std::sqrt(ssN);
+			t_oc->bound = cellUnit * std::sqrt(ssN);
 			t_oc->vel = objectSpeed;
 		}
 	
@@ -409,8 +318,6 @@ main (int argc, char *argv[])
 			sen[i].ServiceListGen();
 			sen[i].isLinkScheWork = &isLinkScheWork;
 		}
-		// Create Sensor-Service Table
-		uint32_t **table = Arr2Create<uint32_t>(serviceN, ssN, ssN);
 
 		// Create Service on Sensor
 		for (uint32_t i=0; i<serviceN; i++)
@@ -426,7 +333,7 @@ main (int argc, char *argv[])
 				check[idx] = 1;
 				
 				// Insert Service Ini Info
-				Service *service = &(sen[idx].ser[i]); // Sensor-Service Connection
+				Service *service = &(sen[j].ser[i]); // Sensor-Service Connection
 				service->log = log;
 				service->upMod = upMod;
 				service->obsMod = obsMod;
@@ -442,8 +349,6 @@ main (int argc, char *argv[])
 				// SetCallback Sensor-Service
 				service->InsertTxQ = sen[idx].CallbackInsertTxQ ();
 				
-				// Insert Sensor-Service Table
-				table[i][j] = idx;
 			}
 			delete[] check;
 		}
@@ -458,7 +363,6 @@ main (int argc, char *argv[])
 			t_cc->navFunc = navFunc;
 			t_cc->carInfo = carInfo;
 			t_cc->threshTmp = threshTmp;
-			//t_cc->state = &(sink->state[i]); // mkris ???
 		}
 
 		// Create Sink Node
@@ -478,6 +382,7 @@ main (int argc, char *argv[])
 		sink->dafuInfo = dafuInfo;
 		sink->oc = oc;
 		sink->cc = cc;
+
 		sink->objectN = objectN;
 		sink->serviceN = serviceN;
 		sink->service_ssN = service_ssN;
@@ -488,6 +393,7 @@ main (int argc, char *argv[])
 		sink->isLinkScheWork = &isLinkScheWork;
 		sink->LinkCheck = link->CallbackCheck ();	
 		sink->errorRate = errorRate;
+		
 		// DAFU Settings
 		sink->scoreFtn = scoreFtn;
 		sink->topK = topK;
@@ -511,8 +417,6 @@ main (int argc, char *argv[])
 		link->sen = sen;
 		link->sink = sink;
 		link->SinkRecvSche = sink->CallbackRecvSche ();
-		link->txTable = table;
-
 
 		/********************
 		* Start Simulation
@@ -553,16 +457,7 @@ main (int argc, char *argv[])
 
     printf("\n[[Sensor Info]]\n");
     cout << "Sensor #: " << tot_service_ssN << " / Service #: "  << serviceN << endl;
-    cout << "Init Rate: " << ini_sampleRate << "(fps)" << endl;
-    
-		/*printf("\n[[Sink Info]]\n");
-		if (!rlMod && !(testMod == "test"))
-		{
-			printf("\n No RL-Mode !! \n");
-			printf("Run Wait 1s\n");
-			sleep (1);
-		}
-		printf("\nStart !\n");*/
+    cout << "Init Rate: " << ini_sampleRate << "(fps)" << endl; 
 		
 		// Object Start
 		for (uint32_t i=0; i<serviceN; i++)
@@ -582,8 +477,7 @@ main (int argc, char *argv[])
 				sen[i].ser[j].Start ();
 			}
 		}
-
-		
+	
 		/********************
 		* Simulation Run
 		*********************/
@@ -596,26 +490,6 @@ main (int argc, char *argv[])
 		* End Info
 		*********************/
 		std::cout << "\n###########################" << std::endl;
-		/*cout << "netMod: " << netMod << endl;
-		cout << "obsMod: " << obsMod << endl;
-		cout << "algorithm: " << upMod << endl;
-		cout << "speedRate (%): " << speedRate << endl;
-		printf("\n[Channel Info]\n");
-		cout << "BW Limit: " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;
-		cout << "Delay: " << sink->totDelay / sink->totRecvCnt << "(ms)" <<  endl;
-		if (netMod)
-		{
-			cout << "[Max] Snesor2Sink Network Latency (ms): " << (double)Byte2Bit(sampleSize) * ssN / bw * 1000 << endl;
-			cout << "[Max] Sink2Sensor Network Latency (ms): " << (double)Byte2Bit(actionPacketSize) * ssN / bw * 1000 << endl;
-		}
-		else
-		{
-			cout << "No Network Latency !! " << endl;
-		}
-		printf("\n[Sensor Info]\n");
-		cout << "totSensor #: " << ssN << " / Service #: "  << serviceN << endl;
-		cout << "ini SampleRate: " << ini_sampleRate << "(fps)" << endl;*/
-	
 		std::chrono::seconds sec = std::chrono::duration_cast<std::chrono::seconds> (end - start);
 		std::chrono::milliseconds min = std::chrono::duration_cast<std::chrono::milliseconds> (end - start);
 		std::cout << "Simulation Time Duration (Sec): " << sec.count() << std::endl;
@@ -637,40 +511,38 @@ main (int argc, char *argv[])
 		std::cout << "S: " << sink->eS / sink->reward_cnt[0] << std::endl;
 		std::cout << "Object: " << (double) oc[0].objectM / oc[0].objectG << std::endl;	
 		*/
+
 		printf("\n[[Drop Info]]\n");
 		std::cout << "Set Drop : " << errorRate << "(%)" << std::endl;
 		std::cout << "Drop Rate: " << (double)sink->dropCnt / (double)sink->recvCnt * 100 << "(%)" << std::endl;
 		printf("\n[[Reward Info]]\n");
-		for (uint32_t i=0; i<serviceN; i++)
+		//std::cout << "ACT Time: " << sink->totalZMQ << std::endl;
+		std::cout << "TotalTimestep: " << sink->evalCnt << std::endl;
+		std::cout << "Reward Cnt   : " << sink->reward_cnt[0] << std::endl;	
+		if (obsMod == "temp")
 		{
-			std::cout << "TotalTimestep: " << sink->evalCnt << std::endl;
-			std::cout << "Reward Cnt   : " << sink->reward_cnt[i] << std::endl;
-		
-			if (obsMod == "temp")
-			{
-				std::cout << "Simulation Avg TempAcc: " << sink->tempAcc_avg[i]/sink->reward_cnt[i] << std::endl;
-				std::cout << "Simulation Avg TempDiff: " << sink->tempDiff_avg[i]/sink->reward_cnt[i] << std::endl;
-			}
-			else if (obsMod == "track")
-			{
-				std::cout << "Simulation Avg SingleAcc: " << (sink->singleAcc_avg[i]/sink->reward_cnt[i])*100 << "%"  << std::endl;
-			}
-			else if (obsMod == "car")
-			{
-				std::cout << "Simulation Multi ObjectCnt: " << (sink->multi_cnt/1000.0) << std::endl;
-			}
-			else if (obsMod == "multi")
-			{
-				std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/(sink->reward_cnt[i])) << std::endl;
-				std::cout << "Simulation Multi Max: " << (sink->multiMax) << std::endl;
-			}
-			std::cout << "Simulation Avg Reward : " << sink->reward_avg[i]/sink->reward_cnt[i]  << std::endl;
+			std::cout << "Simulation Avg TempAcc: " << sink->tempAcc_avg[0]/sink->reward_cnt[0] << std::endl;
+			std::cout << "Simulation Avg TempDiff: " << sink->tempDiff_avg[0]/sink->reward_cnt[0] << std::endl;
 		}
+		else if (obsMod == "track")
+		{
+			std::cout << "Simulation Avg SingleAcc: " << (sink->singleAcc_avg[0]/sink->reward_cnt[0])*100 << "%"  << std::endl;
+		}
+		else if (obsMod == "car")
+		{
+			std::cout << "Simulation Multi ObjectCnt: " << (sink->multi_cnt/1000.0) << std::endl;
+		}
+		else if (obsMod == "multi")
+		{
+			std::cout << "Simulation Multi Cnt: " << (sink->multiCnt/(sink->reward_cnt[0])) << std::endl;
+			std::cout << "Simulation Multi Max: " << (sink->multiMax) << std::endl;
+		}
+		std::cout << "Simulation Avg Reward : " << sink->reward_avg[0]/sink->reward_cnt[0]  << std::endl;
 
+
+		printf("\n[[Test Info]]\n");
 		if (testMod == "test")
 		{
-			printf("\n[[Test Info]]\n");
-
 			cntTest += 1;
 			
 			if (obsMod == "temp")
@@ -723,7 +595,6 @@ main (int argc, char *argv[])
 		delete link;
 		delete[] oc;
 		delete[] cc;
-		Arr2Delete<uint32_t> (table, serviceN);
 
 	}while (rlMod || testMod=="test");
 	
