@@ -44,6 +44,7 @@ class Sink
 		double *carReward;
 
 		// Setting
+		uint32_t totRate;
 		uint32_t objectN;
 		uint32_t serviceN;
 		uint32_t ssN;
@@ -156,7 +157,10 @@ class Sink
 		void DAFUSetScore (void);
 		void DAFUTopK(void);
 		void DAFUSetAction (void);
-		void TOPKSetAction (void); 
+		void TOPKSetAction (void);
+
+		// Random
+		void Random (void);
 
 		// OpenGym
 		bool episodeStart;

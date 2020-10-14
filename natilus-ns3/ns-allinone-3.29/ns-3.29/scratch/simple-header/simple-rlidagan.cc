@@ -59,7 +59,7 @@ main (int argc, char *argv[])
 	bool rlMod = false;
 	bool netMod = true; // not impletation for false...
 	std::string obsMod = "multi"; // 1. temp, 2. track 3. car
-	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan
+	std::string upMod = "rlidagan"; //1. uniform 2. DAFU  3. rlidagan 4. random
 	std::string actMod = "LA3"; // 1. LA3, 2. else
 	std::string simMod = "tempx"; // 1. Temperature 2. Car
 	std::string stateMod = "change"; //	1. last 2. change
@@ -84,7 +84,7 @@ main (int argc, char *argv[])
 	uint32_t objectMax = 80; 
 	uint32_t objLimit = 20; // unit: %
 	uint32_t objSpatial = 4; // 1/2/4/6/8
-	uint32_t bwLimit = 75; // unit: %
+	uint32_t bwLimit = 100; // unit: %
 				
 	// Service
 	uint32_t serviceN = 1; // Service #
@@ -94,7 +94,7 @@ main (int argc, char *argv[])
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
 
 	// DAFU
-	std::string scoreFtn = "halftop"; // 1. optimal 2. halftop
+	std::string scoreFtn = "optimal"; // 1. optimal 2. halftop
 	uint32_t topK = 0;
 	uint32_t winSize = 2;
 
@@ -116,7 +116,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("obsMod", "Obs Mod: track/car/temp/multi", obsMod);
 	cmd.AddValue ("actMod", "Act Mod: LA3/else", actMod);
 	cmd.AddValue ("netMod", "Network Mode: True/False", netMod);
-	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan", upMod);
+	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan/random", upMod);
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
 	cmd.AddValue ("testMod", "Test Mode: test/else", testMod);
 	cmd.AddValue ("envMod", "Env Mode: sumo/else", envMod);
@@ -389,6 +389,7 @@ main (int argc, char *argv[])
 		sink->oc = oc;
 		sink->cc = cc;
 
+		sink->totRate = ssN * sensorAvgRate * (double)bwLimit / 100 * 15/14;
 		sink->objectN = objectN;
 		sink->serviceN = serviceN;
 		sink->service_ssN = service_ssN;

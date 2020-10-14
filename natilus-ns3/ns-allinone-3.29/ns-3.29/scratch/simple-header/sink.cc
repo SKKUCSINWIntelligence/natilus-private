@@ -339,11 +339,15 @@ Sink::Communication ()
 		//std::cout << "ZMQ Duration (MS): " << msZMQ.count () << std::endl;
 		Send();
 	}
-
 	/* DAFU Mode */
-	if (upMod == "DAFU")
+	else if (upMod == "DAFU")
 	{
 		DAFU();
+		Send();
+	}
+	else if (upMod == "random")
+	{
+		Random();
 		Send();
 	}
 	
@@ -1300,6 +1304,33 @@ Sink::ZMQCommunication ()
 		}
 		Simulator::Stop ();
 	}	
+}
+
+/*
+ * Random
+ */ 
+
+void Sink::Random (void)
+{
+	double totRand = 0;
+	double tempRand[sssN];
+
+	for (uint32_t i=0; i<sssN; i++)
+	{
+		tempRand[i] = (double) rand() / RAND_MAX;
+		totRand += tempRand[i];
+
+		//std::cout << tempRand[i] << std::endl;
+		//std::cout << totRand << std::endl;
+	}
+
+	for (uint32_t i=0; i<sssN; i++)
+	{
+		state[0].action[i] = totRate * tempRand[i] / totRand;
+		if (state[0].action[i]==0)
+			state[0].action[i] = 1;
+		//std::cout << state[0].action[i] << std::endl;
+	}
 }
 
 
