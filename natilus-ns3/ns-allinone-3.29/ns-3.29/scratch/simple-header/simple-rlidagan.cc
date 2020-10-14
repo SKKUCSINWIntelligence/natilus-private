@@ -80,7 +80,7 @@ main (int argc, char *argv[])
 	uint32_t errorRate = 0; // unit: %
 
 	// Sensor #
-	uint32_t ssN = 8;
+	uint32_t ssN = 6;
 	uint32_t objectMax = 80; 
 	uint32_t objLimit = 20; // unit: %
 	uint32_t objSpatial = 4; // 1/2/4/6/8
@@ -94,7 +94,7 @@ main (int argc, char *argv[])
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
 
 	// DAFU
-	std::string scoreFtn = "optimal"; // 1. optimal 2. halftop
+	std::string scoreFtn = "contour"; // 1. optimal 2. halftop 3. contour
 	uint32_t topK = 0;
 	uint32_t winSize = 2;
 
@@ -448,7 +448,8 @@ main (int argc, char *argv[])
 			cout << endl;
 		cout << "speedRate (%): " << speedRate << endl;
 		cout << "objLimit  (%): " << objLimit << " (Max " << objectMax << ")" << endl;
-	
+		cout << "Spatiality   : " << objSpatial << endl;
+
 		printf("\n[[Channel Info]]\n");
 		cout << "Sensor Avg Rate: " << sensorAvgRate << std::endl;
 		cout << "BW Limit       : " << bwLimit << "(%) / " << Bit2Mbps(bw) << "(Mbps)" << endl;

@@ -839,6 +839,8 @@ Sink::DAFU(void)
 		DAFUSetAction();
 	else if (scoreFtn == "halftop")
 		TOPKSetAction ();
+	else if (scoreFtn == "contour")
+		CONTSetAction ();
 }
 
 /*
@@ -876,7 +878,7 @@ Sink::DAFUSetScore(void)
 			if (xxId >= 0)
 			{
 				if (map[i] > map[yyId*ssN+xxId])
-				scoreMap[i] += 1;
+					scoreMap[i] += 1;
 			}
 			xxId = xId-1;
 			yyId = yId+1;
@@ -1027,6 +1029,84 @@ Sink::DAFUSetScore(void)
 				scoreMap[i] = 10 - scoreMap[i];
 		}
 		//topK = topK;
+	}
+	/* Contour Score */
+	else if (scoreFtn == "contour")
+	{
+		topK = 0;
+		double sum = 0;
+
+		for (uint32_t i=0; i<sssN; i++)
+		{
+			scoreMap[i] = 0;
+			
+			int xId = i % ssN;
+			int yId = i / ssN;
+			
+			int xxId = xId-1; 
+			int yyId = yId;
+			int sN = (int)ssN;
+			
+			sum += map[i];
+			if (xxId >= 0)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])
+				scoreMap[i] += map[yyId*ssN+xxId];
+			}
+			xxId = xId-1;
+			yyId = yId+1;
+			if (xxId >= 0 && yyId < sN)
+			{
+				if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += 1; 
+			}
+			xxId = xId;
+			yyId = yId+1;
+			if (yyId < sN)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])
+				scoreMap[i] += map[yyId*ssN+xxId]; 
+			}
+			xxId = xId+1;
+			yyId = yId+1;
+			if (xxId < sN && yyId < sN)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])
+					scoreMap[i] += map[yyId*ssN+xxId]; 
+			}
+			xxId = xId+1;
+			yyId = yId;
+			if (xxId <sN)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])	
+				scoreMap[i] += map[yyId*ssN+xxId];	
+			}
+			xxId = xId+1;
+			yyId = yId-1;
+			if (xxId < sN && yyId >= 0)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])	
+				scoreMap[i] += map[yyId*ssN+xxId];
+			}
+			xxId = xId;
+			yyId = yId-1;
+			if (yyId >= 0)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])
+				scoreMap[i] += map[yyId*ssN+xxId]; 
+			}
+			xxId = xId-1;
+			yyId = yId-1;
+			if (xxId >= 0 && yyId >= 0)
+			{
+				//if (map[i] > map[yyId*ssN+xxId])
+				scoreMap[i] += map[yyId*ssN+xxId];
+			}	
+		}
+		for (uint32_t i=0; i<sssN; i++)
+		{
+			scoreMap[i] /= sum;
+		}
 	}
 }
 
@@ -1182,6 +1262,21 @@ Sink::TOPKSetAction (void)
 	for (uint32_t i=0; i<sssN; i++)
 		topLoc[i] = -1; 
 	delete[] target;
+}
+
+void
+Sink::CONTSetAction (void)
+{
+	double targetMIN = avgRate * 0.4;
+	double targetTotalFPS = (double) ((avgRate - targetMIN) * sssN);
+
+	for (uint32_t i=0; i<sssN; i++)
+	{
+		state[0].action[i] = (uint32_t) targetMIN + (uint32_t) (targetTotalFPS * scoreMap[i]);	
+	}
+
+	if (dafuInfo)
+		PrintDAFU ();
 }
 
 void 

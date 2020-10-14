@@ -158,6 +158,7 @@ class Sink
 		void DAFUTopK(void);
 		void DAFUSetAction (void);
 		void TOPKSetAction (void);
+		void CONTSetAction (void);
 
 		// Random
 		void Random (void);
