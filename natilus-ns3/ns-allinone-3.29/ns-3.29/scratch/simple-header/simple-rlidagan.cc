@@ -53,7 +53,7 @@ main (int argc, char *argv[])
 	* Variable Setting
 	*********************/
 	srand (time(NULL));
-	uint64_t maxStep = 1000;
+	uint64_t maxStep = 2000;
 
 	// Mode Setting
 	bool rlMod = false;
@@ -88,7 +88,7 @@ main (int argc, char *argv[])
 				
 	// Service
 	uint32_t serviceN = 1; // Service #
-	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
+	uint32_t sensorAvgRate = 85; // When fair share, uint: #/s
 	uint32_t sampleSize = 30 * 1024; //1500; // Bytes per Sample
 	uint32_t actionPacketSize = 100; // Bytes per Action
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
@@ -124,7 +124,7 @@ main (int argc, char *argv[])
 	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
 	cmd.AddValue ("eInfo", "Reward Info: true/false", evalInfo);
 	cmd.AddValue ("scoreFtn", "Score Func: optimal/halftop", scoreFtn);
-	cmd.AddValue ("avgRate", "Average Rate: (Default 60)", sensorAvgRate);
+	cmd.AddValue ("avgRate", "Average Rate: (Default 85)", sensorAvgRate);
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
