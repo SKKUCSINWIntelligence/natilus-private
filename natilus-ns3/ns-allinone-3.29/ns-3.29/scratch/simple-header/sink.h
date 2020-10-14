@@ -127,8 +127,10 @@ class Sink
 		double	*cnt;
 		double	*threshold;
 		double	**trackMap;
+		// Multi Object Count
 		double	multiCnt = 0;
-		double	multiMax = 0; 
+		double	multiMax = 0;
+		// Multi Spatiality Count
 
 		double	*tempAcc_avg;
 		double	*tempDiff_avg;

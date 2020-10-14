@@ -28,18 +28,21 @@ public:
 	// LOG Setting
 	bool trace;
 
-	// Parameter
-	uint32_t serId;
-	uint32_t senN;
-	uint32_t unitN;
-	uint32_t objectN;
-	double cellUnit;
-	double bound;
-	double vel;
-	uint32_t objectMax;
+	// MOD Setting 
 	std::string obsMod;
 	std::string envMod;
 
+	// Parameter
+	uint32_t	serId;
+	uint32_t	senN;
+	uint32_t	unitN;
+	uint32_t	objectN;
+	double		cellUnit;
+	double		bound;
+	double		vel;
+	uint32_t	objectMax;
+	uint32_t	objectSpa;
+	
 	// Time
 	Time lastTime;
 

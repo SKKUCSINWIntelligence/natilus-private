@@ -542,133 +542,8 @@ void ObjectContain::NewObject (bool reGen)
 	if (reGen)
 		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewObject, this, reGen);
 }
-/*
-void ObjectContain::NewMulti (bool reGen)
-{	
-	// (0731)
-	// Generation Loc is fixed. Should Angle also fixed?
-	uint32_t r = rand() % (int) ((unitN/2) - 1);
-	uint32_t c = loc[r]; 
-	uint32_t xid = c % unitN;
-	uint32_t yid = c / unitN;
-	double x = cellUnit*xid + cellUnit/2;
-	double y = cellUnit*yid + cellUnit/2;
-	//double a = (rand() % 360)/360.0*2*PI;
-	uint32_t ar = rand() % 3;
-	double a = ang[r*3+ar];
-		
-	int o = rand() % objectMax / 4;
-	int d = o - (int) (objectN / 4);
-	if (objectN == 0)
-	{
-		while(true)
-		{
-			if(d >= 5)
-				break;
-			o = rand() % objectMax / 4;
-			d = o - (int) (objectN / 4);
-		}
-	}
 
-	if (d >= 5)
-	{
-		tag[r] = c;
-		for (int i=0; i<d; i++)
-		{
-			if (i >= 10)
-			{
-				d = 10;
-				break;
-			}
-
-			for (uint32_t j=0; j<objectMax; j++)
-			{
-				OBJECT *obj = &object[j];
-				if (!obj->occupy)
-				{
-					//std::cout << "Create New Object" << std::endl;
-					obj->x = x;
-					obj->y = y;
-					obj->vel = vel;
-					obj->avgAngle = a; 
-					obj->angle = a;
-
-					obj->occupy = true;
-					objectN += 1;
-					break;
-				}
-			}
-		}
-
-		// Make a	cluster
-		uint32_t p = 0; //rand()%4;
-		uint32_t cell[3] = {0};
-
-		switch(p) 
-		{
-			case 0: // only works on this case
-				cell[0] = (yid+1)*unitN + xid;
-				cell[1] = (yid+1)*unitN + (xid+1);
-				cell[2] = yid*unitN + (xid+1);
-				break;
-			case 1:
-				cell[0] = yid*unitN + (xid+1);
-				cell[1] = (yid-1)*unitN + (xid+1);
-				cell[2] = (yid-1)*unitN + xid;
-				break;
-			case 2: 
-				cell[0] = (yid-1)*unitN + xid;
-				cell[1] = (yid-1)*unitN + (xid-1);
-				cell[2] = yid*unitN + (xid-1);
-				break;
-			case 3:
-				cell[0] = yid*unitN + (xid-1);
-				cell[1] = (yid+1)*unitN + (xid-1);
-				cell[2] = (yid+1)*unitN + xid;
-				break;
-		}
-
-		for (int i=0; i<3; i++)
-		{
-			uint32_t _xid = cell[i] % unitN;
-			uint32_t _yid = cell[i] / unitN;
-			double _x = cellUnit*_xid + cellUnit/2;
-			double _y = cellUnit*_yid + cellUnit/2;
-			uint32_t _d = (rand() % (d-2)) + 1;
-
-			if (objectN >= objectMax)
-				break;
-			if (objectN+_d >= objectMax)
-				break;
-
-			for (uint32_t j=0; j<_d; j++)
-			{
-				for (uint32_t k=0; k<objectMax; k++)
-				{
-					OBJECT *obj = &object[k];
-					if (!obj->occupy)
-					{
-						obj->x = _x;
-						obj->y = _y;
-						obj->vel = vel;
-						obj->avgAngle = a; 
-						obj->angle = a;
-	
-						obj->occupy = true;
-						objectN += 1;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	MapUpdate ();	
-	if (reGen)
-		Simulator::Schedule (Seconds(1/60.0), &ObjectContain::NewMulti, this, reGen);
-}*/
-
-void
+/*void
 ObjectContain::NewMulti (bool reGen)
 {
 
@@ -797,8 +672,138 @@ ObjectContain::NewMulti (bool reGen)
 	MapUpdate ();
 	if (reGen)
 		Simulator::Schedule (Seconds(1/60.0), &ObjectContain::NewMulti, this, reGen);
-}
+}*/
 
+
+void
+ObjectContain::NewMulti (bool reGen)
+{
+
+	/* (1014) Logic is fixed */
+	
+	/* Create the t cluster */
+	uint32_t t = 1;
+	for (uint32_t k=0; k<t; k++)
+	{
+		/* Select the location for cluster */ 
+		uint32_t locIdx = rand() % (int) ((unitN/2) - 1); 
+		uint32_t location = loc[locIdx];
+
+		uint32_t xid = location % unitN;
+		uint32_t yid = location / unitN;
+	
+		/* Select an Angle for cluster */
+		uint32_t angIdx = rand() % 3;
+		double angle = ang[location*3+angIdx];	
+	
+		/* Calculate Spatiality */
+		uint32_t spatial = (uint32_t) ((double) objectMax / (double)objectSpa);
+			
+		if (spatial > (objectMax - objectN))
+		{
+			//std::cout << "Can not Create Objects!" << std::endl;
+			break;
+		}
+		//std::cout << "Create a Cluster: " << spatial <<  std::endl;
+		/* Make an Cluster */
+		uint32_t pos = 0;
+		uint32_t cell[3] = {0};
+		switch(pos) 
+		{
+			case 0: // only works on this case
+				cell[0] = (yid+1)*unitN + xid;
+				cell[1] = (yid+1)*unitN + (xid+1);
+				cell[2] = yid*unitN + (xid+1);
+				break;
+			case 1:
+				cell[0] = yid*unitN + (xid+1);
+				cell[1] = (yid-1)*unitN + (xid+1);
+				cell[2] = (yid-1)*unitN + xid;
+				break;
+			case 2: 
+				cell[0] = (yid-1)*unitN + xid;
+				cell[1] = (yid-1)*unitN + (xid-1);
+				cell[2] = yid*unitN + (xid-1);
+				break;
+			case 3:
+				cell[0] = yid*unitN + (xid-1);
+				cell[1] = (yid+1)*unitN + (xid-1);
+				cell[2] = (yid+1)*unitN + xid;
+				break;
+		}
+		
+		/* Assign 50% in the center */
+		uint32_t cen = (uint32_t)((double)spatial * 0.5);
+		double x = cellUnit*xid + cellUnit/2;
+		double y = cellUnit*yid + cellUnit/2;	
+		for (uint32_t i=0; i<cen; i++)
+		{
+			for (uint32_t j=0; j<objectMax; j++)
+			{
+				OBJECT *obj = &object[j];
+				if (!obj->occupy)
+				{	
+					obj->x = x;
+					obj->y = y;
+					obj->vel = vel;
+					obj->avgAngle = angle; 
+					obj->angle = angle;
+
+					obj->occupy = true;
+					objectN += 1;
+					break;
+				}
+			}
+		}
+		
+		/* Assign 50% to the edge */
+		uint32_t remain = spatial- cen;
+		uint32_t partA = 10;
+		uint32_t partB = 0;
+		while(partA > partB)
+		{
+			partA = (rand()%(remain-1)) + 1;
+			partB = (rand()%(remain-1)) + 1;
+		}
+		uint32_t numObj[3] = {0};
+		//std::cout << partA << " " << partB << std::endl;
+		numObj[0] = partA;
+		numObj[1] = partB - partA;
+		numObj[2] = remain - partB;
+		//std::cout << numObj[0] << " " << numObj[1] << " " << numObj[2] << std::endl;
+		for (uint32_t i=0; i<3; i++)
+		{
+			xid = cell[i] % unitN;
+			yid = cell[i] / unitN;
+			x = cellUnit*xid + cellUnit/2;
+			y = cellUnit*yid + cellUnit/2;
+	
+			for (uint32_t j=0; j<numObj[i]; j++)
+			{
+				for (uint32_t k=0; k<objectMax; k++)
+				{
+					OBJECT *obj = &object[k];
+					if (!obj->occupy)
+					{
+						obj->x = x;
+						obj->y = y;
+						obj->vel = vel;
+						obj->avgAngle = angle; 
+						obj->angle = angle;
+		
+						obj->occupy = true;
+						objectN += 1;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	MapUpdate ();
+	if (reGen)
+		Simulator::Schedule (Seconds(1/60.0), &ObjectContain::NewMulti, this, reGen);
+}
 void 
 ObjectContain::MapUpdate (void)
 {	

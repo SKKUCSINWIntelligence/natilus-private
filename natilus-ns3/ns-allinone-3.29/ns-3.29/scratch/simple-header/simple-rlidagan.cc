@@ -71,17 +71,27 @@ main (int argc, char *argv[])
 	bool trace = false;
 	// CarContain
 	bool carInfo = false;
+	
 	// Sink
 	bool channelInfo = false;
 	bool stateInfo = false;
 	bool evalInfo = false;
 	bool dafuInfo = false;
 	uint32_t errorRate = 0; // unit: %
+
 	// Sensor #
 	uint32_t ssN = 8;
 	uint32_t objectMax = 80; 
-	uint32_t bwLimit = 75; // unit: %
 	uint32_t objLimit = 20; // unit: %
+	uint32_t objSpatial = 4; // 1/2/4/6/8
+	uint32_t bwLimit = 75; // unit: %
+				
+	// Service
+	uint32_t serviceN = 1; // Service #
+	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
+	uint32_t sampleSize = 30 * 1024; //1500; // Bytes per Sample
+	uint32_t actionPacketSize = 100; // Bytes per Action
+	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
 
 	// DAFU
 	std::string scoreFtn = "halftop"; // 1. optimal 2. halftop
@@ -114,10 +124,12 @@ main (int argc, char *argv[])
 	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
 	cmd.AddValue ("eInfo", "Reward Info: true/false", evalInfo);
 	cmd.AddValue ("scoreFtn", "Score Func: optimal/halftop", scoreFtn);
+	cmd.AddValue ("avgRate", "Average Rate: (Default 60)", sensorAvgRate);
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
 	cmd.AddValue ("bw", "BW Limit: 0~100%", bwLimit);
-	cmd.AddValue ("sp", "Object Limit", objLimit);
+	cmd.AddValue ("dd", "Object Limit", objLimit);
+	cmd.AddValue ("sp", "Spatiality: 1/2/4/6/8", objSpatial);
 	cmd.AddValue ("topK", "DAFU Top K Value", topK);
 	cmd.AddValue ("error", "Error Rate", errorRate);
 	cmd.Parse (argc, argv);
@@ -194,17 +206,10 @@ main (int argc, char *argv[])
 		if (objLimit == 20)
 			objectMax = 330;
 	}
-
-	std::cout << "Objet Max: " << objectMax << std::endl;	
-			
-	// Variable Setting
-	uint32_t serviceN = 1; // Service #
 	
-	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
-	uint32_t sampleSize = 30 * 1024; //1500; // Bytes per Sample
-	uint32_t actionPacketSize = 100; // Bytes per Action
-	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
-
+	objectMax = 120;
+	std::cout << "Objet Max: " << objectMax << std::endl;	
+	
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
 	if (obsMod=="car" || obsMod=="multi")
@@ -243,7 +248,7 @@ main (int argc, char *argv[])
 	* Automatic Calculation
 	*********************/
 	// Object & Map
-	double maxSpeed = cellUnit * sensorAvgRate; // m/s
+	double maxSpeed = cellUnit * 60; // m/s
 	double objectSpeed = maxSpeed * speedRate / 100;
 	std::cout << "Object Speed: " << objectSpeed << std::endl;
 	// Sensor
@@ -279,6 +284,7 @@ main (int argc, char *argv[])
 		oc->obsMod = obsMod;
 		oc->envMod = envMod;
 		oc->objectMax = objectMax;
+		oc->objectSpa = objSpatial;
 
 		if (envMod == "sumo")
 		{

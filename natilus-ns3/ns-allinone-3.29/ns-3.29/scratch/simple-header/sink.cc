@@ -369,7 +369,6 @@ Sink::Communication ()
 	}
 	
 	/* Schedule Next Action Cycle */
-	/* Schedule Next Action Cycle */
 	double commTime = 1.0/30.0;
 	Simulator::Schedule (Seconds (commTime), &Sink::Communication, this);
 }
@@ -757,7 +756,7 @@ Sink::Reward (void)
 			Mx += truth[i];
 			My += obsrv[i];
 			
-			// Count Multi Objects
+		/* Count Multi Objects */
 			if (truth[i] != 0)
 			{
 				tmpMultiCnt += 1;
@@ -769,6 +768,10 @@ Sink::Reward (void)
 		{
 			multiMax = tmpMultiCnt;
 		}
+		/* ================== */
+		/* Calculate Spatiality */
+		/* ==================== */
+
 		Mx /= sssN;
 		My /= sssN;
 
