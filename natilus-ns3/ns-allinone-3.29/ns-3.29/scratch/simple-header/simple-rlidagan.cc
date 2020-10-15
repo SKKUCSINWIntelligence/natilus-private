@@ -119,11 +119,11 @@ main (int argc, char *argv[])
 	cmd.AddValue ("upMod", "Algorithm: uniform/DAFU/rlidagan/random", upMod);
 	cmd.AddValue ("simMod", "Simul Mode: temp/car", simMod);
 	cmd.AddValue ("testMod", "Test Mode: test/else", testMod);
-	cmd.AddValue ("envMod", "Env Mode: sumo/else", envMod);
+	cmd.AddValue ("envMod", "Env Mode: sumo/xsumo", envMod);
 	cmd.AddValue ("sInfo", "State Info: true/false", stateInfo);
 	cmd.AddValue ("dInfo", "DAFU Info: true/false", dafuInfo);
 	cmd.AddValue ("eInfo", "Reward Info: true/false", evalInfo);
-	cmd.AddValue ("scoreFtn", "Score Func: optimal/halftop", scoreFtn);
+	cmd.AddValue ("scoreFtn", "Score Func: optimal/halftop/contour", scoreFtn);
 	cmd.AddValue ("avgRate", "Average Rate: (Default 85)", sensorAvgRate);
 	cmd.AddValue ("ssN", "Sensor #", ssN);
 	cmd.AddValue ("objMax", "Object Max", objectMax);
@@ -149,6 +149,46 @@ main (int argc, char *argv[])
 		memoryX = ReadFile(xPath, history);
 		memoryY = ReadFile(yPath, history);
 		std::cout<<"File Read Complete!\n";	
+	}
+
+	/********************
+	* BW Setting	
+	*********************/
+	if (envMod == "sumo")
+	{
+		std::cout << "sumo BW Setting !! " << std::endl;
+		exit (1);
+	}
+	else if (envMod == "xsumo")
+	{
+		if (ssN == 6)
+		{
+			sensorAvgRate = 90;
+		}
+		else if (ssN == 7)
+		{
+			sensorAvgRate = 100;
+		}
+		else if (ssN == 8)
+		{
+			sensorAvgRate = 135;
+		}
+		else if (ssN == 10)
+		{
+			sensorAvgRate = 146;
+		}
+		else if (ssN == 12)
+		{
+			sensorAvgRate = 155;
+		}
+		else if (ssN == 16)
+		{
+			sensorAvgRate = 160;
+		}
+		else if (ssN == 20)
+		{
+			sensorAvgRate = 160;
+		}
 	}
 
 	/********************

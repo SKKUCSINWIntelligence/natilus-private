@@ -3,9 +3,8 @@
 #ifndef W_NS3_CONFIG_STORE_CONFIG_H_WAF
 #define W_NS3_CONFIG_STORE_CONFIG_H_WAF
 
-#define PYTHONDIR "/usr/local/lib/python3.7/site-packages"
-#define PYTHONARCHDIR "/usr/local/lib/python3.7/site-packages"
-/* #undef HAVE_PYEMBED */
-#define HAVE_LIBXML2 1
+#define PYTHONDIR "/usr/local/lib/python2.7/dist-packages"
+#define PYTHONARCHDIR "/usr/local/lib/python2.7/dist-packages"
+/* #undef HAVE_PYTHON_H */
 
 #endif /* W_NS3_CONFIG_STORE_CONFIG_H_WAF */
