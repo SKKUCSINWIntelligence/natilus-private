@@ -88,7 +88,7 @@ main (int argc, char *argv[])
 				
 	// Service
 	uint32_t serviceN = 1; // Service #
-	uint32_t sensorAvgRate = 85; // When fair share, uint: #/s
+	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
 	uint32_t sampleSize = 30 * 1024; //1500; // Bytes per Sample
 	uint32_t actionPacketSize = 100; // Bytes per Action
 	uint32_t senQMaxSize = serviceN; // Sensor Max txQ Size;
@@ -159,7 +159,7 @@ main (int argc, char *argv[])
 		std::cout << "sumo BW Setting !! " << std::endl;
 		exit (1);
 	}
-	else if (envMod == "xsumo")
+	/*else if (envMod == "xsumo")
 	{
 		if (ssN == 6)
 		{
@@ -189,7 +189,7 @@ main (int argc, char *argv[])
 		{
 			sensorAvgRate = 160;
 		}
-	}
+	}*/
 
 	/********************
 	* Fixed

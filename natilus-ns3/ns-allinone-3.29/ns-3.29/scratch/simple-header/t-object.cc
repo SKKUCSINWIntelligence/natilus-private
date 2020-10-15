@@ -802,7 +802,7 @@ ObjectContain::NewMulti (bool reGen)
 
 	MapUpdate ();
 	if (reGen)
-		Simulator::Schedule (Seconds(1/60.0), &ObjectContain::NewMulti, this, reGen);
+		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, reGen);
 }
 void 
 ObjectContain::MapUpdate (void)

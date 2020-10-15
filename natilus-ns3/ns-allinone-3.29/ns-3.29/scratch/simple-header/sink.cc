@@ -742,6 +742,7 @@ Sink::Reward (void)
 		double C1 = 0.001; //1e-50;
 		double C2 = 0.003;
 		double C3 = C2/2;
+
 		if (testMod == "test")
 		{
 			C1 = 0.3;
@@ -752,7 +753,7 @@ Sink::Reward (void)
 		double c = 0;
 		double s = 0;
 
-		uint32_t sssN = ssN * ssN;
+		uint32_t sssN = 400;
 		double tmpMultiCnt = 0;
 
 		for(uint32_t i = 0; i<ssN*ssN; i++)
@@ -766,7 +767,7 @@ Sink::Reward (void)
 				tmpMultiCnt += 1;
 			}
 		}
-		tmpMultiCnt /= sssN;
+		tmpMultiCnt /= ssN*ssN;
 		multiCnt += tmpMultiCnt;
 		if (tmpMultiCnt > multiMax)
 		{
@@ -779,13 +780,19 @@ Sink::Reward (void)
 		Mx /= sssN;
 		My /= sssN;
 
-		for(uint32_t i = 0; i<ssN*ssN; i++)
+		for(uint32_t i=0; i<ssN*ssN; i++)
 		{
 			Vx += (truth[i]-Mx)*(truth[i]-Mx);
 			Vy += (obsrv[i]-My)*(obsrv[i]-My);
 			Cxy += (truth[i]-Mx)*(obsrv[i]-My);
 		}
-
+		for(uint32_t i=0; i<(sssN-ssN*ssN); i++)
+		{
+			Vx += (0 - Mx) * (0 - Mx);
+			Vy += (0 - My) * (0 - My);
+			Cxy += (0 - Mx) * (0 - My);
+		}
+			
 		Vx /= sssN;
 		Vy /= sssN;
 		Cxy /= (sssN-1);
