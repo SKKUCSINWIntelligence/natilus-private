@@ -41,8 +41,10 @@ public:
 	double		bound;
 	double		vel;
 	uint32_t	objectMax;
+	uint32_t	objectTresh;
 	uint32_t	objectSpa;
-	
+	uint32_t	cellPerSpa;
+
 	// Time
 	Time lastTime;
 
@@ -55,6 +57,7 @@ public:
 	// Counting
 	int objectM = 0;
 	int objectG = 0;
+	int createCnt = 0;
 
 	// Map (Observation)
 	double *trackMap;
@@ -71,7 +74,6 @@ public:
 	int startTime = 0;
   double stackedT = 0;
   int sumo_interval = 4;
-
 
 	// Funtion
 	ObjectContain ();

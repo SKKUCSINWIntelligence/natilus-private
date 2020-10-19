@@ -81,11 +81,17 @@ main (int argc, char *argv[])
 
 	// Sensor #
 	uint32_t ssN = 6;
+	
+	// Bandwidth
+	uint32_t bwLimit = 100; // unit: %
+		
+	// Object
 	uint32_t objectMax = 80; 
 	uint32_t objLimit = 20; // unit: %
-	uint32_t objSpatial = 4; // 1/2/4/6/8
-	uint32_t bwLimit = 100; // unit: %
-				
+	uint32_t objSpatial = 2; // 2/3/4/5/6
+	uint32_t objPerCell = 3;
+	uint32_t cellPerSp = 2; // 2, 3.5, 5.5, 8, 14.2
+			
 	// Service
 	uint32_t serviceN = 1; // Service #
 	uint32_t sensorAvgRate = 60; // When fair share, uint: #/s
@@ -247,7 +253,22 @@ main (int argc, char *argv[])
 			objectMax = 330;
 	}
 	
-	objectMax = 120;
+	if (objSpatial == 6)
+		cellPerSp = 2;
+	else if (objSpatial == 7)
+		cellPerSp = 3;
+	else if (objSpatial == 8)
+		cellPerSp = 3;
+	else if (objSpatial == 10)
+		cellPerSp = 5;
+	else if (objSpatial == 12)
+		cellPerSp = 8;
+	else if (objSpatial == 16)
+		cellPerSp = 14;
+
+	objectMax = objSpatial * objPerCell * cellPerSp;
+	printf("\n[[Object Setting]]\n");
+	std::cout << "Object Cell per SP: " << cellPerSp << std::endl;
 	std::cout << "Objet Max: " << objectMax << std::endl;	
 	
 	// Object & Map Setting
@@ -323,9 +344,10 @@ main (int argc, char *argv[])
 		ObjectContain *oc = new ObjectContain[serviceN];
 		oc->obsMod = obsMod;
 		oc->envMod = envMod;
-		oc->objectMax = objectMax;
+		oc->objectMax = objectMax*2;
+		oc->objectTresh = objectMax;
 		oc->objectSpa = objSpatial;
-
+		oc->cellPerSpa = cellPerSp;
 		if (envMod == "sumo")
 		{
 			oc->memoryX = memoryX;
@@ -553,12 +575,12 @@ main (int argc, char *argv[])
 		std::cout << "cM: " << sink->cMb/ sink->reward_cnt[0] << std::endl;	
 		std::cout << "cV: " << sink->cVa / sink->reward_cnt[0] << std::endl;
 		std::cout << "cV: " << sink->cVb / sink->reward_cnt[0] << std::endl;
-
+	*/
 		std::cout << "L: " << sink->eL / sink->reward_cnt[0] << std::endl;
 		std::cout << "C: " << sink->eC / sink->reward_cnt[0]<< std::endl;
 		std::cout << "S: " << sink->eS / sink->reward_cnt[0] << std::endl;
 		std::cout << "Object: " << (double) oc[0].objectM / oc[0].objectG << std::endl;	
-		*/
+		
 
 		printf("\n[[Drop Info]]\n");
 		std::cout << "Set Drop : " << errorRate << "(%)" << std::endl;
@@ -586,11 +608,11 @@ main (int argc, char *argv[])
 			std::cout << "Simulation Multi Max: " << (sink->multiMax) << std::endl;
 		}
 		std::cout << "Simulation Avg Reward : " << sink->reward_avg[0]/sink->reward_cnt[0]  << std::endl;
+		std::cout << "Count: " << oc->createCnt <<  std::endl;
 
-
-		printf("\n[[Test Info]]\n");
 		if (testMod == "test")
 		{
+			printf("\n[[Test Info]]\n");
 			cntTest += 1;
 			
 			if (obsMod == "temp")

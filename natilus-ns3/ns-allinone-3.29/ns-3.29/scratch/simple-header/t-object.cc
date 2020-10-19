@@ -694,26 +694,36 @@ ObjectContain::NewMulti (bool reGen)
 	
 		/* Select an Angle for cluster */
 		uint32_t angIdx = rand() % 3;
-		double angle = ang[location*3+angIdx];	
+		double angle = ang[locIdx*3+angIdx];	
 	
 		/* Calculate Spatiality */
-		uint32_t spatial = (uint32_t) ((double) objectMax / (double)objectSpa);
+		uint32_t spatial = (uint32_t) ((double) objectTresh / (double)objectSpa);
 			
-		if (spatial > (objectMax - objectN))
+		if (spatial > (objectTresh - objectN))
 		{
-			//std::cout << "Can not Create Objects!" << std::endl;
+			//std::cout << "Can not Create Objects: " << Simulator::Now().GetMilliSeconds () << " " << objectN << " " << objectTresh << std::endl;
 			break;
 		}
-		//std::cout << "Create a Cluster: " << spatial <<  std::endl;
+		else
+		{
+			//std::cout << "Create a Cluster: " << spatial << " at " << location << " " << objectN << std::endl;	
+			createCnt += 1;	
+		}
+
 		/* Make an Cluster */
 		uint32_t pos = 0;
-		uint32_t cell[3] = {0};
+		uint32_t cell[14] = {0};
 		switch(pos) 
 		{
 			case 0: // only works on this case
 				cell[0] = (yid+1)*unitN + xid;
 				cell[1] = (yid+1)*unitN + (xid+1);
 				cell[2] = yid*unitN + (xid+1);
+				cell[3] = (yid+1)*unitN + (xid-1);
+				cell[4] = yid*unitN + (xid-1);
+				cell[5] = (yid-1)*unitN + (xid-1);
+				cell[6] = (yid-1)*unitN + xid;
+				cell[7] = (yid+1)*unitN + (xid+1);
 				break;
 			case 1:
 				cell[0] = yid*unitN + (xid+1);
@@ -735,7 +745,7 @@ ObjectContain::NewMulti (bool reGen)
 		/* Assign 50% in the center */
 		uint32_t cen = (uint32_t)((double)spatial * 0.5);
 		double x = cellUnit*xid + cellUnit/2;
-		double y = cellUnit*yid + cellUnit/2;	
+		double y = cellUnit*yid + cellUnit/2;
 		for (uint32_t i=0; i<cen; i++)
 		{
 			for (uint32_t j=0; j<objectMax; j++)
@@ -772,7 +782,7 @@ ObjectContain::NewMulti (bool reGen)
 		numObj[2] = remain - partB;
 		//std::cout << numObj[0] << " " << numObj[1] << " " << numObj[2] << std::endl;
 		for (uint32_t i=0; i<3; i++)
-		{
+		{	
 			xid = cell[i] % unitN;
 			yid = cell[i] / unitN;
 			x = cellUnit*xid + cellUnit/2;
@@ -801,6 +811,8 @@ ObjectContain::NewMulti (bool reGen)
 	}
 
 	MapUpdate ();
+	//PrintState<double> (serId, "Tracking", trackMap, senN);
+
 	if (reGen)
 		Simulator::Schedule (Seconds(1/30.0), &ObjectContain::NewMulti, this, reGen);
 }
@@ -808,8 +820,8 @@ void
 ObjectContain::MapUpdate (void)
 {	
 	memcpy (trackMap, zero, sizeof(double)*senN);
-	memcpy (tempMap, zero, sizeof(double)*senN); // (0729)
-
+	memcpy (tempMap, zero, sizeof(double)*senN);
+		
 	for (uint32_t i=0; i<objectMax; i++)
 	{
 		OBJECT *obj = &object[i];
@@ -829,11 +841,6 @@ ObjectContain::MapUpdate (void)
 				yId -= 1;
 			uint32_t cellId = yId * unitN + xId;
 			trackMap[cellId] += 1; 	
-
-			if (obsMod == "car")
-			{
-				tempMap[cellId] = 100;
-			}
 
 			/************
 			* Temperature Part
@@ -1043,8 +1050,8 @@ void ObjectContain::Moving (void)
 					object[i].timeD = timeD;
 			if (obsMod == "car" || obsMod == "multi")
 				MovFuncCar ();
-			else
-				MovFunc ();
+			//else
+			//	MovFunc ();
 			MapUpdate ();
 		}
 
@@ -1186,7 +1193,8 @@ void ObjectContain::MovFunc (void)
 	}
 }
 
-void ObjectContain::MovFuncCar (void)
+void 
+ObjectContain::MovFuncCar (void)
 {
 	for (uint32_t i=0; i<objectMax; i++)
 	{
@@ -1217,7 +1225,9 @@ void ObjectContain::MovFuncCar (void)
 		}
 	}
 }
-double ObjectContain::Angle (OBJECT *obj)
+
+double 
+ObjectContain::Angle (OBJECT *obj)
 {
 	//double alpha = 0.5;
 
