@@ -278,7 +278,7 @@ main (int argc, char *argv[])
 	if (obsMod=="car" || obsMod=="multi")
 		objectN = 0;
 	double cellUnit = 2; // unit: m
-	double speedRate = 40; // unit: %
+	double speedRate = 20; // unit: %
 
 	// Car Setting 
 	std::string navFunc = "Greedy"; // Random, Greedy	
