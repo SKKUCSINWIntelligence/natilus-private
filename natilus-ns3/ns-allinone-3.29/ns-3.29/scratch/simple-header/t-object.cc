@@ -716,9 +716,9 @@ ObjectContain::NewMulti (bool reGen)
 		switch(pos) 
 		{
 			case 0: // only works on this case
-				cell[0] = (yid+1)*unitN + xid;
+				cell[0] = yid*unitN + (xid+1);
 				cell[1] = (yid+1)*unitN + (xid+1);
-				cell[2] = yid*unitN + (xid+1);
+				cell[2] = (yid+1)*unitN + xid;
 				cell[3] = (yid+1)*unitN + (xid-1);
 				cell[4] = yid*unitN + (xid-1);
 				cell[5] = (yid-1)*unitN + (xid-1);
@@ -742,8 +742,52 @@ ObjectContain::NewMulti (bool reGen)
 				break;
 		}
 		
+		// edge case for cell per spa = 2
+		if (cellPerSpa == 2)
+		{
+			uint32_t partA = rand()%(spatial-1)+1;	
+			uint32_t numObj[2];
+			numObj[0] = partA;
+			numObj[1] = spatial - partA;
+		
+			double x = cellUnit*xid + cellUnit/2;
+			double y = cellUnit*yid + cellUnit/2;
+		
+			for (uint32_t k=0; k<cellPerSpa; k++)
+			{
+				if (k==1)
+				{
+					xid = cell[0] % unitN;
+					yid = cell[0] / unitN;
+					x = cellUnit*xid + cellUnit/2;
+					y = cellUnit*yid + cellUnit/2;
+				}
+
+				for (uint32_t i=0; i<numObj[k]; i++)
+				{
+					for (uint32_t j=0; j<objectMax; j++)
+					{
+						OBJECT *obj = &object[j];
+						if (!obj->occupy)
+						{	
+							obj->x = x;
+							obj->y = y;
+							obj->vel = vel;
+							obj->avgAngle = angle; 
+							obj->angle = angle;
+
+							obj->occupy = true;
+							objectN += 1;
+							break;
+						}
+					}
+				}
+			}
+			break;
+		}
+
 		/* Assign 50% in the center */
-		uint32_t cen = (uint32_t)((double)spatial * 0.5);
+		uint32_t cen = (uint32_t)((double)spatial * 0.4);
 		double x = cellUnit*xid + cellUnit/2;
 		double y = cellUnit*yid + cellUnit/2;
 		for (uint32_t i=0; i<cen; i++)
@@ -768,20 +812,59 @@ ObjectContain::NewMulti (bool reGen)
 		
 		/* Assign 50% to the edge */
 		uint32_t remain = spatial- cen;
-		uint32_t partA = 10;
-		uint32_t partB = 0;
-		while(partA > partB)
+		uint32_t part[14] = {0};	
+		while(true)
 		{
-			partA = (rand()%(remain-1)) + 1;
-			partB = (rand()%(remain-1)) + 1;
+			for (uint32_t i=0; i<cellPerSpa-2; i++) 
+				part[i] = (rand()%(remain-1)) + 1;
+		
+			// sort
+			uint32_t temp;
+			for (uint32_t i=0; i<cellPerSpa-2; i++)
+			{
+				for (uint32_t j=0; j<cellPerSpa-2-(i+1); j++)
+				{
+					if (part[j] > part[j+1])
+					{
+						temp = part[j+1];
+						part[j+1] = part[j];
+						part[j] = temp;
+					}
+				}
+			}
+			
+			bool flag = true;
+			temp = part[0];
+			for (uint32_t i=1; i<cellPerSpa-2; i++)
+			{
+				if (temp == part[i])
+					flag = false;
+				temp = part[i];
+			}
+
+			if (flag)
+				break;
 		}
-		uint32_t numObj[3] = {0};
-		//std::cout << partA << " " << partB << std::endl;
-		numObj[0] = partA;
-		numObj[1] = partB - partA;
-		numObj[2] = remain - partB;
-		//std::cout << numObj[0] << " " << numObj[1] << " " << numObj[2] << std::endl;
-		for (uint32_t i=0; i<3; i++)
+			
+		//for (uint32_t i=0; i<cellPerSpa-2; i++)
+		//	std::cout << part[i] << " ";
+		//std::cout << std::endl;
+		
+		// num obj
+		uint32_t numObj[14] = {0};
+		//std::cout << remain << std::endl;
+		numObj[0] = part[0];
+		numObj[cellPerSpa-2] = remain - part[cellPerSpa-3];
+		for (uint32_t i=1; i<cellPerSpa-2; i++)
+		{
+			numObj[i] = part[i] - part[i-1];
+		}
+		
+		//for (uint32_t i=0; i<cellPerSpa-1; i++)
+		//	std::cout << numObj[i] << " ";
+		//std::cout << std::endl;
+		
+		for (uint32_t i=0; i<cellPerSpa-1; i++)
 		{	
 			xid = cell[i] % unitN;
 			yid = cell[i] / unitN;

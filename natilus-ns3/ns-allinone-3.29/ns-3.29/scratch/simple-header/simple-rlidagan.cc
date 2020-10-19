@@ -253,23 +253,25 @@ main (int argc, char *argv[])
 			objectMax = 330;
 	}
 	
-	if (objSpatial == 6)
+	if (ssN == 6)
 		cellPerSp = 2;
-	else if (objSpatial == 7)
+	else if (ssN == 7)
 		cellPerSp = 3;
-	else if (objSpatial == 8)
+	else if (ssN == 8)
 		cellPerSp = 3;
-	else if (objSpatial == 10)
+	else if (ssN == 10)
 		cellPerSp = 5;
-	else if (objSpatial == 12)
+	else if (ssN == 12)
 		cellPerSp = 8;
-	else if (objSpatial == 16)
+	else if (ssN == 16)
 		cellPerSp = 14;
 
 	objectMax = objSpatial * objPerCell * cellPerSp;
 	printf("\n[[Object Setting]]\n");
-	std::cout << "Object Cell per SP: " << cellPerSp << std::endl;
-	std::cout << "Objet Max: " << objectMax << std::endl;	
+	std::cout << "Spatiality     : " << objSpatial << std::endl;
+	std::cout << "Object obj/cell: " << objPerCell << std::endl;
+	std::cout << "Object cell/sp : " << cellPerSp << std::endl;
+	std::cout << "Objet Max      : " << objectMax << std::endl << std::endl;	
 	
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
@@ -344,7 +346,7 @@ main (int argc, char *argv[])
 		ObjectContain *oc = new ObjectContain[serviceN];
 		oc->obsMod = obsMod;
 		oc->envMod = envMod;
-		oc->objectMax = objectMax*2;
+		oc->objectMax = objectMax;
 		oc->objectTresh = objectMax;
 		oc->objectSpa = objSpatial;
 		oc->cellPerSpa = cellPerSp;
