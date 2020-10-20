@@ -1654,6 +1654,8 @@ ZMQRecvAction (zmq::socket_t* zmqsocket, std::string actMod, uint32_t ssN)
 			actionPoint = 16;
 		else if (ssN == 144 || ssN == 256) // Size 12, 16
 			actionPoint = 25;
+		else if (ssN == 400) // Size 20
+			actionPoint = 36; 
 		else
 		{
 			std::cout << "ZMQ LA3 Action Size Error !!!" << std::endl;

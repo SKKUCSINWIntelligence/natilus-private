@@ -59,6 +59,8 @@ class NatilusEnv(gym.Env):
             self.action_point = 9
         elif self.sensor_xnum == 12 or self.sensor_xnum == 16:
             self.action_point = 25
+        elif self.sensor_xnum == 20:
+            self.action_point = 36
         else:
             self.action_point = 16
 
