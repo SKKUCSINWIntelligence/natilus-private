@@ -701,12 +701,12 @@ ObjectContain::NewMulti (bool reGen)
 			
 		if (spatial > (objectTresh - objectN))
 		{
-			std::cout << "Can not Create Objects: " << Simulator::Now().GetMilliSeconds () << " " << objectN << " " << objectTresh << std::endl;
+			//std::cout << "Can not Create Objects: " << Simulator::Now().GetMilliSeconds () << " " << objectN << " " << objectTresh << std::endl;
 			break;
 		}
 		else
 		{
-			std::cout << "Create a Cluster: " << spatial << " at " << location << " " << objectN << std::endl;	
+			//std::cout << "Create a Cluster: " << spatial << " at " << location << " " << objectN << std::endl;	
 			createCnt += 1;	
 		}
 
