@@ -827,8 +827,8 @@ Sink::Reward (void)
 	
 		if (testMod == "test")
 		{
-			reward[0] += log10(9*l*c*s + 1);
-			reward_avg[0] += log10(9*l*c*s + 1);
+			reward[0] += log10(l*c*s + 1) / log10(2);
+			reward_avg[0] += log10(l*c*s + 1) / log10(2);
 		}
 		else
 		{
