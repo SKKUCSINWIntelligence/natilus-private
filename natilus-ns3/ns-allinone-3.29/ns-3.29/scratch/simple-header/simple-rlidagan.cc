@@ -268,6 +268,10 @@ main (int argc, char *argv[])
 	else if (ssN == 20)
 		cellPerSp = 22;
 
+	if (ssN == 6)
+		objPerCell = 2;
+	else if (ssN == 16 || ssN == 20)
+		objPerCell = 4;
 	objectMax = objSpatial * objPerCell * cellPerSp;
 	printf("\n[[Object Setting]]\n");
 	std::cout << "Spatiality     : " << objSpatial << std::endl;

@@ -743,12 +743,17 @@ Sink::Reward (void)
 		double C2 = 0.003;
 		double C3 = C2/2;
 
+		C1 = 0.02;
+		C2 = 0.01;
+		C3 = C2/2;
+		/*
 		if (testMod == "test")
 		{
 			C1 = 0.3;
 			C2 = 0.3;
 			C3 = C2/2;
 		}
+		*/
 		double l = 0;
 		double c = 0;
 		double s = 0;
@@ -819,10 +824,17 @@ Sink::Reward (void)
 		eL += l;
 		eC += c;
 		eS += s;
-		
-		reward[0] += l*c*s;
-		reward_avg[0] += l*c*s;
-		
+	
+		if (testMod == "test")
+		{
+			reward[0] += log10(9*l*c*s + 1);
+			reward_avg[0] += log10(9*l*c*s + 1);
+		}
+		else
+		{
+			reward[0] += l*c*s;
+			reward_avg[0] += l*c*s;
+		}
 		/*for (uint32_t i=0; i<service_ssN[0]; i++)
 		{
 			oc[0].trackMap[i] *= maxA;

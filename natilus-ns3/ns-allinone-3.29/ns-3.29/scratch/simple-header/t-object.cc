@@ -759,7 +759,8 @@ ObjectContain::NewMulti (bool reGen)
 		// edge case for cell per spa = 2
 		if (cellPerSpa == 2)
 		{
-			uint32_t partA = rand()%(spatial-1)+1;	
+			//uint32_t partA = rand()%(spatial-1)+1;	
+			uint32_t partA = (uint32_t)((double)spatial * 0.5);	
 			uint32_t numObj[2];
 			numObj[0] = partA;
 			numObj[1] = spatial - partA;
@@ -802,10 +803,25 @@ ObjectContain::NewMulti (bool reGen)
 
 		/* Assign 50% in the center */
 		uint32_t cen = 0;
-		if (senN <= 12)
+		if (senN == 36)
+			cen = (uint32_t)((double)spatial * 0.5);
+		else if (senN == 49)
+			cen = (uint32_t)((double)spatial * 0.5);
+		else if (senN == 64)
 			cen = (uint32_t)((double)spatial * 0.4);
-		else
+		else if (senN == 100)
 			cen = (uint32_t)((double)spatial * 0.3);
+		else if (senN == 144)
+			cen = (uint32_t)((double)spatial * 0.1);
+		else if (senN == 256)
+			cen = (uint32_t)((double)spatial * 0.05);
+		else if (senN == 400)
+			cen = (uint32_t)((double)spatial * 0.03);
+		else
+		{
+			std::cout << "t-object error!" << std::endl;
+			exit (1);
+		}
 
 		double x = cellUnit*xid + cellUnit/2;
 		double y = cellUnit*yid + cellUnit/2;
