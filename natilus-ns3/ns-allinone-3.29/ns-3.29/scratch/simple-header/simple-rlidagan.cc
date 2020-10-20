@@ -265,6 +265,8 @@ main (int argc, char *argv[])
 		cellPerSp = 8;
 	else if (ssN == 16)
 		cellPerSp = 14;
+	else if (ssN == 20)
+		cellPerSp = 22;
 
 	objectMax = objSpatial * objPerCell * cellPerSp;
 	printf("\n[[Object Setting]]\n");

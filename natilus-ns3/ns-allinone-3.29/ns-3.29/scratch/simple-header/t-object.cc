@@ -264,7 +264,7 @@ void ObjectContain::Start ()
 		else if (unitN == 20)
 		{
 			loc[0] = 63;
-			loc[1] = 76; 
+			loc[1] = 56; 
 			loc[2] = 108;
 			loc[3] = 165;
 			loc[4] = 193;
@@ -701,18 +701,18 @@ ObjectContain::NewMulti (bool reGen)
 			
 		if (spatial > (objectTresh - objectN))
 		{
-			//std::cout << "Can not Create Objects: " << Simulator::Now().GetMilliSeconds () << " " << objectN << " " << objectTresh << std::endl;
+			std::cout << "Can not Create Objects: " << Simulator::Now().GetMilliSeconds () << " " << objectN << " " << objectTresh << std::endl;
 			break;
 		}
 		else
 		{
-			//std::cout << "Create a Cluster: " << spatial << " at " << location << " " << objectN << std::endl;	
+			std::cout << "Create a Cluster: " << spatial << " at " << location << " " << objectN << std::endl;	
 			createCnt += 1;	
 		}
 
 		/* Make an Cluster */
 		uint32_t pos = 0;
-		uint32_t cell[14] = {0};
+		uint32_t cell[22] = {0};
 		switch(pos) 
 		{
 			case 0: // only works on this case
@@ -723,7 +723,21 @@ ObjectContain::NewMulti (bool reGen)
 				cell[4] = yid*unitN + (xid-1);
 				cell[5] = (yid-1)*unitN + (xid-1);
 				cell[6] = (yid-1)*unitN + xid;
-				cell[7] = (yid+1)*unitN + (xid+1);
+				cell[7] = (yid-1)*unitN + (xid+1);
+				cell[8] = (yid-1)*unitN + (xid+2);
+				cell[9] = yid*unitN + (xid+2);
+				cell[10] = (yid+1)*unitN + (xid+2);
+				cell[11] = (yid+2)*unitN + (xid+2);
+				cell[12] = (yid+2)*unitN + (xid+1);
+				cell[13] = (yid+2)*unitN + xid;
+				cell[14] = (yid+2)*unitN + (xid-1);
+				cell[15] = (yid+2)*unitN + (xid-2);
+				cell[16] = (yid+1)*unitN + (xid-2);
+				cell[17] = yid*unitN + (xid-2);
+				cell[18] = (yid-1)*unitN + (xid-2);
+				cell[19] = (yid-2)*unitN + (xid-2);
+				cell[20] = (yid-2)*unitN + (xid-1);
+				cell[21] = (yid-2)*unitN + xid;
 				break;
 			case 1:
 				cell[0] = yid*unitN + (xid+1);
@@ -787,7 +801,12 @@ ObjectContain::NewMulti (bool reGen)
 		}
 
 		/* Assign 50% in the center */
-		uint32_t cen = (uint32_t)((double)spatial * 0.4);
+		uint32_t cen = 0;
+		if (senN <= 12)
+			cen = (uint32_t)((double)spatial * 0.4);
+		else
+			cen = (uint32_t)((double)spatial * 0.3);
+
 		double x = cellUnit*xid + cellUnit/2;
 		double y = cellUnit*yid + cellUnit/2;
 		for (uint32_t i=0; i<cen; i++)
@@ -812,7 +831,7 @@ ObjectContain::NewMulti (bool reGen)
 		
 		/* Assign 50% to the edge */
 		uint32_t remain = spatial- cen;
-		uint32_t part[14] = {0};	
+		uint32_t part[22] = {0};	
 		while(true)
 		{
 			for (uint32_t i=0; i<cellPerSpa-2; i++) 
@@ -851,7 +870,7 @@ ObjectContain::NewMulti (bool reGen)
 		//std::cout << std::endl;
 		
 		// num obj
-		uint32_t numObj[14] = {0};
+		uint32_t numObj[22] = {0};
 		//std::cout << remain << std::endl;
 		numObj[0] = part[0];
 		numObj[cellPerSpa-2] = remain - part[cellPerSpa-3];
