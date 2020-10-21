@@ -273,12 +273,7 @@ main (int argc, char *argv[])
 	else if (ssN == 16 || ssN == 20)
 		objPerCell = 4;
 	objectMax = objSpatial * objPerCell * cellPerSp;
-	printf("\n[[Object Setting]]\n");
-	std::cout << "Spatiality     : " << objSpatial << std::endl;
-	std::cout << "Object obj/cell: " << objPerCell << std::endl;
-	std::cout << "Object cell/sp : " << cellPerSp << std::endl;
-	std::cout << "Objet Max      : " << objectMax << std::endl << std::endl;	
-	
+
 	// Object & Map Setting
 	uint32_t objectN = 1; // per Service
 	if (obsMod=="car" || obsMod=="multi")
@@ -319,14 +314,14 @@ main (int argc, char *argv[])
 	// Object & Map
 	double maxSpeed = cellUnit * 60; // m/s
 	double objectSpeed = maxSpeed * speedRate / 100;
-	std::cout << "Object Speed: " << objectSpeed << std::endl;
+	
 	// Sensor
 	ssN = ssN * ssN;
 
 	// Bandwidth
   //uint64_t totRate = ssN * sensorAvgRate;
 	uint64_t bw =  Byte2Bit (sampleSize) * (uint64_t) ssN * (uint64_t)sensorAvgRate; // bps
-	std::cout << "bw: " << bw << std::endl;
+	//std::cout << "bw: " << bw << std::endl;
 	bw = (double) serviceN * bw * bwLimit / 100;
 
 	/********************
@@ -345,6 +340,15 @@ main (int argc, char *argv[])
 	uint32_t ini_sampleRate = sensorAvgRate * (double)bwLimit / 100 * ssN / tot_service_ssN;
 	do
 	{
+		printf("\n=========================\n");
+		printf("=========================\n");
+		printf("[[Object Setting]]\n");
+		std::cout << "Spatiality     : " << objSpatial << std::endl;
+		std::cout << "Object obj/cell: " << objPerCell << std::endl;
+		std::cout << "Object cell/sp : " << cellPerSp << std::endl;
+		std::cout << "Objet Max      : " << objectMax << std::endl;	
+		std::cout << "Object Speed: " << objectSpeed << std::endl;
+	
 		// Link Info
 		bool isLinkScheWork = false;
 
@@ -466,6 +470,7 @@ main (int argc, char *argv[])
 		sink->actionPacketSize = actionPacketSize;
 		sink->stop = &maxStep;
     sink->avgRate = sensorAvgRate * (double)bwLimit / 100 * 15/14;
+		printf("\n[[Sink Setting]]\n");
 		std::cout << "avgRate: " << sink->avgRate << std::endl;
 		sink->isLinkScheWork = &isLinkScheWork;
 		sink->LinkCheck = link->CallbackCheck ();	
@@ -499,7 +504,7 @@ main (int argc, char *argv[])
 		* Start Simulation
 		*********************/
 
-		std::cout << "###########################" << std::endl;
+		//std::cout << "###########################" << std::endl;
 		if (envMod == "sumo")
 		{
 			printf("[[SUMO Setting]]\n");
@@ -587,7 +592,7 @@ main (int argc, char *argv[])
 		std::cout << "L: " << sink->eL / sink->reward_cnt[0] << std::endl;
 		std::cout << "C: " << sink->eC / sink->reward_cnt[0]<< std::endl;
 		std::cout << "S: " << sink->eS / sink->reward_cnt[0] << std::endl;
-		std::cout << "Object: " << (double) oc[0].objectM / oc[0].objectG << std::endl;	
+		//std::cout << "Object: " << (double) oc[0].objectM / oc[0].objectG << std::endl;	
 		
 
 		printf("\n[[Drop Info]]\n");
